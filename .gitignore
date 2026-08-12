@@ -52,3 +52,6 @@ venv/
 
 # Elsevier/LaTeX generated files
 *.spl
+
+/main.pdf
+*.spl
