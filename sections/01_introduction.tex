@@ -18,17 +18,112 @@
 \subsection{Economic motivation and forecasting problem}
 \label{subsec:intro_motivation}
 
-Macroeconomic forecasting is conducted under an information set that evolves continuously within the target period. Data are released at different frequencies, publication lags differ across indicators, observations may subsequently be revised, and contemporaneous values are frequently unavailable at the time a nowcast is produced. Consequently, the information available at two forecast stages within the same target period need not be identical:
+Assessing the current state of the economy is inherently a real-time forecasting
+problem. Policymakers, financial-market participants, firms, and researchers
+frequently need estimates of output growth, inflation, and labour-market
+conditions before the corresponding official statistics are fully observed.
+Macroeconomic indicators are published at different frequencies and on different
+release schedules, so the information available near the beginning of a target
+period can differ substantially from that available only a few weeks later.
+Real-time macroeconomic datasets consequently have a ragged or ``jagged'' edge,
+and nowcasts are naturally revised as new observations become available
+\citep{giannone2008nowcasting,banbura2011blackbox}. A real-time forecast should
+therefore be regarded as conditional not only on a target period but also on the
+stage of the information flow. Denoting by $\It_{t,s}$ the information available
+for target period $t$ at release stage $s$, two stages within the same target
+period generally satisfy
 \begin{equation}
     \It_{t,s_1} \neq \It_{t,s_2},
     \qquad s_1 \neq s_2.
     \label{eq:stage_information_sets}
 \end{equation}
+Here, $s$ represents a position in the release calendar rather than a conventional
+forecast horizon. This distinction is central to the empirical design because
+forecasts generated at different stages need not be based on the same observed
+variables, even when they refer to the same macroeconomic outcome.
 
-The practical forecasting problem is therefore broader than selecting a single model for a target variable. A real-time nowcasting system must determine how much predictive value is created by incoming information, whether the preferred model changes as the information set evolves, whether conclusions are robust to genuine historical data vintages, and whether predictive uncertainty can be calibrated without using future forecast errors.
+The difficulty is compounded by instability in the economic relationships used
+for prediction. Macroeconomic forecasting equations have long been found to
+display substantial instability, while predictive performance can vary even
+when conventional tests do not identify a single discrete structural break
+\citep{stockwatson1996instability,rossi2021instability}. The targets considered
+in this paper provide a particularly demanding setting in this respect.
+Descriptive evidence from the study sample illustrates the scale of the
+variation around the COVID-19 episode. The standard deviation of annualised
+monthly core CPI inflation rises from approximately 0.74 percentage points over
+2015--2019 to about 2.50 percentage points thereafter, while the standard
+deviation of monthly payroll changes increases from roughly 83 thousand workers
+to about 2.44 million, the latter being heavily influenced by the extraordinary
+pandemic labour-market observations. Annualised quarter-on-quarter real GDP
+growth, meanwhile, fell to approximately $-32.8\%$ in 2020Q2 before rebounding
+to approximately $29.9\%$ in 2020Q3. These observations are descriptive rather
+than evidence that any particular forecasting method should dominate. They
+instead illustrate why assuming a single forecasting relationship to perform
+uniformly across targets, periods, and economic environments is a demanding
+restriction.
 
-% Add 1--2 paragraphs motivating why this matters for GDP, inflation,
-% labour markets, central banks, markets, and policy analysis.
+Variation in the information set creates a second and conceptually distinct
+source of possible forecast instability. Incoming releases do not merely add
+observations mechanically; their forecasting value depends on when they become
+available and on what has already been observed. Accounting explicitly for
+publication lags can materially change the measured usefulness of individual
+predictors, with relatively timely survey or financial indicators potentially
+contributing more at early forecast origins before harder activity data are
+released \citep{banbura2011blackbox}. Moreover, real-time evidence for U.S. GDP
+shows that the relative ranking of forecasting models can change as information
+accumulates during the quarter \citep{aastveit2014density}. This does not imply
+that changing models across stages must improve forecasting accuracy. Indeed,
+whether such variation can be exploited successfully out of sample is itself an
+empirical question. It does, however, imply that a comparison between a fixed
+forecasting rule and a rule conditioned on the stage of the release calendar is
+economically meaningful. Importantly, such a comparison must distinguish the
+effect of receiving additional information from the separate effect of changing
+the forecasting model: otherwise an improvement at a later stage could simply
+reflect the richer information set rather than any gain from stage-dependent
+model choice.
+
+Real-time evaluation also requires distinguishing the release-calendar problem
+from the data-vintage problem. Macroeconomic observations available in current
+databases may differ from the values that were actually available to a
+forecaster at a historical forecast origin. Revisions can therefore alter both
+the dependent variable and the predictor histories used in retrospective
+forecast exercises, which is the central motivation for constructing
+vintage-specific real-time datasets \citep{croushorestark2001realtime,
+croushore2011frontiers}. In the notation used here, the historically feasible
+information set $\It_{t,s}^{RT}$ need not coincide with a reconstruction based
+on the latest revised observations, $\It_{t,s}^{LV}$. The relevance of this
+distinction is visible even in a simple validation exercise using selected
+ALFRED snapshots. Over 2010Q1--2018Q3, the absolute difference between
+annualised quarterly GDP growth calculated from the January 2019 and January
+2020 vintages averages approximately 0.22 percentage points and reaches about
+1.22 percentage points; for 2017Q4 alone, the corresponding growth estimate
+changes from roughly $2.27\%$ to $3.48\%$. These figures are only illustrative
+differences between selected annual vintages: they should not be interpreted as
+an estimated revision distribution or as a first-release-versus-final-release
+experiment. Their role is instead to demonstrate why a historically feasible
+forecast experiment and a latest-vintage counterfactual are not necessarily the
+same exercise.
+
+Taken together, sequential information arrival, changing data vintages, and
+instability in predictive relationships transform the forecasting problem from
+the selection of one universally preferred model into a comparison of
+forecasting rules conditional on the information actually available at each
+forecast origin. Model uncertainty also makes forecast combinations an
+important benchmark, since pooling can provide robustness when the identity of
+the best individual specification varies over time
+\citep{timmermann2006combinations}. Existing real-time GDP research already
+shows both within-quarter variation in model rankings and strong performance
+from forecast combinations \citep{aastveit2014density}; consequently, the
+empirical question in this paper is not whether stage dependence or model
+adaptation is intrinsically novel or necessarily superior. Rather, the question
+is whether, within a common pseudo-real-time design spanning GDP, inflation,
+and labour-market targets, the predictive value of information changes
+systematically across release stages, whether a pre-specified
+stage-dependent forecasting policy adds value beyond that information-arrival
+effect, and whether the resulting conclusions are sensitive to the use of
+genuine historical rather than latest-revised data. These questions motivate
+the formal research questions and hypotheses developed in the following
+subsections.
 
 \subsection{Research questions}
 \label{subsec:research_questions}
