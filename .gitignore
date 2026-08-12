@@ -1,0 +1,54 @@
+# LaTeX generated files
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+
+# Bibliography intermediate files
+*.bcf
+*.run.xml
+
+# Build directories
+_build/
+build/
+
+# Temporary files
+*.tmp
+*.bak
+*~
+*.swp
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# macOS
+.DS_Store
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+
+# Secrets
+.env
+.env.*
+
+# Main compiled manuscript
+/main.pdf
+
+# Elsevier/LaTeX generated files
+*.spl

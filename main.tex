@@ -1,0 +1,182 @@
+\documentclass[preprint,12pt,authoryear]{elsarticle}
+
+% ============================================================
+% MacroPulse-style applied econometrics / forecasting paper
+% Elsevier working-paper template
+% ============================================================
+
+% ---------------------------
+% Core mathematics
+% ---------------------------
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{bm}
+
+% ---------------------------
+% Tables
+% ---------------------------
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{siunitx}
+
+% ---------------------------
+% Figures and layout
+% ---------------------------
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{pdflscape}
+
+% ---------------------------
+% Text / links / references
+% ---------------------------
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage[nameinlink,capitalise,noabbrev]{cleveref}
+
+% ============================================================
+% Hyperlink setup
+% ============================================================
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue,
+    pdftitle={Real-Time Macroeconomic Nowcasting with Stage-Dependent Model Policies},
+    pdfauthor={Author Name}
+}
+
+% ============================================================
+% Useful commands
+% ============================================================
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\RMSE}{\operatorname{RMSE}}
+\newcommand{\MAE}{\operatorname{MAE}}
+\newcommand{\Bias}{\operatorname{Bias}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\It}{\mathcal{I}}
+\newcommand{\yhat}{\widehat{y}}
+\newcommand{\RealTime}{\text{RT}}
+
+% Keep table columns consistent.
+\sisetup{
+    detect-all,
+    table-number-alignment=center,
+    round-mode=places,
+    round-precision=3
+}
+
+% ============================================================
+% Journal / bibliography
+% Change these when a target journal is chosen.
+% ============================================================
+\journal{Working Paper}
+\bibliographystyle{elsarticle-harv}
+
+\begin{document}
+
+% ============================================================
+% FRONT MATTER
+% ============================================================
+\begin{frontmatter}
+
+\title{Real-Time Macroeconomic Nowcasting with Stage-Dependent Model Policies:\\
+Evidence from U.S. GDP, Inflation, and Labour Markets}
+
+% Alternative titles:
+% Information Sets Before Models: Vintage-Aware and Stage-Dependent Macroeconomic Nowcasting
+% Forecasting the U.S. Economy in Real Time: A Vintage-Aware Stage-Dependent Framework
+
+\author[inst1]{Author Name\corref{cor1}}
+\ead{author.email@example.com}
+\cortext[cor1]{Corresponding author}
+
+\address[inst1]{Institution, Department, City, Country}
+
+\begin{abstract}
+% Recommended structure (write this last):
+% 1. Forecasting problem / motivation.
+% 2. Method: vintage-aware, stage-dependent framework.
+% 3. Empirical domains and targets.
+% 4. Pseudo-real-time evaluation design.
+% 5. Main quantitative findings.
+% 6. Scientific implication.
+
+Macroeconomic nowcasts are produced under evolving and irregular information sets, yet conventional forecast comparisons often abstract from the sequence in which economic data become available. This paper develops and evaluates a vintage-aware, stage-dependent nowcasting framework for U.S. economic activity, inflation, and labour-market conditions. The framework reconstructs historical information sets at each forecast origin and evaluates autoregressive benchmarks, bridge equations, penalised regressions, factor models, and forecast combinations under no-look-ahead restrictions. Forecast policies are allowed to vary with the stage of the data-release cycle, while predictive intervals are calibrated using only forecast errors observable before each forecast origin. Using pseudo-real-time experiments for real GDP growth, four inflation measures, payroll employment, unemployment, and wage growth, the empirical design tests four linked hypotheses: the marginal value of incoming real-time information, the incremental value of stage-dependent model policies, the effect of genuine historical data vintages on forecast evaluation, and the calibration and sharpness of prior-only 80\% predictive intervals. \textit{[Insert headline quantitative H1--H4 results here once the confirmatory evaluation is frozen.]}
+\end{abstract}
+
+\begin{keyword}
+Real-time forecasting \sep
+Macroeconomic nowcasting \sep
+Data vintages \sep
+Mixed-frequency data \sep
+Forecast combinations \sep
+Forecast evaluation
+\end{keyword}
+
+\end{frontmatter}
+
+\noindent\textbf{JEL Classification:} C22, C32, C53, E27, E37
+
+\vspace{0.5em}
+\noindent\textbf{Working-paper version:} \today
+
+% ============================================================
+% MAIN TEXT
+% ============================================================
+\input{sections/01_introduction}
+\input{sections/02_literature}
+\input{sections/03_data_information_set}
+\input{sections/04_methodology}
+\input{sections/05_forecast_experiment}
+\input{sections/06_results}
+\input{sections/07_robustness}
+\input{sections/08_discussion}
+\input{sections/09_conclusion}
+
+% ============================================================
+% DECLARATIONS
+% ============================================================
+\section*{Data and Code Availability}
+\label{sec:data_code}
+% Replace with final repository DOI/URL when available.
+Replication code, data-construction routines, forecast-origin definitions, and scripts required to reproduce the reported tables and figures will be made available in a public replication repository. Where raw data redistribution is restricted, the repository will provide scripts and source identifiers required to reconstruct the research dataset.
+
+\section*{CRediT Author Statement}
+% Example for sole author -- edit as appropriate.
+Author Name: Conceptualization; Methodology; Software; Validation; Formal analysis; Data curation; Writing -- original draft; Writing -- review \& editing; Visualization.
+
+\section*{Declaration of Competing Interest}
+The author declares no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+
+\section*{Funding}
+% Replace or delete if no external funding applies.
+This research received no specific grant from funding agencies in the public, commercial, or not-for-profit sectors.
+
+\section*{Acknowledgements}
+% Add acknowledgements here.
+
+% ============================================================
+% REFERENCES
+% ============================================================
+\bibliography{references}
+
+% ============================================================
+% APPENDICES
+% ============================================================
+\appendix
+\input{appendix/appendix_a_econometrics}
+\input{appendix/appendix_b_vintages}
+\input{appendix/appendix_c_policies}
+\input{appendix/appendix_d_extra_results}
+\input{appendix/appendix_e_intervals}
+\input{appendix/appendix_f_reproducibility}
+
+\end{document}

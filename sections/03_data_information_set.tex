@@ -1,0 +1,132 @@
+\section{Data and Real-Time Information Sets}
+\label{sec:data}
+
+\subsection{Real-time data architecture}
+\label{subsec:realtime_architecture}
+
+Let $x_{j,\tau}^{(v)}$ denote vintage $v$ of indicator $j$ for observation period $\tau$, and let $r_{j,\tau}^{(v)}$ denote the date on which that vintage became available. The feasible information set at forecast origin $t$ and stage $s$ is
+\begin{equation}
+    \It_{t,s}
+    =
+    \left\{
+        x_{j,\tau}^{(v)}:
+        r_{j,\tau}^{(v)} \leq t
+    \right\}.
+    \label{eq:information_set}
+\end{equation}
+
+% Explain observation date vs release date vs vintage date vs information cutoff.
+% State source databases and the exact vintage/release-calendar logic.
+
+\subsection{GDP target and indicator set}
+\label{subsec:gdp_data}
+
+The GDP target is annualised quarter-on-quarter real GDP growth:
+\begin{equation}
+    g_t
+    =
+    400\left[\ln(GDPC1_t)-\ln(GDPC1_{t-1})\right].
+    \label{eq:gdp_growth}
+\end{equation}
+
+% Candidate information universe:
+% GDPC1, INDPRO, PAYEMS, RSAFS, HOUST, AWHMAN, UNRATE,
+% CPIAUCSL, FEDFUNDS.
+
+\subsection{Inflation targets and indicator set}
+\label{subsec:inflation_data}
+
+For price index $P_t$, monthly inflation is expressed as annualised month-on-month log growth:
+\begin{equation}
+    \pi_t
+    =
+    1200\left[\ln(P_t)-\ln(P_{t-1})\right].
+    \label{eq:inflation_growth}
+\end{equation}
+
+The four targets are headline CPI, core CPI, headline PCE, and core PCE.
+
+% Candidate information universe includes:
+% CPIAUCSL, CPILFESL, PCEPI, PCEPILFE, PPIFIS,
+% CES0500000003, CUSR0000SEHA, CUSR0000SEHC, UNRATE,
+% FEDFUNDS, T5YIE, MICH, DCOILWTICO.
+
+\subsection{Labour-market targets and indicator set}
+\label{subsec:labour_data}
+
+Payroll employment is modelled as the monthly change
+\begin{equation}
+    \Delta PAYEMS_t = PAYEMS_t-PAYEMS_{t-1},
+    \label{eq:payems_change}
+\end{equation}
+while the unemployment rate is modelled in levels. Average hourly earnings growth is
+\begin{equation}
+    w_t
+    =
+    1200\left[\ln(AHE_t)-\ln(AHE_{t-1})\right].
+    \label{eq:ahe_growth}
+\end{equation}
+
+% Candidate information universe includes:
+% PAYEMS, UNRATE, CES0500000003, ICSA, CCSA, JTSJOL, JTSQUR,
+% CIVPART, EMRATIO, TEMPHELPS, AWHI, MANEMP, INDPRO.
+
+\subsection{Forecast stages}
+\label{subsec:forecast_stages}
+
+The GDP system uses three within-quarter information stages:
+\begin{equation}
+    \mathcal{S}_{G}
+    =
+    \{\text{early quarter},\ \text{after month 1},\ \text{quarter end}\}.
+\end{equation}
+
+The inflation system uses four within-month stages:
+\begin{equation}
+    \mathcal{S}_{\pi}
+    =
+    \{\text{month open},\ \text{mid-month},\ \text{pre-release},\ \text{month end}\}.
+\end{equation}
+
+The labour system uses five within-month stages:
+\begin{equation}
+    \mathcal{S}_{L}
+    =
+    \{\text{month open},\ \text{after week 1},\ \text{after week 2},\ \text{pre-report},\ \text{month end}\}.
+\end{equation}
+
+% TABLE PLACEHOLDER: targets / transformations / frequency / source.
+\begin{table}[H]
+\centering
+\caption{Forecast targets and transformations}
+\label{tab:targets}
+\begin{threeparttable}
+\begin{tabular}{llll}
+\toprule
+Domain & Target & Frequency & Transformation \\
+\midrule
+GDP & Real GDP & Quarterly & $400\Delta\ln(GDPC1_t)$ \\
+Inflation & Headline CPI & Monthly & $1200\Delta\ln(CPI_t)$ \\
+Inflation & Core CPI & Monthly & $1200\Delta\ln(CoreCPI_t)$ \\
+Inflation & Headline PCE & Monthly & $1200\Delta\ln(PCE_t)$ \\
+Inflation & Core PCE & Monthly & $1200\Delta\ln(CorePCE_t)$ \\
+Labour & Payroll employment & Monthly & $\Delta PAYEMS_t$ \\
+Labour & Unemployment rate & Monthly & Level \\
+Labour & Average hourly earnings & Monthly & $1200\Delta\ln(AHE_t)$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item Notes: Replace shorthand series names and add source/release-timing details in the final paper.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Ragged edges and structural missingness}
+\label{subsec:ragged_edges}
+
+A missing observation caused by the fact that a release had not yet occurred is treated as structurally unavailable information rather than as an ordinary missing value. The empirical design therefore distinguishes data defects from observations that were legitimately unavailable in real time.
+
+\subsection{Estimation and evaluation samples}
+\label{subsec:samples}
+% Insert exact initial estimation windows, backtest start dates,
+% number of forecast origins, and target-by-stage counts once frozen.

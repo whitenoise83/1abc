@@ -1,0 +1,247 @@
+\section{Pseudo-Real-Time Forecast Experiment and Evaluation}
+\label{sec:experiment}
+
+\subsection{Forecast-origin reconstruction}
+\label{subsec:forecast_origin}
+
+For each historical forecast origin $t$:
+\begin{enumerate}[leftmargin=*]
+    \item determine the information cutoff and forecast stage $s$;
+    \item reconstruct the historically feasible information set $\It_{t,s}$;
+    \item estimate each permitted candidate model using only information in $\It_{t,s}$;
+    \item generate and store point forecasts and predictive intervals;
+    \item advance to the next forecast origin without revising stored forecasts;
+    \item evaluate forecasts only after the corresponding target outcome becomes observable.
+\end{enumerate}
+
+\subsection{No-look-ahead restrictions}
+\label{subsec:no_lookahead}
+
+The core restriction is
+\begin{equation}
+    \max_j\left\{r_{j,\tau}^{(v)}\right\}
+    \leq t
+    \qquad
+    \text{for every observation entering }\It_{t,s}.
+    \label{eq:no_lookahead}
+\end{equation}
+
+Model-selection histories, combination weights, calibration errors, and all other adaptive quantities are subject to the same restriction. A historical forecast is stored as an immutable object and is not recomputed after later data releases or revisions become available.
+
+% Describe exact target-leakage tests, release-date checks, vintage handling,
+% and the distinction between structurally unavailable and defective missing data.
+
+\subsection{Policy-development and final evaluation samples}
+\label{subsec:development_evaluation}
+
+The stage-dependent policy and the fixed-model comparator used in H2 must be selected independently of the observations used for the final confirmatory comparison. Let $\mathcal{T}_{D}$ denote the policy-development sample and $\mathcal{T}_{E}$ the final evaluation sample, with
+\begin{equation}
+    \max(\mathcal{T}_{D}) < \min(\mathcal{T}_{E}).
+    \label{eq:development_split}
+\end{equation}
+The stage policy $\mathcal{P}(k,s)$ and fixed comparator $m_k^{F}$ are determined using only $\mathcal{T}_{D}$ and are frozen before forecasts in $\mathcal{T}_{E}$ are evaluated. The final dates should be chosen before the confirmatory analysis after inspecting only data availability and forecast counts, not comparative forecast performance.
+
+% If a clean temporal holdout is too short, document the alternative nested
+% rolling policy-selection procedure here and preserve strict prior-only selection.
+
+\subsection{Forecast errors and loss functions}
+\label{subsec:forecast_errors}
+
+For target $k$, model $m$, stage $s$, and horizon $h$,
+\begin{equation}
+    e_{k,t+h,s}^{(m)}
+    =
+    y_{k,t+h}
+    -
+    \widehat{y}_{k,t+h\mid t,s}^{(m)}.
+    \label{eq:forecast_error}
+\end{equation}
+
+The primary loss function is squared error,
+\begin{equation}
+    L_2(e)=e^2,
+    \label{eq:squared_loss}
+\end{equation}
+with absolute-error loss,
+\begin{equation}
+    L_1(e)=|e|,
+    \label{eq:absolute_loss}
+\end{equation}
+used as a robustness criterion.
+
+\subsection{Point forecast evaluation}
+\label{subsec:point_metrics}
+
+\begin{align}
+    \RMSE^{(m)}
+    &=
+    \sqrt{\frac{1}{N}\sum_{i=1}^{N}e_i^2},
+    \label{eq:rmse}\\
+    \MAE^{(m)}
+    &=
+    \frac{1}{N}\sum_{i=1}^{N}|e_i|,
+    \label{eq:mae}\\
+    \Bias^{(m)}
+    &=
+    \frac{1}{N}\sum_{i=1}^{N}e_i.
+    \label{eq:bias}
+\end{align}
+
+Relative RMSE against benchmark $b$ is
+\begin{equation}
+    rRMSE^{(m)}
+    =
+    \frac{\RMSE^{(m)}}{\RMSE^{(b)}}.
+    \label{eq:relative_rmse}
+\end{equation}
+Values below one indicate lower RMSE than the benchmark.
+
+\subsection{H1: marginal value of information arrival}
+\label{subsec:h1_design}
+
+H1 is evaluated by holding model $m$ fixed and comparing the same forecast target across adjacent information stages. For stages $s$ and $s+1$,
+\begin{equation}
+    d_{k,t}^{H1}(m;s,s+1)
+    =
+    L\!\left(e_{k,t,s+1}^{(m)}\right)
+    -
+    L\!\left(e_{k,t,s}^{(m)}\right).
+    \label{eq:h1_experiment_diff}
+\end{equation}
+The economic magnitude is reported as the percentage change in RMSE:
+\begin{equation}
+    \Delta \RMSE_{s\rightarrow s+1}
+    =
+    100\left(
+        \frac{\RMSE_{s+1}}{\RMSE_s}-1
+    \right).
+    \label{eq:h1_rmse_change}
+\end{equation}
+A negative value indicates improved accuracy at the later stage. Comparisons are paired at common target periods so that sample composition does not drive the result.
+
+\subsection{H2: stage-dependent versus fixed-model policies}
+\label{subsec:h2_design}
+
+For target $k$, the stage-dependent forecast is
+\begin{equation}
+    \widehat{y}_{k,t,s}^{\mathrm{stage}}
+    =
+    f_{m^*_{k,s}}\!\left(\It_{t,s};\widehat{\theta}_{m^*_{k,s},t}\right),
+    \label{eq:h2_stage_forecast}
+\end{equation}
+while the fixed-policy forecast is
+\begin{equation}
+    \widehat{y}_{k,t,s}^{\mathrm{fixed}}
+    =
+    f_{m_k^{F}}\!\left(\It_{t,s};\widehat{\theta}_{m_k^{F},t}\right),
+    \label{eq:h2_fixed_forecast}
+\end{equation}
+where the same fixed model $m_k^{F}$ is used at all stages. Both policies use the identical real-time information set at each forecast origin. Consequently, the H2 comparison isolates model-policy choice rather than information availability.
+
+The principal effect size is
+\begin{equation}
+    Gain_k^{H2}
+    =
+    100\left(
+        \frac{\RMSE_k^{\mathrm{stage}}}
+        {\RMSE_k^{\mathrm{fixed}}}-1
+    \right),
+    \label{eq:h2_gain}
+\end{equation}
+with negative values indicating lower RMSE for the stage-dependent policy.
+
+\subsection{H3: real-time versus latest-vintage counterfactual}
+\label{subsec:h3_design}
+
+H3 uses two otherwise identical forecast experiments. The real-time system uses $\It_{t,s}^{RT}$, containing only vintages historically available at origin $t$, while the counterfactual replaces eligible historical observations with latest-vintage values $\It_{t,s}^{LV}$ subject to the same observation-date and stage structure:
+\begin{align}
+    \widehat{y}_{k,t,s}^{RT}
+    &=f_m\!\left(\It_{t,s}^{RT};\widehat{\theta}_{m,t}^{RT}\right),
+    \label{eq:h3_rt_forecast}\\
+    \widehat{y}_{k,t,s}^{LV}
+    &=f_m\!\left(\It_{t,s}^{LV};\widehat{\theta}_{m,t}^{LV}\right).
+    \label{eq:h3_lv_forecast}
+\end{align}
+
+The analysis records: (i) differences in forecast loss; (ii) forecast-value revisions,
+\begin{equation}
+    \Delta \widehat{y}_{k,t,s}^{vintage}
+    =
+    \widehat{y}_{k,t,s}^{LV}
+    -
+    \widehat{y}_{k,t,s}^{RT};
+    \label{eq:h3_forecast_change}
+\end{equation}
+and (iii) changes in candidate-model rankings by target and stage. Rank robustness is summarised using the share of winning models that change and rank-correlation measures.
+
+\subsection{Statistical forecast comparison}
+\label{subsec:forecast_tests}
+
+For paired forecasts, define the generic loss differential
+\begin{equation}
+    d_t=L(e_{1,t})-L(e_{2,t}).
+    \label{eq:loss_diff}
+\end{equation}
+Equal predictive accuracy corresponds to $\E[d_t]=0$. The main point-forecast comparisons use a Diebold--Mariano-type statistic with a heteroskedasticity-and-autocorrelation-consistent long-run variance estimator. Block-bootstrap confidence intervals for the mean loss differential are reported when the effective sample is short or dependence is material.
+
+For comparisons where conditional predictive ability is substantively important, a Giacomini--White-type test is reported as a secondary analysis. Clark--West adjustments are reserved for comparisons in which the nested-model setting makes the unadjusted mean-squared-error differential systematically unfavourable to the larger model.
+
+% Add formal formulas, finite-sample correction, HAC lag rule, and bootstrap
+% block-length rule after the final implementation has been frozen.
+
+\subsection{H4: prior-only predictive interval calibration}
+\label{subsec:interval_calibration}
+
+Let $\mathcal{E}_{t}^{-}$ denote the set of forecast errors that are fully observable before forecast origin $t$. An empirical 80\% interval can be written generically as
+\begin{equation}
+    PI_{t}^{80}
+    =
+    \left[
+        \widehat{y}_{t}-q_{0.8,t},
+        \widehat{y}_{t}+q_{0.8,t}
+    \right],
+    \label{eq:pi80}
+\end{equation}
+where $q_{0.8,t}$ is estimated from $\mathcal{E}_{t}^{-}$ only.
+
+For exponentially weighted calibration, older errors receive weights proportional to
+\begin{equation}
+    \omega_j \propto \delta^j,
+    \qquad 0<\delta<1.
+    \label{eq:exp_weights}
+\end{equation}
+
+The prior-only method is compared with at least one conventional parametric interval benchmark and one unweighted/rolling empirical-quantile benchmark. Additional previously evaluated calibration methods can be retained as secondary comparators.
+
+\subsection{Interval evaluation}
+\label{subsec:interval_metrics}
+
+Empirical coverage is
+\begin{equation}
+    Coverage
+    =
+    \frac{1}{N}\sum_{t=1}^{N}
+    \I\left(L_t\leq y_t\leq U_t\right).
+    \label{eq:coverage}
+\end{equation}
+Coverage uncertainty is reported with a binomial confidence interval. Unconditional coverage, independence of interval violations, and their joint conditional-coverage implication are evaluated using standard likelihood-ratio diagnostics.
+
+Average interval width is
+\begin{equation}
+    AIW
+    =
+    \frac{1}{N}\sum_{t=1}^{N}(U_t-L_t).
+    \label{eq:aiw}
+\end{equation}
+
+For nominal coverage $1-\alpha$, the interval score is
+\begin{equation}
+\begin{split}
+    IS_{\alpha,t}
+    ={}&(U_t-L_t)
+    +\frac{2}{\alpha}(L_t-y_t)\I(y_t<L_t)\\
+    &+\frac{2}{\alpha}(y_t-U_t)\I(y_t>U_t).
+\end{split}
+\label{eq:interval_score}
+\end{equation}
+Lower interval scores indicate a better combination of calibration and sharpness. Pairwise differences in interval scores are evaluated using the same prior-only forecast-comparison logic as point-forecast losses.

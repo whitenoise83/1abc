@@ -1,0 +1,62 @@
+\section{Frozen Stage-Specific Forecast Policies}
+\label{app:policies}
+
+\subsection{GDP policy}
+% Insert exact stage -> model mapping from the frozen evaluation.
+
+\subsection{Inflation policy}
+\begin{table}[H]
+\centering
+\caption{Frozen inflation forecasting policy}
+\label{tab:inflation_policy}
+\begin{tabular}{lll}
+\toprule
+Target & Stage & Production candidate \\
+\midrule
+Headline CPI & Month open & Ridge--AR ensemble \\
+Headline CPI & Mid-month & Ridge--AR ensemble \\
+Headline CPI & Pre-release & Ridge--AR ensemble \\
+Headline CPI & Month end & Ridge--AR ensemble \\
+Core CPI & Month open & 12-month mean \\
+Core CPI & Mid-month & Ridge--AR ensemble \\
+Core CPI & Pre-release & Ridge--AR ensemble \\
+Core CPI & Month end & Ridge--AR ensemble \\
+Headline PCE & Month open & Bridge Ridge \\
+Headline PCE & Mid-month & Bridge Ridge \\
+Headline PCE & Pre-release & Bridge Ridge \\
+Headline PCE & Month end & Bridge Ridge \\
+Core PCE & Month open & Bridge Ridge \\
+Core PCE & Mid-month & Ridge--AR ensemble \\
+Core PCE & Pre-release & Ridge--AR ensemble \\
+Core PCE & Month end & Ridge--AR ensemble \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Labour-market policy}
+\begin{table}[H]
+\centering
+\caption{Frozen labour-market forecasting policy}
+\label{tab:labour_policy}
+\begin{tabular}{lll}
+\toprule
+Target & Stage & Production candidate \\
+\midrule
+AHE & Month open & Labour Bridge Ridge \\
+AHE & After week 1 & Labour Bridge Ridge \\
+AHE & After week 2 & Equal-weight ensemble \\
+AHE & Pre-employment report & Equal-weight ensemble \\
+AHE & Month end & Equal-weight ensemble \\
+PAYEMS & Month open & 12-month mean \\
+PAYEMS & After week 1 & Equal-weight ensemble \\
+PAYEMS & After week 2 & Labour Bridge Ridge \\
+PAYEMS & Pre-employment report & Labour Bridge Ridge \\
+PAYEMS & Month end & Labour Bridge Ridge \\
+UNRATE & Month open & Equal-weight ensemble \\
+UNRATE & After week 1 & Equal-weight ensemble \\
+UNRATE & After week 2 & Equal-weight ensemble \\
+UNRATE & Pre-employment report & Equal-weight ensemble \\
+UNRATE & Month end & Equal-weight ensemble \\
+\bottomrule
+\end{tabular}
+\end{table}

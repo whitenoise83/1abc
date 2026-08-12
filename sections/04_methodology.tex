@@ -1,0 +1,122 @@
+\section{Econometric Methodology}
+\label{sec:methodology}
+
+\subsection{General forecasting framework}
+\label{subsec:general_framework}
+
+For target $k$, forecast stage $s$, and candidate model $m$, define
+\begin{equation}
+    \widehat{y}_{k,t+h\mid t,s}^{(m)}
+    =
+    f_m\!\left(\It_{t,s};\widehat{\theta}_{m,t,s}\right).
+    \label{eq:general_forecast}
+\end{equation}
+
+The stage-dependent production forecast is
+\begin{equation}
+    \widehat{y}_{k,t+h\mid t,s}^{P}
+    =
+    \widehat{y}_{k,t+h\mid t,s}^{\left(m^*_{k,s}\right)},
+    \label{eq:production_forecast}
+\end{equation}
+where $m^*_{k,s}$ is the model pre-specified for target $k$ at stage $s$.
+
+\subsection{Benchmark forecasts}
+\label{subsec:benchmarks}
+
+\subsubsection{Historical mean}
+For targets where it is used, a trailing historical mean provides a simple benchmark.
+
+\subsubsection{AR(1)}
+\begin{equation}
+    y_t = \alpha + \phi y_{t-1}+\varepsilon_t.
+    \label{eq:ar1}
+\end{equation}
+
+\subsection{Bridge Ridge regression}
+\label{subsec:bridge_ridge}
+
+Let $X_t$ contain the mixed-frequency predictors available for target period $t$ at the relevant forecast stage. Ridge estimates solve
+\begin{equation}
+    \widehat{\beta}^{\mathrm{ridge}}
+    =
+    \arg\min_{\beta}
+    \left\{
+        \sum_{t=1}^{T}
+        \left(y_t-X_t'\beta\right)^2
+        +
+        \lambda\sum_{j=1}^{p}\beta_j^2
+    \right\}.
+    \label{eq:ridge}
+\end{equation}
+
+% Explain standardisation, treatment of intercept, penalty choice,
+% stage-specific construction of X_t, and missing current-period values.
+
+\subsection{Dynamic Factor Model}
+\label{subsec:dfm}
+
+A dynamic factor representation can be written as
+\begin{align}
+    X_t &= \Lambda F_t + e_t, \\
+    F_t &= A F_{t-1}+u_t,
+    \label{eq:dfm}
+\end{align}
+where $F_t$ denotes a low-dimensional latent factor and $X_t$ the observed macroeconomic panel.
+
+% Give exact state-space system and GDP mapping in Appendix A.
+
+\subsection{Factor Ridge model}
+\label{subsec:factor_ridge}
+
+% Describe factor extraction from the labour panel and subsequent
+% penalised target regression. Make clear whether factors are static PCA,
+% dynamic factors, or another exact construction.
+
+\subsection{Forecast combinations}
+\label{subsec:combinations}
+
+An equal-weight combination is
+\begin{equation}
+    \widehat{y}_{t+h\mid t}^{EW}
+    =
+    \frac{1}{M}\sum_{m=1}^{M}
+    \widehat{y}_{t+h\mid t}^{(m)}.
+    \label{eq:equal_weight}
+\end{equation}
+
+For inverse-RMSE weighting, define
+\begin{equation}
+    w_{m,t}
+    =
+    \frac{\RMSE_{m,t}^{-1}}
+    {\sum_{j=1}^{M}\RMSE_{j,t}^{-1}},
+    \label{eq:inverse_rmse_weight}
+\end{equation}
+so that
+\begin{equation}
+    \widehat{y}_{t+h\mid t}^{Comb}
+    =
+    \sum_{m=1}^{M} w_{m,t}
+    \widehat{y}_{t+h\mid t}^{(m)}.
+    \label{eq:combined_forecast}
+\end{equation}
+
+Only forecast errors whose target outcomes were observable before forecast origin $t$ may enter $\RMSE_{m,t}$.
+
+\subsection{Stage-dependent forecast policy}
+\label{subsec:stage_policy}
+
+Define a forecast policy as the mapping
+\begin{equation}
+    \mathcal{P}:(k,s)\mapsto m,
+    \label{eq:policy_mapping}
+\end{equation}
+which assigns a candidate model to each target-stage pair.
+
+\subsection{Stable policy and adaptive challenger}
+\label{subsec:stable_adaptive}
+
+% Define the frozen ex-ante policy and the prior-only adaptive/shadow
+% challenger in academic terms. State the training/freeze sample and
+% prohibit future information from revising historical choices.

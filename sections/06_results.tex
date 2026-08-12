@@ -1,0 +1,211 @@
+\section{Empirical Results}
+\label{sec:results}
+
+% ------------------------------------------------------------
+% Report confirmatory results in H1--H4 order.
+% Do not organise the main section by the order in which the code ran.
+% Domain-specific tables can follow within each hypothesis subsection.
+% ------------------------------------------------------------
+
+\subsection{Sample, forecast counts, and confirmatory evaluation set}
+\label{subsec:results_sample}
+% Report development/evaluation dates, N by target x stage,
+% missing/common-origin restrictions, and the number of forecasts used in each test.
+
+\subsection{H1: the marginal predictive value of incoming information}
+\label{subsec:h1_results}
+
+% Primary question: with model held fixed, does loss decline at later stages?
+% Report adjacent-stage paired comparisons by target/model and a pooled summary.
+% Required outputs:
+% - N common target periods;
+% - RMSE and MAE at s and s+1;
+% - % RMSE change;
+% - mean loss differential;
+% - HAC/DM-style test statistic and p-value;
+% - block-bootstrap confidence interval where reported.
+
+\begin{table}[H]
+\centering
+\caption{H1: change in forecast accuracy as real-time information accumulates}
+\label{tab:h1_information_value}
+\begin{threeparttable}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{lllrrrrr}
+\toprule
+Target & Fixed model & Stage transition & $N$ & $\Delta$RMSE (\%) & $\Delta$MAE (\%) & $\bar d$ & $p$-value \\
+\midrule
+% PAYEMS & Bridge Ridge & Month open $\rightarrow$ Week 1 & ... & ... & ... & ... & ... \\
+% GDP & DFM & Early quarter $\rightarrow$ After month 1 & ... & ... & ... & ... & ... \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item Notes: The forecasting model is held fixed across each adjacent-stage comparison. Negative percentage changes and negative mean loss differentials indicate improvement as information accumulates. Comparisons use common target periods only.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{H2: stage-dependent policies versus fixed-model forecasting}
+\label{subsec:h2_results}
+
+% This is the headline result of the paper.
+% Report ONLY untouched confirmatory evaluation observations here.
+% Required outputs by target:
+% - fixed model chosen on development sample;
+% - stage-policy mapping frozen on development sample;
+% - RMSE/MAE of both policies on evaluation sample;
+% - relative RMSE / % gain;
+% - mean paired loss differential;
+% - predictive-accuracy p-value;
+% - optional conditional predictive-ability result.
+
+\begin{table}[H]
+\centering
+\caption{H2: stage-dependent policy versus fixed-model forecasting}
+\label{tab:h2_stage_policy}
+\begin{threeparttable}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{llrrrrrr}
+\toprule
+Target & Fixed comparator & $N$ & RMSE$_F$ & RMSE$_S$ & Gain (\%) & $\Delta$MAE (\%) & $p$-value \\
+\midrule
+% GDP & ... & ... & ... & ... & ... & ... & ... \\
+% Headline CPI & ... & ... & ... & ... & ... & ... & ... \\
+% PAYEMS & ... & ... & ... & ... & ... & ... & ... \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item Notes: Both policies receive the identical reconstructed real-time information set at each origin. The fixed comparator uses one pre-selected model at every stage; the stage policy uses the model pre-specified for the relevant target-stage pair. Negative Gain indicates lower RMSE for the stage-dependent policy.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsubsection{GDP}
+\label{subsubsec:h2_gdp}
+% AR(1), Bridge Ridge, DFM, ensemble(s), fixed comparator, stable stage policy.
+
+\subsubsection{Inflation}
+\label{subsubsec:h2_inflation}
+% Headline CPI, Core CPI, Headline PCE, Core PCE.
+
+\subsubsection{Labour market}
+\label{subsubsec:h2_labour}
+% PAYEMS, UNRATE, AHE.
+
+\subsection{H3: the effect of data vintages on forecast evaluation}
+\label{subsec:h3_results}
+
+% Required outputs:
+% - RT vs LV RMSE/MAE;
+% - mean paired loss differential and p-value;
+% - distribution of forecast-value differences;
+% - share of model x target x stage winners that change;
+% - Spearman/Kendall rank correlation where appropriate.
+
+\begin{table}[H]
+\centering
+\caption{H3: real-time versus latest-vintage forecast evaluation}
+\label{tab:h3_vintage_effect}
+\begin{threeparttable}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{lrrrrrr}
+\toprule
+Target & $N$ & RMSE$_{RT}$ & RMSE$_{LV}$ & $\Delta$RMSE (\%) & Mean $|\Delta\widehat y|$ & $p$-value \\
+\midrule
+% GDP & ... & ... & ... & ... & ... & ... \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item Notes: RT denotes historically available vintages; LV denotes the latest-vintage counterfactual under matched forecast origins, stage definitions, and candidate specifications. The hypothesis is two-sided.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{H3: sensitivity of candidate-model rankings to data vintage}
+\label{tab:h3_ranking_changes}
+\begin{threeparttable}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{lrrrr}
+\toprule
+Domain & Cells & Winner changes & Changed (\%) & Rank corr. \\
+\midrule
+% GDP & ... & ... & ... & ... \\
+% Inflation & ... & ... & ... & ... \\
+% Labour & ... & ... & ... & ... \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item Notes: A winner change occurs when the lowest-loss candidate under the real-time experiment differs from the lowest-loss candidate under the latest-vintage counterfactual.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{H4: predictive-interval calibration and sharpness}
+\label{subsec:h4_results}
+
+% Required outputs by target and method:
+% - N;
+% - realised coverage + confidence interval;
+% - unconditional-coverage p-value;
+% - independence p-value;
+% - conditional-coverage p-value;
+% - average width;
+% - mean interval score;
+% - interval-score difference vs benchmark + p-value.
+
+\begin{table}[H]
+\centering
+\caption{H4: 80\% predictive-interval calibration and sharpness}
+\label{tab:h4_interval_performance}
+\begin{threeparttable}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{llrrrrrr}
+\toprule
+Target & Method & $N$ & Coverage & Avg. width & Int. score & CC $p$ & Score $p$ \\
+\midrule
+% PAYEMS & Exp.-weighted $q_{0.8}$ & ... & ... & ... & ... & ... & ... \\
+% PAYEMS & Rolling $q_{0.8}$ & ... & ... & ... & ... & ... & ... \\
+% PAYEMS & Gaussian benchmark & ... & ... & ... & ... & ... & ... \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item Notes: Coverage is evaluated against the nominal 0.80 rate. CC denotes conditional coverage. Lower interval scores indicate better probabilistic forecast performance. Score $p$-values compare the prior-only method with the designated benchmark.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Cross-domain synthesis}
+\label{subsec:cross_domain_results}
+% Summarise which hypotheses receive the strongest/weakest support across GDP,
+% inflation, and labour. Do not collapse heterogeneous target results into one
+% pooled statistic unless economically justified.
+
+\begin{table}[H]
+\centering
+\caption{Summary of empirical evidence for the four research hypotheses}
+\label{tab:hypothesis_summary}
+\begin{threeparttable}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{lp{0.52\textwidth}p{0.28\textwidth}}
+\toprule
+Hypothesis & Main empirical finding & Statistical conclusion \\
+\midrule
+H1 & \textit{[Insert quantitative summary.]} & \textit{[Reject / fail to reject null, with qualifications.]} \\
+H2 & \textit{[Insert quantitative summary.]} & \textit{[Reject / fail to reject null, with qualifications.]} \\
+H3 & \textit{[Insert quantitative summary.]} & \textit{[Reject / fail to reject null, with qualifications.]} \\
+H4 & \textit{[Insert coverage/sharpness summary.]} & \textit{[Calibration and score conclusion.]} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item Notes: Conclusions should be stated target by target where evidence is heterogeneous. Failure to reject a null is not interpreted as proof that the null is true.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

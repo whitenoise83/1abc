@@ -1,0 +1,34 @@
+\section{Prediction-Interval Calibration and Tests}
+\label{app:intervals}
+
+\subsection{Exact prior-only calibration algorithm}
+% Give the exact exp_weighted_q80 algorithm.
+% Document target coverage, minimum error history, rolling window,
+% decay factor, weighted-quantile definition, fallback behaviour,
+% target/stage pooling rules, and strict availability rules.
+
+\subsection{Benchmark interval methods}
+% At minimum document:
+% 1. Conventional Gaussian forecast interval;
+% 2. Rolling empirical q80;
+% 3. Exponentially weighted q80 (primary).
+% Optional: target-shrunk q80 and EWMA Gaussian.
+
+\subsection{Coverage and independence diagnostics}
+% Write out the likelihood functions and LR statistics used for:
+% - unconditional coverage;
+% - independence of violations;
+% - joint conditional coverage.
+% Define finite-sample treatment for zero cells if necessary.
+
+\subsection{Sharpness and proper scoring}
+% Document average interval width and interval score.
+% Define how interval-score differentials are compared statistically.
+
+\subsection{Calibration hyperparameters}
+% Current governed labour calibration values to verify before publication:
+% target coverage = 0.80;
+% minimum prior errors = 24;
+% rolling window = 48;
+% decay = 0.940.
+% Add corresponding exact settings for GDP and inflation after freezing them.

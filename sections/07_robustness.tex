@@ -1,0 +1,56 @@
+\section{Robustness and Sensitivity Analysis}
+\label{sec:robustness}
+
+\subsection{Alternative policy-development and evaluation splits}
+\label{subsec:alternative_splits}
+% Re-estimate H2 under defensible alternative temporal splits or nested
+% prior-only policy selection. The confirmatory split remains primary.
+
+\subsection{Alternative estimation windows}
+\label{subsec:alternative_windows}
+% Expanding vs rolling; alternative rolling lengths.
+
+\subsection{Alternative ridge penalties}
+\label{subsec:alternative_lambda}
+
+\subsection{Alternative factor specifications}
+\label{subsec:alternative_factors}
+% Number of factors; state dynamics; exact DFM vs PCA approximation if relevant.
+
+\subsection{Alternative forecast-combination weights}
+\label{subsec:alternative_weights}
+% Equal, inverse-RMSE, inverse-MAE, exponentially weighted performance.
+
+\subsection{Alternative stage definitions}
+\label{subsec:alternative_stages}
+% Demonstrate that H1/H2 results are not an artefact of arbitrary stage boundaries.
+
+\subsection{Alternative H1 fixed-model choices}
+\label{subsec:h1_alternative_models}
+% Repeat information-arrival tests with more than one defensible fixed model.
+% This prevents the H1 conclusion from depending on one arbitrary model choice.
+
+\subsection{Alternative latest-vintage counterfactual definitions}
+\label{subsec:h3_counterfactuals}
+% Preserve matched origins while checking alternative rules for revised values,
+% first-release targets, and series for which full ALFRED coverage is unavailable.
+
+\subsection{Alternative predictive-interval benchmarks and calibration settings}
+\label{subsec:h4_interval_robustness}
+% Compare exp_weighted_q80 with rolling q80, conventional Gaussian intervals,
+% target-shrunk q80, EWMA Gaussian, and reasonable decay/window choices.
+
+\subsection{Subsamples and structural instability}
+\label{subsec:subsamples}
+% COVID, post-pandemic inflation, crisis exclusions, rolling performance.
+
+\subsection{Alternative loss functions and forecast-comparison inference}
+\label{subsec:alternative_loss}
+% Squared vs absolute error; alternative HAC lag rules; block bootstrap;
+% Clark-West for genuinely nested cases; conditional predictive-ability tests.
+
+\subsection{Frozen stable policy versus prior-only adaptive challenger}
+\label{subsec:stable_vs_adaptive}
+% Secondary research question, not one of H1--H4.
+% Ask whether continually adapting to recent forecast performance improves on
+% the frozen ex-ante stage policy, while retaining strict prior-only selection.

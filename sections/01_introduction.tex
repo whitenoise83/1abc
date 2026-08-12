@@ -1,0 +1,170 @@
+\section{Introduction}
+\label{sec:introduction}
+
+% ------------------------------------------------------------
+% Goal: 4--6 pages in the mature paper.
+% Do not turn this into a literature review.
+% Suggested paragraph logic:
+% P1 economic importance;
+% P2 real-time/ragged-edge forecasting problem;
+% P3 central research question;
+% P4 hypotheses;
+% P5 framework;
+% P6 contributions;
+% P7 headline results;
+% P8 roadmap.
+% ------------------------------------------------------------
+
+\subsection{Economic motivation and forecasting problem}
+\label{subsec:intro_motivation}
+
+Macroeconomic forecasting is conducted under an information set that evolves continuously within the target period. Data are released at different frequencies, publication lags differ across indicators, observations may subsequently be revised, and contemporaneous values are frequently unavailable at the time a nowcast is produced. Consequently, the information available at two forecast stages within the same target period need not be identical:
+\begin{equation}
+    \It_{t,s_1} \neq \It_{t,s_2},
+    \qquad s_1 \neq s_2.
+    \label{eq:stage_information_sets}
+\end{equation}
+
+The practical forecasting problem is therefore broader than selecting a single model for a target variable. A real-time nowcasting system must determine how much predictive value is created by incoming information, whether the preferred model changes as the information set evolves, whether conclusions are robust to genuine historical data vintages, and whether predictive uncertainty can be calibrated without using future forecast errors.
+
+% Add 1--2 paragraphs motivating why this matters for GDP, inflation,
+% labour markets, central banks, markets, and policy analysis.
+
+\subsection{Research questions}
+\label{subsec:research_questions}
+
+The central research question is whether macroeconomic nowcasting performance can be improved by explicitly conditioning model choice and predictive uncertainty on the stage of the real-time information set.
+
+The empirical analysis addresses four linked questions:
+\begin{enumerate}[label=\textbf{RQ\arabic*:}, leftmargin=*]
+    \item Does incremental information arriving within the target period improve nowcast accuracy when the forecasting model is held fixed?
+    \item Does a pre-specified stage-dependent model policy add predictive value beyond the information-arrival effect captured in RQ1?
+    \item Do genuine real-time data vintages materially alter measured forecast performance or model rankings relative to latest-vintage data?
+    \item Do prediction intervals calibrated only from previously observable forecast errors achieve appropriate coverage while remaining sufficiently sharp?
+\end{enumerate}
+
+\subsection{Research hypotheses and empirical decision rules}
+\label{subsec:hypotheses}
+
+The four research questions are translated into the following pre-specified hypotheses. Throughout the paper, inference is stated in terms of rejection or failure to reject the corresponding null hypothesis rather than ``acceptance'' of an alternative.
+
+\paragraph{H1: Incremental real-time information has predictive value.}
+Let $e_{k,t,s}^{(m)}$ denote the forecast error for target $k$ from a \emph{fixed} model $m$ at information stage $s$. For adjacent stages $s$ and $s+1$, define the loss differential
+\begin{equation}
+    d_{k,t}^{H1}(m;s,s+1)
+    =
+    L\!\left(e_{k,t,s+1}^{(m)}\right)
+    -
+    L\!\left(e_{k,t,s}^{(m)}\right).
+    \label{eq:h1_loss_diff}
+\end{equation}
+The null and alternative are
+\begin{align}
+    H_{0}^{(1)} &: \E\!\left[d_{k,t}^{H1}\right] \geq 0,
+    \label{eq:h1_null}\\
+    H_{A}^{(1)} &: \E\!\left[d_{k,t}^{H1}\right] < 0.
+    \label{eq:h1_alt}
+\end{align}
+The model is deliberately held fixed across stages so that H1 isolates the marginal predictive value of the expanding real-time information set. The primary outcome is the change in RMSE, with MAE used as a robustness metric. Statistical evidence is based on paired loss differentials with heteroskedasticity-and-autocorrelation-consistent inference and, where useful, block-bootstrap confidence intervals.
+
+\paragraph{H2: Stage-dependent model policies outperform fixed-model forecasting.}
+Let $\mathcal{P}(k,s)=m^{*}_{k,s}$ denote the pre-specified stage-dependent policy, and let $m_k^{F}$ denote a fixed model selected for target $k$ using a policy-development sample only. Define
+\begin{equation}
+    d_{k,t}^{H2}
+    =
+    L\!\left(e_{k,t}^{\mathrm{stage}}\right)
+    -
+    L\!\left(e_{k,t}^{\mathrm{fixed}}\right).
+    \label{eq:h2_loss_diff}
+\end{equation}
+The null and alternative are
+\begin{align}
+    H_{0}^{(2)} &: \E\!\left[d_{k,t}^{H2}\right] \geq 0,
+    \label{eq:h2_null}\\
+    H_{A}^{(2)} &: \E\!\left[d_{k,t}^{H2}\right] < 0.
+    \label{eq:h2_alt}
+\end{align}
+H2 is the principal hypothesis of the paper. It tests whether allowing model choice to depend on the forecast stage provides additional predictive value after the changing information set itself has been accounted for. To avoid policy-selection bias, the stage policy and the fixed comparator are selected using observations prior to the final evaluation sample. The primary evidence is relative RMSE, supplemented by MAE and formal predictive-accuracy tests.
+
+\paragraph{H3: Real-time data vintages materially affect forecast evaluation.}
+For identical forecast origins, models, and stage definitions, let $e_{k,t}^{RT}$ denote forecast errors generated from historically available vintages and $e_{k,t}^{LV}$ denote errors from a latest-vintage counterfactual. Define
+\begin{equation}
+    d_{k,t}^{H3}
+    =
+    L\!\left(e_{k,t}^{RT}\right)
+    -
+    L\!\left(e_{k,t}^{LV}\right).
+    \label{eq:h3_loss_diff}
+\end{equation}
+The hypothesis is intentionally two-sided:
+\begin{align}
+    H_{0}^{(3)} &: \E\!\left[d_{k,t}^{H3}\right] = 0,
+    \label{eq:h3_null}\\
+    H_{A}^{(3)} &: \E\!\left[d_{k,t}^{H3}\right] \neq 0.
+    \label{eq:h3_alt}
+\end{align}
+The analysis examines not only changes in RMSE and MAE but also changes in forecast values and model rankings. The sign of the vintage effect is left to the data rather than imposed ex ante.
+
+\paragraph{H4: Prior-only empirical intervals are calibrated and sharp.}
+For an 80\% predictive interval $[L_t,U_t]$, define the violation indicator
+\begin{equation}
+    V_t = \I\!\left(y_t<L_t \;\text{or}\; y_t>U_t\right).
+    \label{eq:h4_violation}
+\end{equation}
+The calibration component of H4 is assessed against nominal coverage:
+\begin{align}
+    H_{0}^{(4a)} &: \Prob(L_t\leq y_t\leq U_t)=0.80,
+    \label{eq:h4_coverage_null}\\
+    H_{A}^{(4a)} &: \Prob(L_t\leq y_t\leq U_t)\neq0.80.
+    \label{eq:h4_coverage_alt}
+\end{align}
+In addition, interval violations should not exhibit systematic serial dependence. Because correct coverage can be achieved with uninformatively wide intervals, calibration is evaluated jointly with sharpness using average interval width and the proper interval score. The prior-only calibration method is compared with conventional and alternative empirical interval benchmarks.
+
+\begin{table}[H]
+\centering
+\caption{Pre-specified research hypotheses and primary empirical evidence}
+\label{tab:hypotheses}
+\begin{threeparttable}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.055\textwidth}p{0.285\textwidth}p{0.285\textwidth}p{0.265\textwidth}}
+\toprule
+Hyp. & Scientific question & Null hypothesis & Primary evidence \\
+\midrule
+H1 & Does incremental information improve nowcasts when the model is fixed? & Later-stage expected loss is no lower than earlier-stage expected loss. & RMSE/MAE changes; paired loss-differential test. \\
+H2 & Does stage-dependent model choice add value beyond information arrival? & Expected loss of the stage policy is no lower than that of a fixed policy. & Relative RMSE; MAE; predictive-accuracy tests. \\
+H3 & Do genuine historical vintages change forecast evaluation? & Real-time and latest-vintage expected losses are equal. & Loss differential; forecast changes; ranking changes. \\
+H4 & Are prior-only 80\% intervals calibrated and informative? & Coverage differs from the nominal rate and/or violations are not well behaved. & Coverage; independence; width; interval score. \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item Notes: H1 holds the forecasting model fixed across information stages. H2 then isolates the incremental value of stage-dependent model choice. H3 is a two-sided validity test. H4 requires assessment of both calibration and sharpness rather than coverage alone.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Empirical scope}
+\label{subsec:empirical_scope}
+
+The framework is evaluated across three macroeconomic domains: current-quarter real GDP growth; monthly headline CPI, core CPI, headline PCE, and core PCE inflation; and monthly payroll employment, unemployment, and average hourly earnings. These targets differ in frequency, persistence, revision behaviour, publication timing, and the amount of within-period information available, providing a heterogeneous test bed for the four hypotheses.
+
+\subsection{Contributions}
+\label{subsec:contributions}
+
+The paper makes four potential contributions. First, it reconstructs historically feasible information sets at each forecast origin rather than evaluating models on a fully revised rectangular dataset. Second, it formalises stage-dependent forecast policies that allow the preferred forecasting rule to vary with the information available within the target period. Third, it evaluates the same general architecture across GDP, inflation, and labour-market targets with distinct release calendars and information structures. Fourth, it evaluates predictive intervals calibrated only from forecast errors that were observable before the forecast origin.
+
+\subsection{Main findings}
+\label{subsec:main_findings}
+
+% WRITE THIS ONLY AFTER THE FINAL RESULTS TABLES ARE FROZEN.
+% Organise the paragraph in H1--H4 order:
+% H1: change in loss as information arrives with model held fixed;
+% H2: stage-policy gain vs fixed-model comparator on untouched evaluation data;
+% H3: real-time vs latest-vintage loss/ranking changes;
+% H4: 80% coverage, independence, width, and interval score.
+% Prefer 4--6 quantitative statements with magnitudes and uncertainty.
+
+\subsection{Structure of the paper}
+\label{subsec:paper_structure}
+
+The remainder of the paper is organised as follows. \Cref{sec:literature} reviews the related literature. \Cref{sec:data} defines the data and real-time information sets. \Cref{sec:methodology} presents the forecasting models and stage-dependent policy framework. \Cref{sec:experiment} describes the pseudo-real-time forecast experiment and the tests associated with H1--H4. \Cref{sec:results} reports the empirical results in the same hypothesis order, \Cref{sec:robustness} examines robustness and secondary policy comparisons, and \Cref{sec:discussion} discusses the economic interpretation and limitations. \Cref{sec:conclusion} concludes.
