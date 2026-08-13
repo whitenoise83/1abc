@@ -55,3 +55,14 @@ venv/
 
 /main.pdf
 *.spl
+
+# Stata derived data
+/data/intermediate/*.dta
+/data/derived/*.dta
+
+# Generated research outputs
+/outputs/tables/*.csv
+/outputs/figures/*
+
+# Stata temporary files
+*.stswp

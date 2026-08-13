@@ -1,29 +1,319 @@
 \section{Related Literature and Economic Background}
 \label{sec:literature}
 
-% Do not write this chronologically. Organise around the paper's problem.
+The empirical design developed in this paper draws on several mature strands of
+the macroeconomic forecasting literature. Real-time-data research establishes
+that forecasts should be constructed from historically feasible information
+sets rather than retrospectively completed datasets. The nowcasting and
+mixed-frequency literature studies how forecasts evolve as information arrives
+within the target period. Factor, shrinkage, and regularisation methods provide
+alternative ways of exploiting large predictor sets, while forecast-combination
+and model-instability research addresses uncertainty over which forecasting
+specification should be preferred. The contribution of the present paper is
+therefore not any one of these ingredients in isolation. The relevant question
+is how they can be organised in a controlled pseudo-real-time experiment that
+separates information arrival from stage-dependent model choice.
 
+
+% ============================================================
 \subsection{Real-time macroeconomic forecasting}
 \label{subsec:lit_realtime}
-% Real-time datasets, data revisions, release calendars,
-% pseudo-real-time evaluation, vintage information.
+% ============================================================
 
+A defining feature of real-time macroeconomic forecasting is that the
+information set available to the forecaster evolves asynchronously. Economic
+indicators differ in frequency, publication delay, and revision policy, so a
+dataset observed at an actual forecast origin typically has a ragged edge rather
+than the balanced rectangular structure commonly found in ex-post databases.
+The modern nowcasting literature formalises this problem by treating incoming
+macroeconomic releases as sequential additions to the information set and by
+updating the assessment of current economic conditions as new information
+arrives \citep{giannone2008nowcasting,banbura2013realtimeflow}. Fully real-time
+applications demonstrate that this data flow can be tracked at considerably
+higher frequency than the conventional monthly or quarterly forecasting
+horizon. For example, \citet{liebermann2014realtime} reconstructs historical
+information sufficiently precisely to follow U.S. GDP nowcasts through the
+daily release calendar.
+
+The release-calendar problem is distinct from the problem of data revisions.
+A historical forecaster does not observe the complete revised history currently
+stored in a statistical database. Instead, the available observations belong
+to particular historical vintages. The real-time dataset constructed by
+\citet{croushorestark2001realtime} made this distinction operational by storing
+successive snapshots of the macroeconomic information available at different
+dates. Using such data, \citet{starkcroushore2002forecasting} show that model
+specification and measured forecast accuracy can be sensitive to the vintage
+used in the exercise. Thus a pseudo-out-of-sample forecast based on today's
+revised history is not generally equivalent to the forecast that could actually
+have been produced at the historical forecast origin.
+
+The treatment of historical observations within the estimation sample also
+matters. \citet{koenig2003useabuse} distinguish alternative procedures for
+constructing forecasting equations from real-time data and show that the choice
+can materially affect out-of-sample performance. The broader literature
+therefore treats vintage construction not simply as a data-management detail
+but as part of the econometric design
+\citep{croushore2011frontiers}. Real-time evaluation does not imply that revised
+data necessarily make every forecasting conclusion misleading, nor that every
+revision is economically large. Rather, it implies that conclusions about
+predictive performance should not inadvertently depend on observations that
+were unavailable when the forecast would have been made.
+
+Recent forecasting exercises reinforce this point while simultaneously
+highlighting a separate role for the within-period information flow.
+\citet{heinrichreif2025realtime}, for example, use ALFRED vintages to evaluate
+mixed-frequency models for U.S. GDP, industrial production, CPI inflation, and
+unemployment over several intra-quarter information sets. Their framework
+therefore combines genuine historical vintages with changing within-quarter
+availability. Conceptually, however, the two dimensions remain different.
+Release stage determines \emph{which observations are observable}, whereas data
+vintage determines \emph{which historically recorded values of those
+observations are available}. This distinction underlies the later separation in
+this paper between the information-arrival experiment and the
+real-time-versus-latest-vintage counterfactual.
+
+
+% ============================================================
 \subsection{Mixed-frequency and bridge-equation nowcasting}
 \label{subsec:lit_mixed_frequency}
-% Bridge equations, ragged-edge data, MIDAS where relevant,
-% current-quarter forecasting.
+% ============================================================
 
+The mixed-frequency literature provides several ways to exploit indicators that
+are observed more frequently and earlier than the target variable. Bridge
+equations constitute one of the most established approaches. Monthly indicators
+are first completed or forecast where necessary, aggregated to the target
+frequency, and then linked to the lower-frequency variable through relatively
+parsimonious forecasting equations. Their continued practical appeal reflects
+their transparency and their ability to exploit timely indicators without
+estimating a large multivariate system. Importantly for the present paper,
+bridge systems have long been implemented in a release-calendar setting.
+\citet{drechselmaurin2011flow} construct six successive forecasts within the
+quarter, with the available indicators, individual bridge equations, and
+combination weights differing as the information set evolves.
+
+The informational value of a predictor therefore depends partly on its
+publication timing rather than only on its contemporaneous correlation with the
+target. \citet{banbura2011blackbox} show that publication lags are important for
+understanding the contribution of hard and soft indicators to GDP forecasts:
+relatively timely survey and financial information can have substantial value
+early in the quarter, before more direct activity measures are observed.
+Consequently, evaluating a predictor after imposing a balanced ex-post dataset
+can misrepresent its usefulness in the actual forecasting problem.
+
+MIDAS and mixed-frequency multivariate models provide alternative solutions to
+the same temporal mismatch. \citet{schumacher2016midasbridge} shows that MIDAS
+and bridge equations differ in their treatment of high-frequency lag weights,
+multi-step forecasting, and the way current-period high-frequency information
+enters estimation. Mixed-frequency VARs instead retain variables at their
+original sampling frequencies within a joint dynamic system.
+\citet{schorfheide2015mixedfrequency} demonstrate in a real-time U.S. application
+that information becoming available within the quarter can improve predictions
+relative to models based only on quarterly-frequency information.
+\citet{carriero2015realtime} similarly develop a Bayesian mixed-frequency model
+that can incorporate a changing set of within-quarter monthly observations while
+generating both point and density nowcasts.
+
+These studies establish that the value of both information and forecasting
+methods can vary over the release cycle. In a fully real-time U.S. GDP exercise,
+\citet{aastveit2014density} update competing model classes as individual
+releases arrive and find that relative model rankings change during the
+quarter. \citet{liebermann2014realtime} likewise finds that nowcast precision
+generally improves as the real-time data flow advances.
+More recently, \citet{heinrichreif2025realtime} report material differences in
+forecast accuracy across three intra-quarter information sets, while
+\citet{kantpickwinter2025ml} find that the relative performance of econometric
+and machine-learning approaches varies across pseudo-real-time forecasting and
+nowcasting positions. Accordingly, stage-by-stage forecast evaluation is itself
+well established and is not a novelty claim of the present analysis.
+
+Nor is it new for the forecasting specification to vary with the release
+calendar. The six-date system of \citet{drechselmaurin2011flow} allows the
+available indicators, equations, and aggregation weights to change together as
+information accumulates. Contemporary policy applications go further:
+\citet{moreira2025scmidas} develops a staggered-combination MIDAS architecture
+that dynamically alters the contribution of hard and soft information through
+the UK GDP release cycle. These precedents are particularly important for the
+positioning of the present paper. They demonstrate that release-stage-specific
+forecasting architectures already exist. The empirical issue developed below is
+therefore narrower: whether the effect of receiving additional information can
+be measured separately from the effect of changing the forecasting rule.
+
+
+% ============================================================
 \subsection{Factor models, shrinkage, and high-dimensional information}
 \label{subsec:lit_factor}
-% Dynamic factor models, latent factors, ridge/shrinkage,
-% dimensionality reduction.
+% ============================================================
 
+A second challenge in macroeconomic nowcasting is dimensionality. Real-time
+forecasters may observe dozens or hundreds of potentially relevant indicators,
+while the available time-series sample is comparatively short. Factor methods
+provide a canonical response by replacing a large predictor panel with a small
+number of estimated common components. The diffusion-index and
+principal-component framework of \citet{stockwatson2002principal} establishes
+how information from many predictors can be compressed into a low-dimensional
+forecasting representation. Dynamic-factor nowcasting subsequently became one
+of the principal tools for processing large, ragged-edge macroeconomic datasets
+\citep{giannone2008nowcasting,banbura2011blackbox}.
+
+Shrinkage provides a different route to the same high-dimensional forecasting
+problem. Rather than summarising the predictor panel before estimating the
+forecast equation, shrinkage methods retain a potentially large set of
+coefficients but restrict their effective complexity.
+\citet{demol2008shrinkage} show that heavily regularised Bayesian regressions
+using large predictor panels can generate forecasts closely related to
+principal-component forecasts over a broad range of prior specifications.
+Within multivariate systems, \citet{banbura2010largebvar} show that appropriately
+scaled shrinkage can make large Bayesian VARs viable forecasting models even
+when the number of coefficients would make unrestricted estimation impractical.
+
+These results motivate treating factor extraction and shrinkage as competing
+ways of controlling the information dimension rather than assuming that one
+dominates universally. Modern forecasting comparisons further expand the set of
+candidate procedures. \citet{kantpickwinter2025ml}, for example, compare
+regularised regressions, factor-based approaches, and nonlinear
+machine-learning methods in pseudo-real-time GDP nowcasting and find that their
+relative performance changes across evaluation periods and forecast positions.
+For the present study, the implication is not that high-dimensional or
+regularised forecasting methods are new, but that heterogeneous model classes
+provide an economically meaningful candidate set over which stage-dependent
+relative performance can be investigated.
+
+
+% ============================================================
 \subsection{Forecast combinations and model instability}
 \label{subsec:lit_combinations}
-% Equal-weight combinations, inverse-performance weighting,
-% model instability, model averaging, adaptive selection.
+% ============================================================
 
+Uncertainty over the preferred specification has long provided a rationale for
+forecast combination. As reviewed by \citet{timmermann2006combinations},
+combining forecasts can reduce the risk associated with selecting a single
+misspecified or unstable forecasting model, while simple weighting rules often
+remain competitive with more highly estimated combinations. In a large
+nowcasting comparison, \citet{kuzin2013pooling} document substantial variation
+in the performance of individual specifications and show that the success of
+model selection depends strongly on the selection rule, whereas pooling
+provides comparatively stable performance. Forecast combinations therefore
+form a natural benchmark against which any deterministic stage-dependent model
+policy should be evaluated.
+
+The underlying difficulty is broader than static model uncertainty.
+Macroeconomic predictive relationships themselves can be unstable
+\citep{stockwatson1996instability,rossi2021instability}. If relative forecast
+performance varies systematically with observable conditions, forecast choice
+may also be conditioned on those conditions. \citet{giacominiwhite2006conditional}
+develop tests of conditional predictive ability precisely for settings in which
+the relevant question is not only which forecast performs best on average, but
+whether currently observed information can help determine which forecast is
+likely to perform better at a future date. Their associated decision rule
+provides an important econometric precursor to data-dependent forecast
+selection.
+
+A more explicit form of adaptation appears in dynamic model averaging and
+selection. \citet{koopkorobilis2012dma} allow both coefficients and the identity
+of the forecasting model to change through time in an application to U.S.
+inflation. Model probabilities are updated recursively as new observations are
+received, and dynamic model selection uses the specification with the highest
+current probability. This literature makes clear that allowing the forecasting
+model to change is not itself novel. It also highlights a distinction from the
+design considered in this paper: recursive dynamic selection continually
+updates the decision rule as the evaluation period progresses, whereas the
+stage policy examined here is selected using a pre-evaluation development
+sample and is then frozen before the final policy comparison.
+
+The nowcasting literature brings model uncertainty and information arrival
+together directly. \citet{aastveit2014density} show that model rankings change
+through the U.S. GDP release cycle and that combining competing density
+nowcasts can be more robust than selecting a single specification.
+\citet{aastveit2018combined} subsequently allow combination weights to evolve
+with past nowcasting performance and report especially large gains early in the
+quarter, when uncertainty and data incompleteness are greatest. Together with
+the stage-varying architectures of \citet{drechselmaurin2011flow} and
+\citet{moreira2025scmidas}, this evidence rules out any broad claim that
+stage-dependent selection, weighting, or adaptation is absent from the prior
+literature. Instead, it motivates a more tightly controlled comparison of the
+two mechanisms that can generate apparent stage-specific forecast gains:
+additional information and a different forecasting rule.
+
+
+% ============================================================
 \subsection{Research gap}
 \label{subsec:research_gap}
-% Do NOT claim novelty until the literature review is complete.
-% State exactly what existing work does not jointly address.
+% ============================================================
+
+The preceding literature considerably narrows the defensible research gap.
+Existing work already establishes that macroeconomic information arrives
+sequentially, that publication lags affect the value of predictors, that forecast
+accuracy and model rankings can change within the quarter, that forecasting
+specifications and combination weights can vary across release stages, that
+adaptive model selection can respond recursively to changing predictive
+performance, and that genuine historical data vintages can matter for forecast
+evaluation
+\citep{aastveit2014density,drechselmaurin2011flow,
+giacominiwhite2006conditional,koopkorobilis2012dma,
+heinrichreif2025realtime}. Related work also applies common mixed-frequency
+architectures to activity, inflation, and labour-market variables
+\citep{heinrichreif2025realtime}. Accordingly, the contribution of this paper
+is neither ``stage-dependent forecasting'' in isolation nor the first use of a
+real-time multi-target forecasting system.
+
+The narrower gap concerns the \emph{experimental decomposition} of stage
+effects. To our knowledge, the closest literature reviewed above does not
+jointly impose the two controlled comparisons used here: first, a fixed-rule
+cross-stage comparison that changes the information set while holding the
+forecasting rule fixed; and second, a same-stage comparison between a
+pre-specified stage policy and a fixed-model benchmark that holds the
+information set fixed. Let
+\begin{equation}
+    \ell_{k,t,s}(m)
+    =
+    L\!\left(e_{k,t,s}^{(m)}\right)
+\end{equation}
+denote the loss for target $k$, forecast origin $t$, information stage $s$, and
+forecasting rule $m$. The information-arrival contrast is
+\begin{equation}
+    \Delta^{I}_{k,t,s}(m)
+    =
+    \ell_{k,t,s+1}(m)
+    -
+    \ell_{k,t,s}(m),
+    \label{eq:lit_information_contrast}
+\end{equation}
+where the forecasting rule is fixed and
+$\It_{t,s}\rightarrow\It_{t,s+1}$. By contrast, the stage-policy comparison is
+\begin{equation}
+    \Delta^{P}_{k,t,s}
+    =
+    \ell_{k,t,s}\!\left(m^{*}_{k,s}\right)
+    -
+    \ell_{k,t,s}\!\left(m^{F}_{k}\right),
+    \label{eq:lit_policy_contrast}
+\end{equation}
+where $\It_{t,s}$ is held fixed and only the forecasting rule changes. The
+first comparison is a direct descendant of the real-time information-flow
+literature
+\citep{giannone2008nowcasting,schorfheide2015mixedfrequency,
+liebermann2014realtime}; the second is related to conditional and adaptive
+forecast selection
+\citep{giacominiwhite2006conditional,koopkorobilis2012dma}.
+What is distinctive is their use as sequentially nested counterfactuals within
+one forecast experiment.
+
+This decomposition is strengthened by two additional design restrictions.
+First, the mapping from target and release stage to the stage-dependent rule,
+$m^{*}_{k,s}$, is selected using a policy-development sample and frozen before
+the final evaluation observations are used. The objective is therefore not to
+show retrospectively which model happened to win at each stage, but to test
+whether release stage contains sufficiently stable information about relative
+model performance to support an ex-ante forecasting policy. Second, the
+real-time-versus-latest-vintage experiment retains the same historical release
+mask and changes only the vintage values that would populate that mask.
+Consequently, the vintage comparison does not introduce observations that had
+not yet been released and therefore does not confound the revision effect with
+the information-arrival effect documented in the nowcasting literature
+\citep{croushorestark2001realtime,starkcroushore2002forecasting,
+koenig2003useabuse}. The resulting contribution is thus best characterised as a
+disciplined pseudo-real-time comparison of forecasting policies: it separately
+measures the predictive contribution of sequential information arrival, the
+incremental performance of a pre-specified stage-dependent policy, and the
+sensitivity of both conclusions to historically feasible data vintages across
+heterogeneous GDP, inflation, and labour-market targets.
