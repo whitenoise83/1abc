@@ -20,6 +20,7 @@ import pandas as pd
 
 POLICY_FREEZE_COMMIT = "420feaeb51dca3abc79e9426aacca3816fe6ad5a"
 H3_INPUT_COMMIT = "6e6c6464d930c0782dbd998b551fad2eaf42c7ec"
+ORIGINAL_H3_PREANALYSIS_COMMIT = "275797fd3109140737bf1095edc968252a18b925"
 MACROPULSE_SOURCE_COMMIT = "c4f357e463354f72eabead3dbc7f3b14ae71bec5"
 
 FROZEN_LATEST_SHA256 = "1f418a21ed774796da4e4426f3270340d296ecca571b205c98b24d81be1346af"
@@ -75,13 +76,15 @@ def require_commit(repo: Path, commit: str) -> None:
 
 
 def verify_preanalysis_boundaries(paper_root: Path, macro_root: Path) -> tuple[str, str]:
-    for commit in (POLICY_FREEZE_COMMIT, H3_INPUT_COMMIT):
+    for commit in (POLICY_FREEZE_COMMIT, H3_INPUT_COMMIT, ORIGINAL_H3_PREANALYSIS_COMMIT):
         require_commit(paper_root, commit)
     require_commit(macro_root, MACROPULSE_SOURCE_COMMIT)
 
     head = subprocess.check_output(["git", "-C", str(paper_root), "rev-parse", "HEAD"], text=True).strip()
     if subprocess.call(["git", "-C", str(paper_root), "merge-base", "--is-ancestor", H3_INPUT_COMMIT, head], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) != 0:
         raise RuntimeError("H3 input freeze is not an ancestor of the current paper HEAD.")
+    if subprocess.call(["git", "-C", str(paper_root), "merge-base", "--is-ancestor", ORIGINAL_H3_PREANALYSIS_COMMIT, head], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) != 0:
+        raise RuntimeError("Original H3 preanalysis commit is not an ancestor of the current paper HEAD.")
 
     relpath = "python/09_confirmatory_h3_vintage.py"
     script_path = paper_root / relpath
@@ -485,14 +488,49 @@ def run_h3(con, source, stage_policy, frozen_latest, M) -> pd.DataFrame:
         raise RuntimeError("H3 output is empty or contains duplicate evaluation cells.")
     if (detail.mask_equal != 1).any() or (detail.rt_hash_verified != 1).any() or (detail.final_missing_values != 0).any():
         raise RuntimeError("H3 structural gates failed.")
-    counts = detail.groupby(["domain_name","target_series","target_period"])["forecast_stage"].nunique().reset_index(name="stages")
-    for rec in counts.itertuples(index=False):
-        if int(rec.stages) != len(STAGES[str(rec.domain_name)]):
-            raise RuntimeError(f"Incomplete stage set for {rec.domain_name}/{rec.target_series}/{rec.target_period}")
+    # Primary H3 stage-cell inference retains every available paired RT/LV
+    # target-stage cell. Some end-of-sample inflation target periods are
+    # structurally unbalanced in the frozen source backtests.
     return detail.sort_values(["domain_name","target_series","target_period","stage_order"]).reset_index(drop=True)
 
 
-def summarise(detail: pd.DataFrame) -> tuple[pd.DataFrame,pd.DataFrame]:
+def build_sample_audit(detail: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    for (domain, target, target_period), g in detail.groupby(
+        ["domain_name", "target_series", "target_period"], sort=False
+    ):
+        expected = STAGES[str(domain)]
+        observed_set = set(g["forecast_stage"].astype(str))
+        unexpected = sorted(observed_set.difference(expected))
+        if unexpected:
+            raise RuntimeError(
+                f"Unexpected H3 stage(s) for {domain}/{target}/{target_period}: "
+                + ",".join(unexpected)
+            )
+        present = [stage for stage in expected if stage in observed_set]
+        missing = [stage for stage in expected if stage not in observed_set]
+        complete = int(len(missing) == 0)
+        rows.append({
+            "domain_name": domain,
+            "target_series": target,
+            "target_period": str(target_period),
+            "expected_stage_count": len(expected),
+            "observed_stage_count": len(present),
+            "present_stages": "|".join(present),
+            "missing_stages": "|".join(missing),
+            "complete_stage_set": complete,
+            "primary_stage_cell_included": 1,
+            "secondary_target_summary_included": complete,
+        })
+    audit = pd.DataFrame(rows)
+    if audit.empty:
+        raise RuntimeError("H3 sample audit is empty.")
+    return audit.sort_values(
+        ["domain_name", "target_series", "target_period"]
+    ).reset_index(drop=True)
+
+
+def summarise(detail: pd.DataFrame) -> tuple[pd.DataFrame,pd.DataFrame,pd.DataFrame]:
     stage_rows=[]
     for keys,g in detail.groupby(["domain_name","target_series","stage_order","forecast_stage","selected_model"],sort=False):
         domain,target,order,stage,model=keys
@@ -507,20 +545,41 @@ def summarise(detail: pd.DataFrame) -> tuple[pd.DataFrame,pd.DataFrame]:
             "mean_forecast_revision":float(g.forecast_revision.mean()),"mean_raw_changed_rows":float(g.raw_changed_rows.mean()),"fallback_rows_total":int(g.raw_fallback_rows.sum()),
         })
     stage_summary=pd.DataFrame(stage_rows)
-    per=detail.groupby(["domain_name","target_series","target_period"],as_index=False).agg(delta_squared_error=("delta_squared_error","mean"),delta_abs_error=("delta_abs_error","mean"),forecast_revision=("forecast_revision","mean"))
+
+    # Secondary target-level inference uses only target periods with the
+    # complete predeclared stage set, so the within-period average has fixed
+    # composition. This restriction does not alter the primary stage-cell
+    # samples above.
+    sample_audit = build_sample_audit(detail)
+    complete_keys = sample_audit.loc[
+        sample_audit["secondary_target_summary_included"] == 1,
+        ["domain_name","target_series","target_period"],
+    ]
+    complete_detail = detail.merge(
+        complete_keys,
+        on=["domain_name","target_series","target_period"],
+        how="inner",
+        validate="many_to_one",
+    )
+    if complete_detail.empty:
+        raise RuntimeError("No complete-stage periods available for target summary.")
+
+    per=complete_detail.groupby(["domain_name","target_series","target_period"],as_index=False).agg(delta_squared_error=("delta_squared_error","mean"),delta_abs_error=("delta_abs_error","mean"),forecast_revision=("forecast_revision","mean"))
     target_rows=[]
     for (domain,target),g in per.groupby(["domain_name","target_series"],sort=False):
         g=g.copy(); g["_p"]=g.target_period.map(lambda x:period_value(domain,str(x))); g=g.sort_values("_p")
         sq,ae=paired_summary(g.delta_squared_error),paired_summary(g.delta_abs_error)
+        observed_periods = int(((sample_audit.domain_name == domain) & (sample_audit.target_series == target)).sum())
         target_rows.append({
             "domain_name":domain,"target_series":target,"periods":int(sq["n"]),
+            "observed_periods":observed_periods,"incomplete_periods_excluded":observed_periods-int(sq["n"]),
             "mean_stageavg_delta_sq":sq["mean"],"median_stageavg_delta_sq":sq["median"],"stageavg_sq_lv_win_share":sq["win_share"],
             "hac_bw_sq":int(sq["hac_bw"]),"hac_se_sq":sq["hac_se"],"hac_z_sq":sq["hac_z"],"hac_p_sq":sq["hac_p"],
             "mean_stageavg_delta_abs":ae["mean"],"median_stageavg_delta_abs":ae["median"],"stageavg_abs_lv_win_share":ae["win_share"],
             "hac_bw_abs":int(ae["hac_bw"]),"hac_se_abs":ae["hac_se"],"hac_z_abs":ae["hac_z"],"hac_p_abs":ae["hac_p"],
             "mean_forecast_revision":float(g.forecast_revision.mean()),
         })
-    return stage_summary,pd.DataFrame(target_rows)
+    return stage_summary,pd.DataFrame(target_rows),sample_audit
 
 
 def package_versions() -> dict:
@@ -577,14 +636,14 @@ def main() -> int:
         finally:
             con.close(); os.chdir(oldcwd); sys.path.pop(0)
 
-    stage_summary,target_summary=summarise(detail)
+    stage_summary,target_summary,sample_audit=summarise(detail)
     out=paper_root/"outputs/confirmatory"; out.mkdir(parents=True,exist_ok=True)
-    detail_path=out/"h3_vintage_detail.csv"; summary_path=out/"h3_vintage_summary.csv"; target_path=out/"h3_vintage_target_summary.csv"; manifest_path=out/"confirmatory_h3_manifest.json"
-    write_csv(detail,detail_path); write_csv(stage_summary,summary_path); write_csv(target_summary,target_path)
+    detail_path=out/"h3_vintage_detail.csv"; summary_path=out/"h3_vintage_summary.csv"; target_path=out/"h3_vintage_target_summary.csv"; sample_path=out/"h3_vintage_sample_audit.csv"; manifest_path=out/"confirmatory_h3_manifest.json"
+    write_csv(detail,detail_path); write_csv(stage_summary,summary_path); write_csv(target_summary,target_path); write_csv(sample_audit,sample_path)
     manifest={
         "hypothesis":"H3","estimand":"loss_latest_vintage_minus_loss_real_time","negative_value_interpretation":"latest-vintage counterfactual improves accuracy",
         "primary_loss":"squared_error","secondary_loss":"absolute_error","policy_freeze_commit":POLICY_FREEZE_COMMIT,"h3_input_freeze_commit":H3_INPUT_COMMIT,
-        "preanalysis_code_commit":analysis_commit,"analysis_script_sha256":script_sha,"macropulse_source_commit":MACROPULSE_SOURCE_COMMIT,
+        "original_h3_preanalysis_commit":ORIGINAL_H3_PREANALYSIS_COMMIT,"preanalysis_code_commit":analysis_commit,"analysis_script_sha256":script_sha,"macropulse_source_commit":MACROPULSE_SOURCE_COMMIT,
         "frozen_latest_sha256":FROZEN_LATEST_SHA256,"frozen_latest_manifest_sha256":FROZEN_MANIFEST_SHA256,"stage_policy_sha256":FROZEN_STAGE_POLICY_SHA256,
         "source_backtest_ids":{"GDP":GDP_BACKTEST,"Inflation":INFLATION_BACKTEST,"Labour":LABOUR_BACKTEST},
         "evaluation_start":{"GDP":"2023Q2","Inflation":"2023-02","Labour":"2023-02"},
@@ -592,17 +651,20 @@ def main() -> int:
         "outcome_rule":"same stored initial-release outcome in both arms",
         "gdp_rolling_rule":"Each arm uses its own prior same-stage Bridge/DFM forecast errors; window=12, min_history=8, weights in [0.10,0.70]; current errors enter only subsequent weights.",
         "inference":"Newey-West HAC SE, Bartlett weights, bandwidth floor(4*(n/100)^(2/9)).",
-        "target_summary_rule":"Secondary target summary averages stage loss differentials within target period before HAC across periods.",
+        "primary_sample_rule":"All available paired RT/LV target-stage cells are retained stage by stage; stage-cell n may differ at the end of sample.","target_summary_rule":"Secondary target summary uses only target periods with the complete predeclared stage set, averages stage loss differentials within period, then applies HAC across periods.","structural_hotfix_reason":"The original preanalysis code incorrectly required every target period to contain every stage. A structure-only diagnostic identified end-of-sample inflation periods with missing source stages; no H3 output files were produced by the failed run.",
         "rt_reproduction_tolerance":RT_REPRO_TOL,"package_versions":package_versions(),
-        "row_counts":{"detail":int(len(detail)),"stage_summary":int(len(stage_summary)),"target_summary":int(len(target_summary)),"fallback_rows_total":int(detail.raw_fallback_rows.sum()),"origins_with_changed_values":int((detail.raw_changed_rows>0).sum())},
-        "output_hashes":{detail_path.name:sha256_file(detail_path),summary_path.name:sha256_file(summary_path),target_path.name:sha256_file(target_path)},
+        "row_counts":{"detail":int(len(detail)),"stage_summary":int(len(stage_summary)),"target_summary":int(len(target_summary)),"sample_audit":int(len(sample_audit)),"incomplete_target_periods":int((sample_audit.complete_stage_set==0).sum()),"fallback_rows_total":int(detail.raw_fallback_rows.sum()),"origins_with_changed_values":int((detail.raw_changed_rows>0).sum())},
+        "output_hashes":{detail_path.name:sha256_file(detail_path),summary_path.name:sha256_file(summary_path),target_path.name:sha256_file(target_path),sample_path.name:sha256_file(sample_path)},
     }
     manifest_path.write_text(json.dumps(manifest,indent=2,sort_keys=True)+"\n",encoding="utf-8",newline="\n")
 
     print(); print("="*96); print("H3 STAGE-CELL RESULTS"); print("Negative loss differential means latest-vintage data improve accuracy."); print("="*96)
     print(stage_summary[["domain_name","target_series","forecast_stage","selected_model","n","mean_delta_squared_error","hac_se_sq","hac_p_sq","mean_delta_abs_error"]].to_string(index=False))
-    print(); print("="*96); print("H3 TARGET-LEVEL STAGE-AVERAGED RESULTS"); print("="*96)
-    print(target_summary[["domain_name","target_series","periods","mean_stageavg_delta_sq","hac_se_sq","hac_p_sq","mean_stageavg_delta_abs"]].to_string(index=False))
+    incomplete=sample_audit.loc[sample_audit.complete_stage_set==0]
+    print(); print("="*96); print("H3 SAMPLE AUDIT — INCOMPLETE TARGET PERIODS"); print("="*96)
+    print(incomplete.to_string(index=False) if len(incomplete) else "NONE")
+    print(); print("="*96); print("H3 TARGET-LEVEL STAGE-AVERAGED RESULTS — COMPLETE-STAGE PERIODS ONLY"); print("="*96)
+    print(target_summary[["domain_name","target_series","periods","observed_periods","incomplete_periods_excluded","mean_stageavg_delta_sq","hac_se_sq","hac_p_sq","mean_stageavg_delta_abs"]].to_string(index=False))
     print(); print("="*96); print("H3 OUTPUT HASHES"); print("="*96)
     for n,h in manifest["output_hashes"].items(): print(f"{n}: {h}")
     print(f"Manifest: {manifest_path}")

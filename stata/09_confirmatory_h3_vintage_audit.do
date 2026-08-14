@@ -73,7 +73,62 @@ tempfile h3_detail
 save `h3_detail'
 
 /***********************************************************************
-* 2. FROZEN STAGE-POLICY IDENTITY
+* 2. SAMPLE-COMPOSITION AUDIT
+***********************************************************************/
+
+use `h3_detail', clear
+
+gen expected_stage_count = .
+replace expected_stage_count = 5 if domain_name == "GDP"
+replace expected_stage_count = 4 if domain_name == "Inflation"
+replace expected_stage_count = 5 if domain_name == "Labour"
+assert !missing(expected_stage_count)
+
+bysort domain_name target_series target_period: ///
+    gen observed_stage_count = _N
+
+gen complete_stage_set = ///
+    observed_stage_count == expected_stage_count
+gen primary_stage_cell_included = 1
+gen secondary_target_summary_included = complete_stage_set
+
+keep domain_name target_series target_period ///
+    expected_stage_count observed_stage_count complete_stage_set ///
+    primary_stage_cell_included secondary_target_summary_included
+duplicates drop
+
+rename expected_stage_count expected_stage_count_using
+rename observed_stage_count observed_stage_count_using
+rename complete_stage_set complete_stage_set_using
+rename primary_stage_cell_included primary_stage_cell_included_using
+rename secondary_target_summary_included ///
+    secondary_target_summary_included_using
+
+tempfile sample_reproduced
+save `sample_reproduced'
+
+import delimited ///
+    "outputs/confirmatory/h3_vintage_sample_audit.csv", ///
+    clear varnames(1) encoding("UTF-8")
+
+isid domain_name target_series target_period
+
+merge 1:1 domain_name target_series target_period ///
+    using `sample_reproduced'
+
+assert _merge == 3
+drop _merge
+
+assert expected_stage_count == expected_stage_count_using
+assert observed_stage_count == observed_stage_count_using
+assert complete_stage_set == complete_stage_set_using
+assert primary_stage_cell_included == ///
+    primary_stage_cell_included_using
+assert secondary_target_summary_included == ///
+    secondary_target_summary_included_using
+
+/***********************************************************************
+* 3. FROZEN STAGE-POLICY IDENTITY
 ***********************************************************************/
 
 import delimited ///
@@ -96,7 +151,7 @@ assert selected_model == frozen_model
 drop frozen_model
 
 /***********************************************************************
-* 3. STAGE-CELL SUMMARY REPRODUCTION
+* 4. STAGE-CELL SUMMARY REPRODUCTION
 ***********************************************************************/
 
 preserve
@@ -107,6 +162,12 @@ collapse ///
     (median) median_delta_squared_error=delta_squared_error ///
              median_delta_abs_error=delta_abs_error, ///
     by(domain_name target_series stage_order forecast_stage selected_model)
+
+rename n n_using
+rename mean_delta_squared_error mean_delta_squared_error_using
+rename mean_delta_abs_error mean_delta_abs_error_using
+rename median_delta_squared_error median_delta_squared_error_using
+rename median_delta_abs_error median_delta_abs_error_using
 
 tempfile stage_reproduced
 save `stage_reproduced'
@@ -138,10 +199,21 @@ assert abs(median_delta_abs_error - median_delta_abs_error_using) <= ///
     abs(median_delta_abs_error_using))
 
 /***********************************************************************
-* 4. TARGET-LEVEL STAGE-AVERAGED SUMMARY REPRODUCTION
+* 5. TARGET-LEVEL STAGE-AVERAGED SUMMARY REPRODUCTION
 ***********************************************************************/
 
 use `h3_detail', clear
+
+gen expected_stage_count = .
+replace expected_stage_count = 5 if domain_name == "GDP"
+replace expected_stage_count = 4 if domain_name == "Inflation"
+replace expected_stage_count = 5 if domain_name == "Labour"
+
+bysort domain_name target_series target_period: ///
+    gen observed_stage_count = _N
+
+keep if observed_stage_count == expected_stage_count
+
 collapse ///
     (mean) delta_squared_error delta_abs_error, ///
     by(domain_name target_series target_period)
@@ -153,6 +225,12 @@ collapse ///
     (median) median_stageavg_delta_sq=delta_squared_error ///
              median_stageavg_delta_abs=delta_abs_error, ///
     by(domain_name target_series)
+
+rename periods periods_using
+rename mean_stageavg_delta_sq mean_stageavg_delta_sq_using
+rename mean_stageavg_delta_abs mean_stageavg_delta_abs_using
+rename median_stageavg_delta_sq median_stageavg_delta_sq_using
+rename median_stageavg_delta_abs median_stageavg_delta_abs_using
 
 tempfile target_reproduced
 save `target_reproduced'
@@ -182,7 +260,7 @@ assert abs(median_stageavg_delta_abs - median_stageavg_delta_abs_using) <= ///
     abs(median_stageavg_delta_abs_using))
 
 /***********************************************************************
-* 5. FINAL GATE
+* 6. FINAL GATE
 ***********************************************************************/
 
 display as text ""
@@ -196,6 +274,8 @@ display as text "  - no missing values after frozen-latest fallback"
 display as text "  - frozen development-selected stage-policy identity"
 display as text "  - H3 loss-differential algebra"
 display as text "  - GDP rolling RT recursive-weight reproduction"
+display as text "  - unbalanced primary stage-cell sample is preserved"
+display as text "  - complete-stage rule for secondary target summaries"
 display as text "  - stage-cell means and medians"
 display as text "  - target-level stage-averaged means and medians"
 display as text "============================================================"
