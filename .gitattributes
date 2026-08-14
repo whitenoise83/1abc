@@ -1,0 +1,4 @@
+freeze/*.csv text eol=lf
+freeze/*.json text eol=lf
+python/07_policy_freeze.py text eol=lf
+outputs/tables/research_*_development_metrics.csv text eol=lf

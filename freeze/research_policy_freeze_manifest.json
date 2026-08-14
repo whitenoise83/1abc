@@ -1,0 +1,112 @@
+{
+  "candidate_models": {
+    "GDP": [
+      "AR(1)",
+      "Bridge Ridge",
+      "Bridge\u2013DFM Ensemble",
+      "Dynamic Factor Model",
+      "Rolling Bridge\u2013DFM Ensemble"
+    ],
+    "Inflation": [
+      "Inflation 12-Month Mean",
+      "Inflation AR(1)",
+      "Inflation Bridge Ridge",
+      "Inflation Ridge-AR Ensemble"
+    ],
+    "Labour": [
+      "Labour 12-Month Mean",
+      "Labour AR(1)",
+      "Labour Bridge Ridge",
+      "Labour Equal-Weight Ensemble",
+      "Labour Factor Ridge"
+    ]
+  },
+  "created_at_utc": "2026-08-14T12:08:29.917031+00:00",
+  "development_input_rows": 8586,
+  "development_input_sha256": "1c5d61ac743d7537fdb66668fa5a9ee9f364ed2ceea08e5e4be34fbd71c2e460",
+  "diagnostic_development_files": {
+    "research_fixed_candidate_development_metrics.csv": "800e4f07b7b8c387a34bc381ff909e6bad095355879fa037260ee63eb98c9134",
+    "research_stage_candidate_development_metrics.csv": "63521c692fbda34af205109bdaae2ddce30f9ea6c3c2739089f5d169c1533587"
+  },
+  "evaluation_losses_read": false,
+  "evaluation_rows_read": 0,
+  "excluded_policy_rows": {
+    "GDP": [
+      "Stable Stage Policy",
+      "Robust Stage-Adaptive Policy"
+    ]
+  },
+  "freeze_files": {
+    "research_fixed_comparator_freeze.csv": "b8a8b913fb2840989475d5a61af57040fb125b824e77a336751225b0c158db27",
+    "research_policy_common_sample_audit.csv": "dd32239e2be85aa70d93dd6d4f240a43dcb9e6bf3c38ca1a1c0458b39b674e14",
+    "research_stage_policy_freeze.csv": "e243be0c4a02ea73e95da274436d280dcc12b7b137bef56b8cb2074e96a75964"
+  },
+  "freeze_type": "MacroPulse research policy freeze",
+  "loss_selection_rule": {
+    "fixed_comparator": "minimum pooled common-sample MSE across all stages, then MAE, then alphabetical model name",
+    "stage_policy": "minimum common-sample MSE, then MAE, then alphabetical model name"
+  },
+  "script_sha256": "7add963fa4f1ab03c10934e216d0b42933de01d0ec8e27e04a25f0ad93831271",
+  "selection_scope": "development_sample_only",
+  "source_backtest_ids": {
+    "GDP": "382b4c6b-ef76-4ca1-b52f-d5e3e1ac66b1",
+    "Inflation": "fdd2f573-a425-4abc-8056-f9843955bac2",
+    "Labour": "834e0655-ba81-4b96-b42c-e1cdda73b847"
+  },
+  "splits": {
+    "GDP": {
+      "development_end": "2022Q4",
+      "embargo": "2023Q1",
+      "evaluation_start": "2023Q2"
+    },
+    "Inflation": {
+      "development_end": "2022-12",
+      "embargo": "2023-01",
+      "evaluation_start": "2023-02"
+    },
+    "Labour": {
+      "development_end": "2022-12",
+      "embargo": "2023-01",
+      "evaluation_start": "2023-02"
+    }
+  },
+  "stages": {
+    "GDP": [
+      "early_quarter",
+      "after_month_1",
+      "after_month_2",
+      "quarter_end",
+      "pre_advance_release"
+    ],
+    "Inflation": [
+      "month_open",
+      "mid_month",
+      "month_end",
+      "pre_release"
+    ],
+    "Labour": [
+      "month_open",
+      "after_week_1",
+      "after_week_2",
+      "month_end",
+      "pre_employment_report"
+    ]
+  },
+  "targets": {
+    "GDP": [
+      "GDPC1"
+    ],
+    "Inflation": [
+      "CPIAUCSL",
+      "CPILFESL",
+      "PCEPI",
+      "PCEPILFE"
+    ],
+    "Labour": [
+      "CES0500000003",
+      "PAYEMS",
+      "UNRATE"
+    ]
+  },
+  "tie_tolerance": 1e-12
+}

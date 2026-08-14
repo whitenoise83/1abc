@@ -1,0 +1,9 @@
+domain_name,target_series,selected_model,development_n,development_mse,development_rmse,development_mae,stage_count,selection_rule,tie_tolerance
+GDP,GDPC1,Dynamic Factor Model,160,22.84297426059123,4.779432420339389,2.4745044674745293,5,pooled_min_MSE_then_MAE_then_model_name,9.9999999999999998e-13
+Inflation,CPIAUCSL,Inflation Bridge Ridge,139,20.268646894590354,4.502071400432289,3.409685323420836,4,pooled_min_MSE_then_MAE_then_model_name,9.9999999999999998e-13
+Inflation,CPILFESL,Inflation Ridge-AR Ensemble,139,9.373295658824679,3.0615838480800552,2.3259865814525602,4,pooled_min_MSE_then_MAE_then_model_name,9.9999999999999998e-13
+Inflation,PCEPI,Inflation Bridge Ridge,138,8.5997560285897432,2.9325340626478225,2.2487131139965841,4,pooled_min_MSE_then_MAE_then_model_name,9.9999999999999998e-13
+Inflation,PCEPILFE,Inflation Bridge Ridge,138,5.0406399816127685,2.2451369627737119,1.7664021222125315,4,pooled_min_MSE_then_MAE_then_model_name,9.9999999999999998e-13
+Labour,CES0500000003,Labour Bridge Ridge,338,39.122548885088328,6.2548020660200212,2.8691944866745231,5,pooled_min_MSE_then_MAE_then_model_name,9.9999999999999998e-13
+Labour,PAYEMS,Labour Bridge Ridge,388,6142939.0346631799,2478.4953166514515,727.43165679396168,5,pooled_min_MSE_then_MAE_then_model_name,9.9999999999999998e-13
+Labour,UNRATE,Labour Equal-Weight Ensemble,388,2.6057668285778814,1.6142387768164539,0.46923575639049248,5,pooled_min_MSE_then_MAE_then_model_name,9.9999999999999998e-13
