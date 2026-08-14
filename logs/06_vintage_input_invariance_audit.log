@@ -1,0 +1,498 @@
+
+  ___  ____  ____  ____  ____ ®
+ /__    /   ____/   /   ____/      StataNow 19.5
+___/   /   /___/   /   /___/       BE—Basic Edition
+
+ Statistics and Data Science       Copyright 1985-2025 StataCorp LLC
+                                   StataCorp
+                                   4905 Lakeway Drive
+                                   College Station, Texas 77845 USA
+                                   800-782-8272        https://www.stata.com
+                                   979-696-4600        service@stata.com
+
+Stata license: Single-user , expiring  7 May 2027
+Serial number: 301909003295
+  Licensed to: Cenk Yildiran
+               Independent Researcher
+
+Notes:
+      1. Stata is running in batch mode.
+      2. Unicode is supported; see help unicode_advice.
+
+. do stata\06_vintage_input_invariance_audit.do 
+
+. /***********************************************************************
+> * MacroPulse Scientific Paper
+> * Vintage Input Invariance Audit
+> *
+> * File:
+> *   stata/06_vintage_input_invariance_audit.do
+> *
+> * Purpose:
+> *   Independently verify the Python RT/LV vintage construction and
+> *   production-input invariance results.
+> ***********************************************************************/
+. 
+. version 19
+
+. clear all
+
+. set more off
+
+. 
+. display as text "============================================================
+> "
+============================================================
+
+. display as text "06_vintage_input_invariance_audit.do"
+06_vintage_input_invariance_audit.do
+
+. display as text "RT/LV vintage mask and model-input invariance audit"
+RT/LV vintage mask and model-input invariance audit
+
+. display as text "============================================================
+> "
+============================================================
+
+. 
+. 
+. /***********************************************************************
+> * 1. RAW MASK AUDIT
+> ***********************************************************************/
+. 
+. display as text ""
+
+
+. display as text "=== RAW MASK AUDIT ==="
+=== RAW MASK AUDIT ===
+
+. 
+. import delimited ///
+>     "outputs/tables/vintage_raw_mask_audit.csv", ///
+>     clear varnames(1)
+(encoding automatically selected: ISO-8859-1)
+(6 vars, 3 obs)
+
+. 
+. assert _N == 3
+
+. isid domain
+
+. 
+. assert final_missing_values == 0
+
+. assert rows == comparable_rows + fallback_rows
+
+. 
+. assert fallback_rows == 0 ///
+>     if domain == "GDP"
+
+. 
+. assert fallback_rows == 12 ///
+>     if domain == "Inflation"
+
+. 
+. assert fallback_rows == 0 ///
+>     if domain == "Labour"
+
+. 
+. assert fallback_unique_keys == 0 ///
+>     if domain == "GDP"
+
+. 
+. assert fallback_unique_keys == 5 ///
+>     if domain == "Inflation"
+
+. 
+. assert fallback_unique_keys == 0 ///
+>     if domain == "Labour"
+
+. 
+. list, noobs abbreviate(24)
+
+  +-------------------------------------------------------+
+  |    domain |    rows | comparable_rows | fallback_rows |
+  |       GDP |  782369 |          782369 |             0 |
+  |-------------------------------------------------------|
+  |   fallback_unique_keys    |   final_missing_values    |
+  |                      0    |                      0    |
+  +-------------------------------------------------------+
+
+  +-------------------------------------------------------+
+  |    domain |    rows | comparable_rows | fallback_rows |
+  | Inflation | 7154198 |         7154186 |            12 |
+  |-------------------------------------------------------|
+  |   fallback_unique_keys    |   final_missing_values    |
+  |                      5    |                      0    |
+  +-------------------------------------------------------+
+
+  +-------------------------------------------------------+
+  |    domain |    rows | comparable_rows | fallback_rows |
+  |    Labour | 4468787 |         4468787 |             0 |
+  |-------------------------------------------------------|
+  |   fallback_unique_keys    |   final_missing_values    |
+  |                      0    |                      0    |
+  +-------------------------------------------------------+
+
+. 
+. 
+. /***********************************************************************
+> * 2. FALLBACK MANIFEST
+> ***********************************************************************/
+. 
+. display as text ""
+
+
+. display as text "=== FALLBACK MANIFEST ==="
+=== FALLBACK MANIFEST ===
+
+. 
+. import delimited ///
+>     "outputs/tables/vintage_fallback_manifest.csv", ///
+>     clear varnames(1) stringcols(_all)
+(encoding automatically selected: ISO-8859-1)
+(6 vars, 5 obs)
+
+. 
+. assert _N == 5
+
+. assert domain == "Inflation"
+
+. assert series_id == "DCOILWTICO"
+
+. 
+. isid domain series_id observation_date
+
+. 
+. assert inlist( ///
+>     observation_date, ///
+>     "2019-11-11", ///
+>     "2019-12-25", ///
+>     "2020-01-01", ///
+>     "2022-12-26", ///
+>     "2024-11-11" ///
+> )
+
+. 
+. destring snapshot_rows min_rt_value max_rt_value, replace
+snapshot_rows: all characters numeric; replaced as byte
+min_rt_value: all characters numeric; replaced as double
+max_rt_value: all characters numeric; replaced as double
+
+. 
+. assert min_rt_value == max_rt_value
+
+. 
+. summarize snapshot_rows
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+snapshot_r~s |          5         2.4    .8944272          1          3
+
+. assert r(sum) == 12
+
+. 
+. list, noobs abbreviate(24)
+
+  +--------------------------------------------------------------------------+
+  |    domain |  series_id | observation_date | snapshot_rows | min_rt_value |
+  | Inflation | DCOILWTICO |       2019-11-11 |             3 |        56.61 |
+  |--------------------------------------------------------------------------|
+  |                               max_rt_value                               |
+  |                                      56.61                               |
+  +--------------------------------------------------------------------------+
+
+  +--------------------------------------------------------------------------+
+  |    domain |  series_id | observation_date | snapshot_rows | min_rt_value |
+  | Inflation | DCOILWTICO |       2019-12-25 |             3 |        61.17 |
+  |--------------------------------------------------------------------------|
+  |                               max_rt_value                               |
+  |                                      61.17                               |
+  +--------------------------------------------------------------------------+
+
+  +--------------------------------------------------------------------------+
+  |    domain |  series_id | observation_date | snapshot_rows | min_rt_value |
+  | Inflation | DCOILWTICO |       2020-01-01 |             3 |        61.14 |
+  |--------------------------------------------------------------------------|
+  |                               max_rt_value                               |
+  |                                      61.14                               |
+  +--------------------------------------------------------------------------+
+
+  +--------------------------------------------------------------------------+
+  |    domain |  series_id | observation_date | snapshot_rows | min_rt_value |
+  | Inflation | DCOILWTICO |       2022-12-26 |             2 |        79.57 |
+  |--------------------------------------------------------------------------|
+  |                               max_rt_value                               |
+  |                                      79.57                               |
+  +--------------------------------------------------------------------------+
+
+  +--------------------------------------------------------------------------+
+  |    domain |  series_id | observation_date | snapshot_rows | min_rt_value |
+  | Inflation | DCOILWTICO |       2024-11-11 |             1 |        70.69 |
+  |--------------------------------------------------------------------------|
+  |                               max_rt_value                               |
+  |                                      70.69                               |
+  +--------------------------------------------------------------------------+
+
+. 
+. 
+. /***********************************************************************
+> * 3. MODEL-INPUT INVARIANCE
+> ***********************************************************************/
+. 
+. display as text ""
+
+
+. display as text "=== MODEL-INPUT INVARIANCE ==="
+=== MODEL-INPUT INVARIANCE ===
+
+. 
+. import delimited ///
+>     "outputs/tables/vintage_input_invariance_summary.csv", ///
+>     clear varnames(1)
+(encoding automatically selected: ISO-8859-1)
+(11 vars, 4 obs)
+
+. 
+. assert _N == 4
+
+. isid domain builder
+
+. 
+. * Expected production-origin counts.
+. assert origins == 225 ///
+>     if domain == "GDP" & builder == "Bridge"
+
+. 
+. assert origins == 225 ///
+>     if domain == "GDP" & builder == "DFM"
+
+. 
+. assert origins == 1202 ///
+>     if domain == "Inflation"
+
+. 
+. assert origins == 1739 ///
+>     if domain == "Labour"
+
+. 
+. * Both vintage arms must build successfully at every RT-valid origin.
+. assert rt_success == origins
+
+. assert lv_success == origins
+
+. assert paired_success == origins
+
+. 
+. * Econometric structure must be unchanged.
+. assert structure_pass == origins
+
+. assert imputation_pass == origins
+
+. assert latest_period_pass == origins
+
+. 
+. * H3 requires actual numerical vintage variation.
+. assert numeric_change_origins == origins
+
+. 
+. * Raw fallback occurs only in inflation.
+. assert raw_fallback_rows == 0 ///
+>     if domain == "GDP"
+
+. 
+. assert raw_fallback_rows == 42 ///
+>     if domain == "Inflation"
+
+. 
+. assert raw_fallback_rows == 0 ///
+>     if domain == "Labour"
+
+. 
+. list, noobs abbreviate(28)
+
+  +------------------------------------------------------------------------+
+  |    domain  |          builder  | origins  | rt_success  |  lv_success  |
+  |       GDP  |           Bridge  |     225  |        225  |         225  |
+  |------------------------------------------------------------------------|
+  | paired_success | structure_pass | imputation_pass | latest_period_pass |
+  |            225 |            225 |             225 |                225 |
+  |------------------------------------------------------------------------|
+  |        numeric_change_origins        |        raw_fallback_rows        |
+  |                           225        |                        0        |
+  +------------------------------------------------------------------------+
+
+  +------------------------------------------------------------------------+
+  |    domain  |          builder  | origins  | rt_success  |  lv_success  |
+  |       GDP  |              DFM  |     225  |        225  |         225  |
+  |------------------------------------------------------------------------|
+  | paired_success | structure_pass | imputation_pass | latest_period_pass |
+  |            225 |            225 |             225 |                225 |
+  |------------------------------------------------------------------------|
+  |        numeric_change_origins        |        raw_fallback_rows        |
+  |                           225        |                        0        |
+  +------------------------------------------------------------------------+
+
+  +------------------------------------------------------------------------+
+  |    domain  |          builder  | origins  | rt_success  |  lv_success  |
+  | Inflation  | InflationDataset  |    1202  |       1202  |        1202  |
+  |------------------------------------------------------------------------|
+  | paired_success | structure_pass | imputation_pass | latest_period_pass |
+  |           1202 |           1202 |            1202 |               1202 |
+  |------------------------------------------------------------------------|
+  |        numeric_change_origins        |        raw_fallback_rows        |
+  |                          1202        |                       42        |
+  +------------------------------------------------------------------------+
+
+  +------------------------------------------------------------------------+
+  |    domain  |          builder  | origins  | rt_success  |  lv_success  |
+  |    Labour  |    LabourDataset  |    1739  |       1739  |        1739  |
+  |------------------------------------------------------------------------|
+  | paired_success | structure_pass | imputation_pass | latest_period_pass |
+  |           1739 |           1739 |            1739 |               1739 |
+  |------------------------------------------------------------------------|
+  |        numeric_change_origins        |        raw_fallback_rows        |
+  |                          1739        |                        0        |
+  +------------------------------------------------------------------------+
+
+. 
+. 
+. /***********************************************************************
+> * 4. ORIGIN-LEVEL HARD GATES
+> ***********************************************************************/
+. 
+. display as text ""
+
+
+. display as text "=== ORIGIN-LEVEL HARD GATES ==="
+=== ORIGIN-LEVEL HARD GATES ===
+
+. 
+. import delimited ///
+>     "outputs/tables/vintage_input_invariance_audit.csv", ///
+>     clear varnames(1) stringcols(_all)
+(encoding automatically selected: ISO-8859-1)
+(24 vars, 3,391 obs)
+
+. 
+. destring ///
+>     structure_equal ///
+>     imputation_equal ///
+>     latest_period_equal ///
+>     paired_success ///
+>     numeric_change_detected ///
+>     raw_fallback_rows ///
+>     raw_changed_rows, ///
+>     replace
+structure_equal: all characters numeric; replaced as byte
+imputation_equal: all characters numeric; replaced as byte
+latest_period_equal: all characters numeric; replaced as byte
+paired_success: all characters numeric; replaced as byte
+numeric_change_detected: all characters numeric; replaced as byte
+raw_fallback_rows: all characters numeric; replaced as byte
+raw_changed_rows: all characters numeric; replaced as int
+
+. 
+. count
+  3,391
+
+. display as result "Total model-input audits: " r(N)
+Total model-input audits: 3391
+
+. 
+. * 225 Bridge + 225 DFM + 1202 inflation + 1739 labour.
+. assert _N == 3391
+
+. 
+. assert rt_status == "ok"
+
+. assert lv_status == "ok"
+
+. 
+. assert paired_success == 1
+
+. assert structure_equal == 1
+
+. assert imputation_equal == 1
+
+. assert latest_period_equal == 1
+
+. 
+. * Every historical origin must contain some RT/LV numerical variation.
+. assert numeric_change_detected == 1
+
+. 
+. count if raw_fallback_rows > 0
+  32
+
+. display as result ///
+>     "Target-specific origins using WTI fallback: " r(N)
+Target-specific origins using WTI fallback: 32
+
+. 
+. count if domain != "Inflation" & raw_fallback_rows > 0
+  0
+
+. assert r(N) == 0
+
+. 
+. 
+. /***********************************************************************
+> * 5. SCIENTIFIC DESIGN SUMMARY
+> ***********************************************************************/
+. 
+. display as text ""
+
+
+. display as text "============================================================
+> "
+============================================================
+
+. display as result "VINTAGE INPUT INVARIANCE AUDIT COMPLETED SUCCESSFULLY"
+VINTAGE INPUT INVARIANCE AUDIT COMPLETED SUCCESSFULLY
+
+. display as text ""
+
+
+. display as text "H3 frozen design:"
+H3 frozen design:
+
+. display as text "  1. RT and LV use identical historical availability masks."
+  1. RT and LV use identical historical availability masks.
+
+. display as text "  2. Latest values replace only historically admissible cell
+> s."
+  2. Latest values replace only historically admissible cells.
+
+. display as text "  3. Five unavailable latest WTI keys retain their RT values
+> ."
+  3. Five unavailable latest WTI keys retain their RT values.
+
+. display as text "  4. Production dataset structure is invariant across vintag
+> es."
+  4. Production dataset structure is invariant across vintages.
+
+. display as text "  5. Every evaluated origin contains numerical vintage varia
+> tion."
+  5. Every evaluated origin contains numerical vintage variation.
+
+. display as text "  6. Evaluation outcomes remain initial-release realizations
+> ."
+  6. Evaluation outcomes remain initial-release realizations.
+
+. display as text ""
+
+
+. display as text "Frozen latest-vintage extract SHA256:"
+Frozen latest-vintage extract SHA256:
+
+. display as text "1f418a21ed774796da4e4426f3270340d296ecca571b205c98b24d81be13
+> 46af"
+1f418a21ed774796da4e4426f3270340d296ecca571b205c98b24d81be1346af
+
+. display as text "============================================================
+> "
+============================================================
+
+. 
+end of do-file
