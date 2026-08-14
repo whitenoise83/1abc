@@ -1,0 +1,37 @@
+domain_name,target_series,stage_order,forecast_stage,stage_policy_model,fixed_model,n,same_model,mean_delta_squared_error,median_delta_squared_error,squared_error_policy_win_share,hac_bandwidth_squared_error,hac_se_mean_delta_squared_error,hac_z_mean_delta_squared_error,hac_p_value_squared_error_two_sided,mean_delta_abs_error,median_delta_abs_error,abs_error_policy_win_share,hac_bandwidth_abs_error,hac_se_mean_delta_abs_error,hac_z_mean_delta_abs_error,hac_p_value_abs_error_two_sided
+GDP,GDPC1,1,early_quarter,Dynamic Factor Model,Dynamic Factor Model,12,1,0,0,0,2,0,,,0,0,0,2,0,,
+GDP,GDPC1,2,after_month_1,Dynamic Factor Model,Dynamic Factor Model,12,1,0,0,0,2,0,,,0,0,0,2,0,,
+GDP,GDPC1,3,after_month_2,Bridge–DFM Ensemble,Dynamic Factor Model,12,0,0.13946889983209707,0.0029098859673068744,0.33333333333333331,2,0.31351391197653489,0.44485713234485008,0.65642300344512639,0.06656758773709158,0.011215010056837116,0.33333333333333331,2,0.10136286183669387,0.65672561459776957,0.51135736124296338
+GDP,GDPC1,4,quarter_end,Rolling Bridge–DFM Ensemble,Dynamic Factor Model,12,0,0.40231876203652889,0.11832740167046149,0.33333333333333331,2,0.25690308866689882,1.5660331844362385,0.11734084858887917,0.11939331546328104,0.10406100778507099,0.33333333333333331,2,0.062964299380787223,1.896206527150089,0.057932740429732954
+GDP,GDPC1,5,pre_advance_release,Dynamic Factor Model,Dynamic Factor Model,12,1,0,0,0,2,0,,,0,0,0,2,0,,
+Inflation,CPIAUCSL,1,month_open,Inflation Ridge-AR Ensemble,Inflation Bridge Ridge,39,0,-1.0877862389133359,-0.052223183232277037,0.5641025641025641,3,1.1499068131476753,-0.94597773182655143,0.34415994419643781,-0.19090605646466202,-0.048286092675911441,0.5641025641025641,3,0.16746815636541387,-1.1399543686867064,0.25430531233612275
+Inflation,CPIAUCSL,2,mid_month,Inflation Bridge Ridge,Inflation Bridge Ridge,40,1,0,0,0,3,0,,,0,0,0,3,0,,
+Inflation,CPIAUCSL,3,month_end,Inflation Bridge Ridge,Inflation Bridge Ridge,40,1,0,0,0,3,0,,,0,0,0,3,0,,
+Inflation,CPIAUCSL,4,pre_release,Inflation Bridge Ridge,Inflation Bridge Ridge,40,1,0,0,0,3,0,,,0,0,0,3,0,,
+Inflation,CPILFESL,1,month_open,Inflation 12-Month Mean,Inflation Ridge-AR Ensemble,39,0,-0.46361432049469653,0.0034309635451559295,0.48717948717948717,3,0.46462345651070719,-0.99782805624238347,0.31836274292940847,-0.16225649150928659,0.0011188725061623828,0.48717948717948717,3,0.095937723994114654,-1.6912689269055443,0.09078545185841902
+Inflation,CPILFESL,2,mid_month,Inflation Ridge-AR Ensemble,Inflation Ridge-AR Ensemble,40,1,0,0,0,3,0,,,0,0,0,3,0,,
+Inflation,CPILFESL,3,month_end,Inflation Ridge-AR Ensemble,Inflation Ridge-AR Ensemble,40,1,0,0,0,3,0,,,0,0,0,3,0,,
+Inflation,CPILFESL,4,pre_release,Inflation Ridge-AR Ensemble,Inflation Ridge-AR Ensemble,40,1,0,0,0,3,0,,,0,0,0,3,0,,
+Inflation,PCEPI,1,month_open,Inflation Ridge-AR Ensemble,Inflation Bridge Ridge,38,0,-0.26310885163738124,0.0835042815931622,0.47368421052631576,3,0.56511989922865957,-0.46558058209683001,0.64151574475572914,-0.074542146469210119,0.036780260464018388,0.47368421052631576,3,0.1395289488164749,-0.53424143951128611,0.59317450211326617
+Inflation,PCEPI,2,mid_month,Inflation Bridge Ridge,Inflation Bridge Ridge,39,1,0,0,0,3,0,,,0,0,0,3,0,,
+Inflation,PCEPI,3,month_end,Inflation Bridge Ridge,Inflation Bridge Ridge,40,1,0,0,0,3,0,,,0,0,0,3,0,,
+Inflation,PCEPI,4,pre_release,Inflation Bridge Ridge,Inflation Bridge Ridge,40,1,0,0,0,3,0,,,0,0,0,3,0,,
+Inflation,PCEPILFE,1,month_open,Inflation Bridge Ridge,Inflation Bridge Ridge,38,1,0,0,0,3,0,,,0,0,0,3,0,,
+Inflation,PCEPILFE,2,mid_month,Inflation Ridge-AR Ensemble,Inflation Bridge Ridge,39,0,0.026161739456817917,0.011852857638592142,0.4358974358974359,3,0.10214333188050981,0.25612772733341682,0.79785221258110273,-0.018397987311326434,0.019871611970959435,0.4358974358974359,3,0.061111668845596642,-0.30105522658545575,0.76337238203646707
+Inflation,PCEPILFE,3,month_end,Inflation Bridge Ridge,Inflation Bridge Ridge,40,1,0,0,0,3,0,,,0,0,0,3,0,,
+Inflation,PCEPILFE,4,pre_release,Inflation Bridge Ridge,Inflation Bridge Ridge,40,1,0,0,0,3,0,,,0,0,0,3,0,,
+Labour,CES0500000003,1,month_open,Labour Bridge Ridge,Labour Bridge Ridge,41,1,0,0,0,3,0,,,0,0,0,3,0,,
+Labour,CES0500000003,2,after_week_1,Labour Bridge Ridge,Labour Bridge Ridge,41,1,0,0,0,3,0,,,0,0,0,3,0,,
+Labour,CES0500000003,3,after_week_2,Labour Bridge Ridge,Labour Bridge Ridge,41,1,0,0,0,3,0,,,0,0,0,3,0,,
+Labour,CES0500000003,4,month_end,Labour Equal-Weight Ensemble,Labour Bridge Ridge,41,0,-0.77003113856729832,-0.57290764507907677,0.58536585365853655,3,0.23747649947507152,-3.2425572225858517,0.0011846215669231164,-0.21220812285808599,-0.33299706457833178,0.58536585365853655,3,0.085503455884276491,-2.4818660329390223,0.01306964015222345
+Labour,CES0500000003,5,pre_employment_report,Labour Equal-Weight Ensemble,Labour Bridge Ridge,41,0,-0.8209280841928519,-0.52897493359977688,0.6097560975609756,3,0.23026843053462723,-3.5650917595905649,0.00036372891228042548,-0.20631979994323091,-0.18465094735352672,0.6097560975609756,3,0.075709722721141404,-2.7251427231236915,0.0064273696592809237
+Labour,PAYEMS,1,month_open,Labour 12-Month Mean,Labour Bridge Ridge,41,0,-16728.270606310449,-1571.3549298087601,0.68292682926829273,3,6423.2731223980154,-2.6043218601399349,0.0092056262031936509,-42.215924767792394,-15.973861866958117,0.68292682926829273,3,15.925963782135302,-2.6507610682342153,0.0080310632992115494
+Labour,PAYEMS,2,after_week_1,Labour Bridge Ridge,Labour Bridge Ridge,41,1,0,0,0,3,0,,,0,0,0,3,0,,
+Labour,PAYEMS,3,after_week_2,Labour Factor Ridge,Labour Bridge Ridge,41,0,9312.0582759388853,1299.9188111372714,0.48780487804878048,3,9649.213075119842,0.96505882950700939,0.3345153465414028,26.413421142127746,9.492389186929131,0.48780487804878048,3,20.102873031986828,1.3139127477002837,0.18887556830140362
+Labour,PAYEMS,4,month_end,Labour Bridge Ridge,Labour Bridge Ridge,41,1,0,0,0,3,0,,,0,0,0,3,0,,
+Labour,PAYEMS,5,pre_employment_report,Labour Bridge Ridge,Labour Bridge Ridge,41,1,0,0,0,3,0,,,0,0,0,3,0,,
+Labour,UNRATE,1,month_open,Labour AR(1),Labour Equal-Weight Ensemble,40,0,-0.071739190513258125,-0.065038795021066548,0.72499999999999998,3,0.017440837460195032,-4.1132881764988305,3.9006295659227419e-05,-0.14616052438934446,-0.2036692698856053,0.72499999999999998,3,0.030886432377641763,-4.7321918764288204,2.2210830565860817e-06
+Labour,UNRATE,2,after_week_1,Labour Equal-Weight Ensemble,Labour Equal-Weight Ensemble,40,1,0,0,0,3,0,,,0,0,0,3,0,,
+Labour,UNRATE,3,after_week_2,Labour Equal-Weight Ensemble,Labour Equal-Weight Ensemble,40,1,0,0,0,3,0,,,0,0,0,3,0,,
+Labour,UNRATE,4,month_end,Labour Equal-Weight Ensemble,Labour Equal-Weight Ensemble,40,1,0,0,0,3,0,,,0,0,0,3,0,,
+Labour,UNRATE,5,pre_employment_report,Labour Equal-Weight Ensemble,Labour Equal-Weight Ensemble,40,1,0,0,0,3,0,,,0,0,0,3,0,,

@@ -1,0 +1,35 @@
+{
+  "analysis_script_sha256": "b623ebd00d4614168cd843eb99c7364686d5eef03a24b7fdf38a1e2dbc4cc9ed",
+  "canonical_freeze_commit": "420feaeb51dca3abc79e9426aacca3816fe6ad5a",
+  "evaluation_start": {
+    "GDP": "2023Q2",
+    "Inflation": "2023-02",
+    "Labour": "2023-02"
+  },
+  "freeze_manifest_sha256": "f246ed2428d867b2a22f789a9c8c1528b603a012f586736b6a959431e7cd7af9",
+  "h1_rule": "same frozen fixed model; adjacent stages only; include only pairs with changed information_set_hash",
+  "h2_rule": "frozen development-selected stage policy versus frozen target-specific fixed comparator at identical target/stage/information set",
+  "inference": "Newey-West HAC mean-loss-differential test with Bartlett kernel and bandwidth floor(4*(n/100)^(2/9))",
+  "output_hashes": {
+    "h1_information_gain_detail.csv": "49a8783fdb7eaeb942803af09f8a68783d678802ba4a9a3aa0dcec4b2e6a9e72",
+    "h1_information_gain_summary.csv": "579e4c3264997ee06acba3aa94e3ab9e1a26d6e9da433d9fd887177f54d6e568",
+    "h2_stage_policy_detail.csv": "94e91e1f6aab90770f573e43472b434667e0f4ae1189fc2f453fa5798a72278b",
+    "h2_stage_policy_summary.csv": "82079cd4ca869bf0708d4bcd7b2cc34b99dd31fc5a515610e577e63677d50848"
+  },
+  "paper_error_convention": "actual - point_forecast",
+  "preanalysis_code_commit": "fb32466397b8b152839877dccb7c694d85b5115a",
+  "primary_loss": "squared error",
+  "row_counts": {
+    "evaluation_source_rows": 5126,
+    "h1_detail_rows_eligible": 999,
+    "h1_detail_rows_total": 1008,
+    "h1_same_hash_exclusions": 9,
+    "h2_detail_rows": 1302
+  },
+  "secondary_loss": "absolute error",
+  "source_backtest_ids": {
+    "GDP": "382b4c6b-ef76-4ca1-b52f-d5e3e1ac66b1",
+    "Inflation": "fdd2f573-a425-4abc-8056-f9843955bac2",
+    "Labour": "834e0655-ba81-4b96-b42c-e1cdda73b847"
+  }
+}
