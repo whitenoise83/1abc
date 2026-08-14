@@ -5,3 +5,5 @@ outputs/tables/research_*_development_metrics.csv text eol=lf
 outputs/confirmatory/*.csv text eol=lf
 outputs/confirmatory/*.json text eol=lf
 data/raw/vintage/*.csv -text
+python/09_confirmatory_h3_vintage.py text eol=lf
+stata/09_confirmatory_h3_vintage_audit.do text eol=lf
