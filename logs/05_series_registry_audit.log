@@ -1,0 +1,892 @@
+
+  ___  ____  ____  ____  ____ ®
+ /__    /   ____/   /   ____/      StataNow 19.5
+___/   /   /___/   /   /___/       BE—Basic Edition
+
+ Statistics and Data Science       Copyright 1985-2025 StataCorp LLC
+                                   StataCorp
+                                   4905 Lakeway Drive
+                                   College Station, Texas 77845 USA
+                                   800-782-8272        https://www.stata.com
+                                   979-696-4600        service@stata.com
+
+Stata license: Single-user , expiring  7 May 2027
+Serial number: 301909003295
+  Licensed to: Cenk Yildiran
+               Independent Researcher
+
+Notes:
+      1. Stata is running in batch mode.
+      2. Unicode is supported; see help unicode_advice.
+
+. do stata\05_series_registry_audit.do 
+
+. /***********************************************************************
+> * MacroPulse Scientific Paper
+> * Series Registry and Transformation Audit
+> *
+> * File:
+> *   stata/05_series_registry_audit.do
+> *
+> * Purpose:
+> *   Freeze the governed Model 1A, 1B and 1C information universes and
+> *   their transformations before constructing the real-time panels.
+> *
+> * Source architecture audited from MacroPulse:
+> *   config/series_registry.yml
+> *   config/inflation_series_registry.yml
+> *   config/labour_series_registry.yml
+> *   src/macropulse/processing/transforms.py
+> *
+> * IMPORTANT:
+> *   This script defines metadata only.
+> *   It does not estimate forecasting models and does not download data.
+> ***********************************************************************/
+. 
+. version 19
+
+. clear all
+
+. set more off
+
+. 
+. capture mkdir "data"
+
+. capture mkdir "data/derived"
+
+. capture mkdir "outputs"
+
+. capture mkdir "outputs/tables"
+
+. 
+. display as text "============================================================
+> "
+============================================================
+
+. display as text "05_series_registry_audit.do"
+05_series_registry_audit.do
+
+. display as text "Governed series registry and transformation audit"
+Governed series registry and transformation audit
+
+. display as text "============================================================
+> "
+============================================================
+
+. 
+. pwd
+C:\Users\Cenk\OneDrive\1abc
+
+. 
+. 
+. /***********************************************************************
+> * 1. MASTER GOVERNED SERIES REGISTRY
+> ***********************************************************************/
+. 
+. clear
+
+. 
+. input ///
+>     str10 domain ///
+>     str18 series_id ///
+>     str8 role ///
+>     str1 frequency ///
+>     str12 aggregation ///
+>     str24 transform ///
+>     str8 source ///
+>     str10 start_date ///
+>     str80 series_name
+
+         domain           series_id       role  frequency   aggregation        
+>          transform     source  start_date                                    
+>                                    series_name
+  1. 
+. "GDP"       "GDPC1"          "target"  "Q" ""     "annualised_qoq_log" "FRED"
+>  "1985-01-01" "Real Gross Domestic Product"
+  2. "GDP"       "INDPRO"         "feature" "M" ""     "mom_log_pct"        "FR
+> ED" "1985-01-01" "Industrial Production Index"
+  3. "GDP"       "PAYEMS"         "feature" "M" ""     "mom_log_pct"        "FR
+> ED" "1985-01-01" "All Employees, Total Nonfarm"
+  4. "GDP"       "RSAFS"          "feature" "M" ""     "mom_log_pct"        "FR
+> ED" "1992-01-01" "Advance Retail Sales"
+  5. "GDP"       "HOUST"          "feature" "M" ""     "mom_log_pct"        "FR
+> ED" "1985-01-01" "Housing Starts"
+  6. "GDP"       "AWHMAN"         "feature" "M" ""     "mom_log_pct"        "FR
+> ED" "1985-01-01" "Average Weekly Hours, Manufacturing"
+  7. "GDP"       "UNRATE"         "feature" "M" ""     "diff"               "FR
+> ED" "1985-01-01" "Unemployment Rate"
+  8. "GDP"       "CPIAUCSL"       "feature" "M" ""     "mom_log_pct"        "FR
+> ED" "1985-01-01" "Consumer Price Index"
+  9. "GDP"       "FEDFUNDS"       "feature" "M" ""     "diff"               "FR
+> ED" "1985-01-01" "Effective Federal Funds Rate"
+ 10. 
+. "Inflation" "CPIAUCSL"       "target"  "M" ""     "annualised_mom_log" "FRED"
+>  "1985-01-01" "Headline CPI"
+ 11. "Inflation" "CPILFESL"       "target"  "M" ""     "annualised_mom_log" "FR
+> ED" "1985-01-01" "Core CPI"
+ 12. "Inflation" "PCEPI"          "target"  "M" ""     "annualised_mom_log" "FR
+> ED" "1985-01-01" "Headline PCE Price Index"
+ 13. "Inflation" "PCEPILFE"       "target"  "M" ""     "annualised_mom_log" "FR
+> ED" "1985-01-01" "Core PCE Price Index"
+ 14. 
+. "Inflation" "PPIFIS"         "feature" "M" ""     "mom_log_pct"        "FRED"
+>  "2009-11-01" "Producer Price Index - Final Demand"
+ 15. "Inflation" "CES0500000003"  "feature" "M" ""     "mom_log_pct"        "FR
+> ED" "2006-03-01" "Average Hourly Earnings - Total Private"
+ 16. "Inflation" "CUSR0000SEHA"   "feature" "M" ""     "mom_log_pct"        "FR
+> ED" "1985-01-01" "CPI Rent of Primary Residence"
+ 17. "Inflation" "CUSR0000SEHC"   "feature" "M" ""     "mom_log_pct"        "FR
+> ED" "1985-01-01" "CPI Owners Equivalent Rent"
+ 18. "Inflation" "UNRATE"         "feature" "M" ""     "diff"               "FR
+> ED" "1985-01-01" "Unemployment Rate"
+ 19. "Inflation" "FEDFUNDS"       "feature" "M" ""     "diff"               "FR
+> ED" "1985-01-01" "Effective Federal Funds Rate"
+ 20. "Inflation" "T5YIE"          "feature" "D" "mean" "level"              "FR
+> ED" "2003-01-01" "Five-Year Breakeven Inflation Rate"
+ 21. "Inflation" "MICH"           "feature" "M" ""     "level"              "FR
+> ED" "1985-01-01" "University of Michigan Inflation Expectations"
+ 22. "Inflation" "DCOILWTICO"     "feature" "D" "mean" "mom_log_pct"        "FR
+> ED" "1986-01-01" "West Texas Intermediate Crude Oil Price"
+ 23. 
+. "Labour"    "PAYEMS"         "target"  "M" ""     "diff"               "FRED"
+>  "1985-01-01" "Nonfarm Payroll Change"
+ 24. "Labour"    "UNRATE"         "target"  "M" ""     "level"              "FR
+> ED" "1985-01-01" "Unemployment Rate"
+ 25. "Labour"    "CES0500000003"  "target"  "M" ""     "annualised_mom_log" "FR
+> ED" "2006-03-01" "Average Hourly Earnings Growth"
+ 26. 
+. "Labour"    "ICSA"           "feature" "W" "mean" "mom_log_pct"        "FRED"
+>  "1985-01-01" "Initial Unemployment Claims"
+ 27. "Labour"    "CCSA"           "feature" "W" "mean" "mom_log_pct"        "FR
+> ED" "1985-01-01" "Continued Claims"
+ 28. "Labour"    "JTSJOL"         "feature" "M" ""     "mom_log_pct"        "FR
+> ED" "2000-12-01" "Job Openings - Total Nonfarm"
+ 29. "Labour"    "JTSQUR"         "feature" "M" ""     "mom_log_pct"        "FR
+> ED" "2000-12-01" "Quits - Total Nonfarm"
+ 30. "Labour"    "CIVPART"        "feature" "M" ""     "level"              "FR
+> ED" "1985-01-01" "Labour Force Participation Rate"
+ 31. "Labour"    "EMRATIO"        "feature" "M" ""     "level"              "FR
+> ED" "1985-01-01" "Employment-Population Ratio"
+ 32. "Labour"    "TEMPHELPS"      "feature" "M" ""     "diff"               "FR
+> ED" "1990-01-01" "Temporary Help Services Employment"
+ 33. "Labour"    "AWHI"           "feature" "M" ""     "level"              "FR
+> ED" "1985-01-01" "Aggregate Weekly Hours Index - Production and Nonsupervisor
+> y Employees"
+ 34. "Labour"    "MANEMP"         "feature" "M" ""     "diff"               "FR
+> ED" "1985-01-01" "Manufacturing Employment"
+ 35. "Labour"    "INDPRO"         "feature" "M" ""     "mom_log_pct"        "FR
+> ED" "1985-01-01" "Industrial Production Index"
+ 36. 
+. end
+
+. 
+. 
+. /***********************************************************************
+> * 2. BASIC REGISTRY INTEGRITY
+> ***********************************************************************/
+. 
+. display as text ""
+
+
+. display as text "=== BASIC REGISTRY INTEGRITY ==="
+=== BASIC REGISTRY INTEGRITY ===
+
+. 
+. assert _N == 35
+
+. 
+. isid domain series_id
+
+. 
+. assert inlist(domain, "GDP", "Inflation", "Labour")
+
+. assert inlist(role, "target", "feature")
+
+. assert inlist(frequency, "Q", "M", "D", "W")
+
+. assert source == "FRED"
+
+. 
+. assert inlist( ///
+>     transform, ///
+>     "level", ///
+>     "diff", ///
+>     "mom_log_pct", ///
+>     "annualised_qoq_log", ///
+>     "annualised_mom_log" ///
+> )
+
+. 
+. gen double registry_start = daily(start_date, "YMD")
+
+. format registry_start %td
+
+. assert !missing(registry_start)
+
+. 
+. count if domain == "GDP"
+  9
+
+. assert r(N) == 9
+
+. 
+. count if domain == "Inflation"
+  13
+
+. assert r(N) == 13
+
+. 
+. count if domain == "Labour"
+  13
+
+. assert r(N) == 13
+
+. 
+. count if role == "target"
+  8
+
+. assert r(N) == 8
+
+. 
+. count if role == "feature"
+  27
+
+. assert r(N) == 27
+
+. 
+. display as result "Registry rows validated: " _N
+Registry rows validated: 35
+
+. 
+. 
+. /***********************************************************************
+> * 3. DOMAIN-SPECIFIC TARGET DEFINITIONS
+> ***********************************************************************/
+. 
+. display as text ""
+
+
+. display as text "=== TARGET DEFINITIONS ==="
+=== TARGET DEFINITIONS ===
+
+. 
+. * GDP
+. assert role == "target" ///
+>     if domain == "GDP" & series_id == "GDPC1"
+
+. 
+. assert transform == "annualised_qoq_log" ///
+>     if domain == "GDP" & series_id == "GDPC1"
+
+. 
+. * Inflation
+. assert role == "target" ///
+>     if domain == "Inflation" & ///
+>     inlist(series_id, "CPIAUCSL", "CPILFESL", "PCEPI", "PCEPILFE")
+
+. 
+. assert transform == "annualised_mom_log" ///
+>     if domain == "Inflation" & role == "target"
+
+. 
+. * Labour
+. assert transform == "diff" ///
+>     if domain == "Labour" & series_id == "PAYEMS"
+
+. 
+. assert transform == "level" ///
+>     if domain == "Labour" & series_id == "UNRATE"
+
+. 
+. assert transform == "annualised_mom_log" ///
+>     if domain == "Labour" & series_id == "CES0500000003"
+
+. 
+. count if domain == "GDP" & role == "target"
+  1
+
+. assert r(N) == 1
+
+. 
+. count if domain == "Inflation" & role == "target"
+  4
+
+. assert r(N) == 4
+
+. 
+. count if domain == "Labour" & role == "target"
+  3
+
+. assert r(N) == 3
+
+. 
+. 
+. /***********************************************************************
+> * 4. GDP FEATURE TRANSFORMATIONS
+> ***********************************************************************/
+. 
+. display as text ""
+
+
+. display as text "=== GDP FEATURE TRANSFORMATIONS ==="
+=== GDP FEATURE TRANSFORMATIONS ===
+
+. 
+. assert transform == "mom_log_pct" ///
+>     if domain == "GDP" & ///
+>     inlist( ///
+>         series_id, ///
+>         "INDPRO", ///
+>         "PAYEMS", ///
+>         "RSAFS", ///
+>         "HOUST", ///
+>         "AWHMAN", ///
+>         "CPIAUCSL" ///
+>     )
+
+. 
+. assert transform == "diff" ///
+>     if domain == "GDP" & ///
+>     inlist(series_id, "UNRATE", "FEDFUNDS")
+
+. 
+. assert frequency == "Q" ///
+>     if domain == "GDP" & series_id == "GDPC1"
+
+. 
+. assert frequency == "M" ///
+>     if domain == "GDP" & role == "feature"
+
+. 
+. 
+. /***********************************************************************
+> * 5. INFLATION FEATURE TRANSFORMATIONS
+> ***********************************************************************/
+. 
+. display as text ""
+
+
+. display as text "=== INFLATION FEATURE TRANSFORMATIONS ==="
+=== INFLATION FEATURE TRANSFORMATIONS ===
+
+. 
+. assert transform == "mom_log_pct" ///
+>     if domain == "Inflation" & ///
+>     inlist( ///
+>         series_id, ///
+>         "PPIFIS", ///
+>         "CES0500000003", ///
+>         "CUSR0000SEHA", ///
+>         "CUSR0000SEHC", ///
+>         "DCOILWTICO" ///
+>     )
+
+. 
+. assert transform == "diff" ///
+>     if domain == "Inflation" & ///
+>     inlist(series_id, "UNRATE", "FEDFUNDS")
+
+. 
+. assert transform == "level" ///
+>     if domain == "Inflation" & ///
+>     inlist(series_id, "T5YIE", "MICH")
+
+. 
+. assert frequency == "D" ///
+>     if domain == "Inflation" & ///
+>     inlist(series_id, "T5YIE", "DCOILWTICO")
+
+. 
+. assert aggregation == "mean" ///
+>     if domain == "Inflation" & ///
+>     inlist(series_id, "T5YIE", "DCOILWTICO")
+
+. 
+. 
+. /***********************************************************************
+> * 6. LABOUR FEATURE TRANSFORMATIONS
+> ***********************************************************************/
+. 
+. display as text ""
+
+
+. display as text "=== LABOUR FEATURE TRANSFORMATIONS ==="
+=== LABOUR FEATURE TRANSFORMATIONS ===
+
+. 
+. assert transform == "mom_log_pct" ///
+>     if domain == "Labour" & ///
+>     inlist( ///
+>         series_id, ///
+>         "ICSA", ///
+>         "CCSA", ///
+>         "JTSJOL", ///
+>         "JTSQUR", ///
+>         "INDPRO" ///
+>     )
+
+. 
+. assert transform == "level" ///
+>     if domain == "Labour" & ///
+>     inlist(series_id, "CIVPART", "EMRATIO", "AWHI")
+
+. 
+. assert transform == "diff" ///
+>     if domain == "Labour" & ///
+>     inlist(series_id, "TEMPHELPS", "MANEMP")
+
+. 
+. assert frequency == "W" ///
+>     if domain == "Labour" & ///
+>     inlist(series_id, "ICSA", "CCSA")
+
+. 
+. assert aggregation == "mean" ///
+>     if domain == "Labour" & ///
+>     inlist(series_id, "ICSA", "CCSA")
+
+. 
+. 
+. /***********************************************************************
+> * 7. AGGREGATION POLICY
+> ***********************************************************************/
+. 
+. display as text ""
+
+
+. display as text "=== HIGHER-FREQUENCY AGGREGATION POLICY ==="
+=== HIGHER-FREQUENCY AGGREGATION POLICY ===
+
+. 
+. gen byte should_mean = ///
+>     (domain == "Inflation" & ///
+>         inlist(series_id, "T5YIE", "DCOILWTICO")) | ///
+>     (domain == "Labour" & ///
+>         inlist(series_id, "ICSA", "CCSA"))
+
+. 
+. assert aggregation == "mean" if should_mean == 1
+
+. assert aggregation == ""     if should_mean == 0
+
+. 
+. count if aggregation == "mean"
+  4
+
+. assert r(N) == 4
+
+. 
+. list domain series_id frequency aggregation transform ///
+>     if aggregation != "", ///
+>     noobs abbreviate(24)
+
+  +----------------------------------------------------------------+
+  |    domain    series_id   frequency   aggregation     transform |
+  |----------------------------------------------------------------|
+  | Inflation        T5YIE           D          mean         level |
+  | Inflation   DCOILWTICO           D          mean   mom_log_pct |
+  |    Labour         ICSA           W          mean   mom_log_pct |
+  |    Labour         CCSA           W          mean   mom_log_pct |
+  +----------------------------------------------------------------+
+
+. 
+. 
+. /***********************************************************************
+> * 8. TRANSFORMATION FORMULAS
+> *
+> * These reproduce src/macropulse/processing/transforms.py:
+> *
+> * level               = x_t
+> * diff                = x_t - x_(t-1)
+> * mom_log_pct         = 100 * [ln(x_t) - ln(x_(t-1))]
+> * annualised_qoq_log  = 400 * [ln(x_t) - ln(x_(t-1))]
+> * annualised_mom_log  = 1200 * [ln(x_t) - ln(x_(t-1))]
+> ***********************************************************************/
+. 
+. display as text ""
+
+
+. display as text "=== TRANSFORMATION FORMULAS ==="
+=== TRANSFORMATION FORMULAS ===
+
+. 
+. gen double transform_scale = .
+(35 missing values generated)
+
+. 
+. replace transform_scale = 1 ///
+>     if inlist(transform, "level", "diff")
+(13 real changes made)
+
+. 
+. replace transform_scale = 100 ///
+>     if transform == "mom_log_pct"
+(16 real changes made)
+
+. 
+. replace transform_scale = 400 ///
+>     if transform == "annualised_qoq_log"
+(1 real change made)
+
+. 
+. replace transform_scale = 1200 ///
+>     if transform == "annualised_mom_log"
+(5 real changes made)
+
+. 
+. assert !missing(transform_scale)
+
+. 
+. gen str60 transform_formula = ""
+(35 missing values generated)
+
+. 
+. replace transform_formula = ///
+>     "x_t" ///
+>     if transform == "level"
+(6 real changes made)
+
+. 
+. replace transform_formula = ///
+>     "x_t - x_(t-1)" ///
+>     if transform == "diff"
+(7 real changes made)
+
+. 
+. replace transform_formula = ///
+>     "100*[ln(x_t)-ln(x_(t-1))]" ///
+>     if transform == "mom_log_pct"
+(16 real changes made)
+
+. 
+. replace transform_formula = ///
+>     "400*[ln(x_t)-ln(x_(t-1))]" ///
+>     if transform == "annualised_qoq_log"
+(1 real change made)
+
+. 
+. replace transform_formula = ///
+>     "1200*[ln(x_t)-ln(x_(t-1))]" ///
+>     if transform == "annualised_mom_log"
+(5 real changes made)
+
+. 
+. assert transform_formula != ""
+
+. 
+. tab transform
+
+               transform |      Freq.     Percent        Cum.
+-------------------------+-----------------------------------
+      annualised_mom_log |          5       14.29       14.29
+      annualised_qoq_log |          1        2.86       17.14
+                    diff |          7       20.00       37.14
+                   level |          6       17.14       54.29
+             mom_log_pct |         16       45.71      100.00
+-------------------------+-----------------------------------
+                   Total |         35      100.00
+
+. tab domain role
+
+           |         role
+    domain |   feature     target |     Total
+-----------+----------------------+----------
+       GDP |         8          1 |         9 
+ Inflation |         9          4 |        13 
+    Labour |        10          3 |        13 
+-----------+----------------------+----------
+     Total |        27          8 |        35 
+
+. 
+. 
+. /***********************************************************************
+> * 9. START-DATE AUDIT
+> ***********************************************************************/
+. 
+. display as text ""
+
+
+. display as text "=== REGISTRY START DATES ==="
+=== REGISTRY START DATES ===
+
+. 
+. summarize registry_start, detail
+
+                       registry_start
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%         9132           9132
+ 5%         9132           9132
+10%         9132           9132       Obs                  35
+25%         9132           9132       Sum of wgt.          35
+
+50%         9132                      Mean           10488.43
+                        Largest       Std. dev.      2755.441
+75%         9497          15706
+90%        15706          16861       Variance        7592453
+95%        16861          16861       Skewness       1.756697
+99%        18202          18202       Kurtosis       4.443179
+
+. 
+. list ///
+>     domain ///
+>     series_id ///
+>     role ///
+>     start_date ///
+>     if registry_start > daily("1985-01-01", "YMD"), ///
+>     noobs sepby(domain)
+
+  +--------------------------------------------------+
+  |    domain       series_id      role   start_date |
+  |--------------------------------------------------|
+  |       GDP           RSAFS   feature   1992-01-01 |
+  |--------------------------------------------------|
+  | Inflation          PPIFIS   feature   2009-11-01 |
+  | Inflation   CES0500000003   feature   2006-03-01 |
+  | Inflation           T5YIE   feature   2003-01-01 |
+  | Inflation      DCOILWTICO   feature   1986-01-01 |
+  |--------------------------------------------------|
+  |    Labour   CES0500000003    target   2006-03-01 |
+  |    Labour          JTSJOL   feature   2000-12-01 |
+  |    Labour          JTSQUR   feature   2000-12-01 |
+  |    Labour       TEMPHELPS   feature   1990-01-01 |
+  +--------------------------------------------------+
+
+. 
+. 
+. /***********************************************************************
+> * 10. SAVE MACHINE-READABLE PAPER REGISTRY
+> ***********************************************************************/
+. 
+. sort domain role series_id
+
+. 
+. order ///
+>     domain ///
+>     series_id ///
+>     series_name ///
+>     role ///
+>     frequency ///
+>     aggregation ///
+>     transform ///
+>     transform_scale ///
+>     transform_formula ///
+>     source ///
+>     start_date ///
+>     registry_start
+
+. 
+. compress
+  variable transform_scale was double now int
+  variable registry_start was double now int
+  variable domain was str10 now str9
+  variable series_id was str18 now str13
+  variable series_name was str80 now str70
+  variable role was str8 now str7
+  variable aggregation was str12 now str4
+  variable transform was str24 now str18
+  variable transform_formula was str60 now str26
+  variable source was str8 now str4
+  (2,835 bytes saved)
+
+. 
+. save ///
+>     "data/derived/series_registry_audit.dta", ///
+>     replace
+file data/derived/series_registry_audit.dta saved
+
+. 
+. export delimited using ///
+>     "outputs/tables/series_registry_audit.csv", ///
+>     replace
+file outputs/tables/series_registry_audit.csv saved
+
+. 
+. 
+. /***********************************************************************
+> * 11. MODEL INPUT-LAG POLICY
+> *
+> * Inflation and labour lag policies are explicitly declared in their
+> * governed registries.
+> *
+> * Model 1A does not declare an analogous generic lag vector in
+> * config/series_registry.yml; its Bridge and DFM input construction will
+> * therefore be audited from their dataset builders in the model section
+> * rather than inferred here.
+> ***********************************************************************/
+. 
+. clear
+
+. 
+. input ///
+>     str10 domain ///
+>     str20 target_lags ///
+>     str20 cross_target_lags ///
+>     str20 feature_lags ///
+>     int minimum_training ///
+>     byte max_feature_carry_months ///
+>     str10 backtest_start
+
+         domain           target_lags     cross_target_lags          feature_la
+> gs  minimu~g  max_fe~s  backtest~t
+  1. 
+. "Inflation" "1 2 3 6 12" ""    "1 2"   120 2 "2015-01-01"
+  2. "Labour"    "1 2 3 6 12" "1 2" "0 1 2" 120 4 "2016-01"
+  3. 
+. end
+
+. 
+. isid domain
+
+. 
+. assert target_lags == "1 2 3 6 12"
+
+. 
+. assert feature_lags == "1 2" ///
+>     if domain == "Inflation"
+
+. 
+. assert cross_target_lags == "" ///
+>     if domain == "Inflation"
+
+. 
+. assert feature_lags == "0 1 2" ///
+>     if domain == "Labour"
+
+. 
+. assert cross_target_lags == "1 2" ///
+>     if domain == "Labour"
+
+. 
+. assert minimum_training == 120
+
+. 
+. assert max_feature_carry_months == 2 ///
+>     if domain == "Inflation"
+
+. 
+. assert max_feature_carry_months == 4 ///
+>     if domain == "Labour"
+
+. 
+. list, noobs abbreviate(24)
+
+  +--------------------------------------------------------------+
+  |    domain | target_lags | cross_target_lags  | feature_lags  |
+  | Inflation |  1 2 3 6 12 |                    |          1 2  |
+  |--------------------------------------------------------------|
+  | minimum_training | max_feature_carry_months | backtest_start |
+  |              120 |                        2 |     2015-01-01 |
+  +--------------------------------------------------------------+
+
+  +--------------------------------------------------------------+
+  |    domain | target_lags | cross_target_lags  | feature_lags  |
+  |    Labour |  1 2 3 6 12 |               1 2  |        0 1 2  |
+  |--------------------------------------------------------------|
+  | minimum_training | max_feature_carry_months | backtest_start |
+  |              120 |                        4 |        2016-01 |
+  +--------------------------------------------------------------+
+
+. 
+. save ///
+>     "data/derived/model_input_lag_policy.dta", ///
+>     replace
+file data/derived/model_input_lag_policy.dta saved
+
+. 
+. export delimited using ///
+>     "outputs/tables/model_input_lag_policy.csv", ///
+>     replace
+file outputs/tables/model_input_lag_policy.csv saved
+
+. 
+. 
+. /***********************************************************************
+> * 12. FINAL AUDIT MESSAGE
+> ***********************************************************************/
+. 
+. display as text ""
+
+
+. display as text "============================================================
+> "
+============================================================
+
+. display as result "SERIES-REGISTRY AUDIT COMPLETED SUCCESSFULLY"
+SERIES-REGISTRY AUDIT COMPLETED SUCCESSFULLY
+
+. display as text ""
+
+
+. display as text "Frozen governed universes:"
+Frozen governed universes:
+
+. display as text "  GDP:        1 target + 8 features = 9 series"
+  GDP:        1 target + 8 features = 9 series
+
+. display as text "  Inflation:  4 targets + 9 features = 13 series"
+  Inflation:  4 targets + 9 features = 13 series
+
+. display as text "  Labour:     3 targets + 10 features = 13 series"
+  Labour:     3 targets + 10 features = 13 series
+
+. display as text ""
+
+
+. display as text "Total domain-series definitions: 35"
+Total domain-series definitions: 35
+
+. display as text ""
+
+
+. display as text "Transformations:"
+Transformations:
+
+. display as text "  annualised_qoq_log = 400 * Delta log"
+  annualised_qoq_log = 400 * Delta log
+
+. display as text "  annualised_mom_log = 1200 * Delta log"
+  annualised_mom_log = 1200 * Delta log
+
+. display as text "  mom_log_pct        = 100 * Delta log"
+  mom_log_pct        = 100 * Delta log
+
+. display as text "  diff               = first difference"
+  diff               = first difference
+
+. display as text "  level              = untransformed level"
+  level              = untransformed level
+
+. display as text ""
+
+
+. display as text "Higher-frequency monthly aggregation:"
+Higher-frequency monthly aggregation:
+
+. display as text "  T5YIE      -> monthly mean"
+  T5YIE      -> monthly mean
+
+. display as text "  DCOILWTICO -> monthly mean"
+  DCOILWTICO -> monthly mean
+
+. display as text "  ICSA       -> monthly mean"
+  ICSA       -> monthly mean
+
+. display as text "  CCSA       -> monthly mean"
+  CCSA       -> monthly mean
+
+. display as text ""
+
+
+. display as text "GDP model-specific lag/input construction remains"
+GDP model-specific lag/input construction remains
+
+. display as text "reserved for the Bridge/DFM model audit."
+reserved for the Bridge/DFM model audit.
+
+. display as text "============================================================
+> "
+============================================================
+
+. 
+end of do-file

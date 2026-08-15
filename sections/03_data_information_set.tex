@@ -1,132 +1,526 @@
 \section{Data and Real-Time Information Sets}
 \label{sec:data}
 
+This section defines the data objects available to the forecaster at each
+historical forecast origin. The central organizing principle is
+\emph{information set first, model second}: a forecasting model is evaluated
+only after the data that would have been observable at the corresponding
+historical date have been reconstructed. This distinction is essential in
+real-time forecast evaluation because revised data and subsequently released
+observations can otherwise enter historical model estimates inadvertently
+\citep{croushorestark2001realtime,croushore2011frontiers,koenig2003useabuse}.
+
+The empirical design distinguishes three objects throughout:
+\begin{equation}
+    \It^{RT}_{k,t,s},
+    \qquad
+    \It^{LV}_{k,t,s},
+    \qquad
+    y^{IR}_{k,t},
+    \label{eq:three_data_objects}
+\end{equation}
+where $k$ indexes the forecasting domain or target, $t$ indexes the target
+period, $s$ denotes the forecast stage, $RT$ denotes the historically
+available real-time vintage, $LV$ denotes the frozen latest-vintage
+counterfactual, and $IR$ denotes the initial-release target realization used
+for forecast evaluation. The first two objects differ only in the numerical
+vintage of observations that were historically admissible; the evaluation
+target is held fixed.
+
 \subsection{Real-time data architecture}
 \label{subsec:realtime_architecture}
 
-Let $x_{j,\tau}^{(v)}$ denote vintage $v$ of indicator $j$ for observation period $\tau$, and let $r_{j,\tau}^{(v)}$ denote the date on which that vintage became available. The feasible information set at forecast origin $t$ and stage $s$ is
+Let $o_{k,t,s}$ denote the calendar date of forecast stage $s$ for target $k$
+and target period $t$. Let $x_{j,\tau}^{(v)}$ denote vintage $v$ of series $j$
+for observation period $\tau$, and let $r_{j,\tau}^{(v)}$ denote the date on
+which that value became available. The historically feasible information set
+is
 \begin{equation}
-    \It_{t,s}
+    \It^{RT}_{k,t,s}
     =
     \left\{
-        x_{j,\tau}^{(v)}:
-        r_{j,\tau}^{(v)} \leq t
+        x_{j,\tau}^{(v)} :
+        r_{j,\tau}^{(v)} \leq o_{k,t,s}
     \right\}.
     \label{eq:information_set}
 \end{equation}
 
-% Explain observation date vs release date vs vintage date vs information cutoff.
-% State source databases and the exact vintage/release-calendar logic.
+The distinction between observation date, release date, vintage date, and
+forecast cutoff is explicit. For each forecast origin, the real-time data
+snapshot is obtained from the FRED/ALFRED real-time database using the
+historical forecast date as both the beginning and end of the real-time
+window. The observation end date is also restricted to the forecast cutoff.
+Consequently, an observation dated after $o_{k,t,s}$ cannot enter the
+historical information set, and a previously released observation enters with
+the value reported at that historical date rather than its subsequently
+revised value.
 
-\subsection{GDP target and indicator set}
+The information universe is governed separately for GDP, inflation, and
+labour-market forecasting. ``Information universe'' does not imply that every
+series enters every candidate forecasting equation. Rather, it defines the
+set of admissible target and predictor series from which each model constructs
+its own input matrix.
+
+\subsection{Targets and governed predictor universes}
 \label{subsec:gdp_data}
+
+\subsubsection{GDP}
 
 The GDP target is annualised quarter-on-quarter real GDP growth:
 \begin{equation}
     g_t
     =
-    400\left[\ln(GDPC1_t)-\ln(GDPC1_{t-1})\right].
+    400
+    \left[
+        \ln(GDPC1_t)-\ln(GDPC1_{t-1})
+    \right].
     \label{eq:gdp_growth}
 \end{equation}
 
-% Candidate information universe:
-% GDPC1, INDPRO, PAYEMS, RSAFS, HOUST, AWHMAN, UNRATE,
-% CPIAUCSL, FEDFUNDS.
+The governed GDP information universe contains real GDP (\texttt{GDPC1}) and
+eight monthly predictors: industrial production (\texttt{INDPRO}), nonfarm
+payroll employment (\texttt{PAYEMS}), advance retail sales (\texttt{RSAFS}),
+housing starts (\texttt{HOUST}), average weekly hours in manufacturing
+(\texttt{AWHMAN}), the unemployment rate (\texttt{UNRATE}), the consumer
+price index (\texttt{CPIAUCSL}), and the effective federal funds rate
+(\texttt{FEDFUNDS}).
 
-\subsection{Inflation targets and indicator set}
+Monthly level variables specified as growth indicators are transformed as
+\begin{equation}
+    z_{j,t}
+    =
+    100
+    \left[
+        \ln(X_{j,t})-\ln(X_{j,t-1})
+    \right],
+    \label{eq:monthly_log_growth}
+\end{equation}
+while \texttt{UNRATE} and \texttt{FEDFUNDS} enter in first differences.
+For the GDP Bridge specification, transformed monthly indicators are averaged
+within the quarter. The mixed-frequency factor specification instead retains
+the monthly indicators at their native monthly frequency and combines them
+with quarterly GDP.
+
+\subsubsection{Inflation}
 \label{subsec:inflation_data}
 
-For price index $P_t$, monthly inflation is expressed as annualised month-on-month log growth:
+For price index $P_t$, inflation is expressed as annualised month-on-month log
+growth:
 \begin{equation}
     \pi_t
     =
-    1200\left[\ln(P_t)-\ln(P_{t-1})\right].
+    1200
+    \left[
+        \ln(P_t)-\ln(P_{t-1})
+    \right].
     \label{eq:inflation_growth}
 \end{equation}
 
-The four targets are headline CPI, core CPI, headline PCE, and core PCE.
+Four inflation targets are evaluated: headline CPI
+(\texttt{CPIAUCSL}), core CPI (\texttt{CPILFESL}), headline PCE price index
+(\texttt{PCEPI}), and core PCE price index (\texttt{PCEPILFE}). The governed
+feature set consists of final-demand producer prices (\texttt{PPIFIS}),
+average hourly earnings (\texttt{CES0500000003}), rent of primary residence
+(\texttt{CUSR0000SEHA}), owners' equivalent rent
+(\texttt{CUSR0000SEHC}), unemployment (\texttt{UNRATE}), the federal funds
+rate (\texttt{FEDFUNDS}), the five-year breakeven inflation rate
+(\texttt{T5YIE}), University of Michigan inflation expectations
+(\texttt{MICH}), and West Texas Intermediate crude oil
+(\texttt{DCOILWTICO}).
 
-% Candidate information universe includes:
-% CPIAUCSL, CPILFESL, PCEPI, PCEPILFE, PPIFIS,
-% CES0500000003, CUSR0000SEHA, CUSR0000SEHC, UNRATE,
-% FEDFUNDS, T5YIE, MICH, DCOILWTICO.
+The price, wage, rent, and oil series designated as growth indicators are
+transformed using $100\Delta\ln(X_t)$. Unemployment and the federal funds rate
+are first-differenced, while \texttt{T5YIE} and \texttt{MICH} enter in
+levels. The two daily series, \texttt{T5YIE} and \texttt{DCOILWTICO}, are
+first aggregated to monthly means. The governed transformation is then
+applied to the resulting monthly series.
 
-\subsection{Labour-market targets and indicator set}
+\subsubsection{Labour market}
 \label{subsec:labour_data}
 
-Payroll employment is modelled as the monthly change
+Three labour-market targets are considered. Payroll employment is modelled as
+the monthly change
 \begin{equation}
-    \Delta PAYEMS_t = PAYEMS_t-PAYEMS_{t-1},
+    \Delta PAYEMS_t
+    =
+    PAYEMS_t-PAYEMS_{t-1},
     \label{eq:payems_change}
 \end{equation}
-while the unemployment rate is modelled in levels. Average hourly earnings growth is
+the unemployment rate is modelled in levels, and average hourly earnings
+growth is
 \begin{equation}
     w_t
     =
-    1200\left[\ln(AHE_t)-\ln(AHE_{t-1})\right].
+    1200
+    \left[
+        \ln(CES0500000003_t)
+        -
+        \ln(CES0500000003_{t-1})
+    \right].
     \label{eq:ahe_growth}
 \end{equation}
 
-% Candidate information universe includes:
-% PAYEMS, UNRATE, CES0500000003, ICSA, CCSA, JTSJOL, JTSQUR,
-% CIVPART, EMRATIO, TEMPHELPS, AWHI, MANEMP, INDPRO.
+The governed labour feature set contains initial unemployment claims
+(\texttt{ICSA}) and continued claims (\texttt{CCSA}). Labour-demand
+indicators include job openings (\texttt{JTSJOL}) and quits
+(\texttt{JTSQUR}). Broader labour-market conditions are represented by the
+labour-force participation rate (\texttt{CIVPART}), the employment--population
+ratio (\texttt{EMRATIO}), temporary-help employment (\texttt{TEMPHELPS}),
+the aggregate weekly-hours index (\texttt{AWHI}), manufacturing employment
+(\texttt{MANEMP}), and industrial production (\texttt{INDPRO}). Other labour
+targets may additionally enter a target-specific specification through lagged
+cross-target information.
 
-\subsection{Forecast stages}
-\label{subsec:forecast_stages}
+Weekly \texttt{ICSA} and \texttt{CCSA} observations are aggregated to monthly
+means before transformation. Claims, JOLTS quantities, and industrial
+production use $100\Delta\ln(X_t)$; \texttt{CIVPART}, \texttt{EMRATIO}, and
+\texttt{AWHI} enter in levels; and \texttt{TEMPHELPS} and \texttt{MANEMP}
+enter in first differences.
 
-The GDP system uses three within-quarter information stages:
-\begin{equation}
-    \mathcal{S}_{G}
-    =
-    \{\text{early quarter},\ \text{after month 1},\ \text{quarter end}\}.
-\end{equation}
+Table~\ref{tab:targets} summarizes the eight forecast targets and their
+governed transformations.
 
-The inflation system uses four within-month stages:
-\begin{equation}
-    \mathcal{S}_{\pi}
-    =
-    \{\text{month open},\ \text{mid-month},\ \text{pre-release},\ \text{month end}\}.
-\end{equation}
-
-The labour system uses five within-month stages:
-\begin{equation}
-    \mathcal{S}_{L}
-    =
-    \{\text{month open},\ \text{after week 1},\ \text{after week 2},\ \text{pre-report},\ \text{month end}\}.
-\end{equation}
-
-% TABLE PLACEHOLDER: targets / transformations / frequency / source.
 \begin{table}[H]
 \centering
 \caption{Forecast targets and transformations}
 \label{tab:targets}
 \begin{threeparttable}
+\small
 \begin{tabular}{llll}
 \toprule
-Domain & Target & Frequency & Transformation \\
+Domain & FRED series & Frequency & Transformation \\
 \midrule
-GDP & Real GDP & Quarterly & $400\Delta\ln(GDPC1_t)$ \\
-Inflation & Headline CPI & Monthly & $1200\Delta\ln(CPI_t)$ \\
-Inflation & Core CPI & Monthly & $1200\Delta\ln(CoreCPI_t)$ \\
-Inflation & Headline PCE & Monthly & $1200\Delta\ln(PCE_t)$ \\
-Inflation & Core PCE & Monthly & $1200\Delta\ln(CorePCE_t)$ \\
-Labour & Payroll employment & Monthly & $\Delta PAYEMS_t$ \\
-Labour & Unemployment rate & Monthly & Level \\
-Labour & Average hourly earnings & Monthly & $1200\Delta\ln(AHE_t)$ \\
+GDP
+    & \texttt{GDPC1}
+    & Quarterly
+    & $400\Delta\ln(GDPC1_t)$ \\
+Inflation
+    & \texttt{CPIAUCSL}
+    & Monthly
+    & $1200\Delta\ln(CPIAUCSL_t)$ \\
+Inflation
+    & \texttt{CPILFESL}
+    & Monthly
+    & $1200\Delta\ln(CPILFESL_t)$ \\
+Inflation
+    & \texttt{PCEPI}
+    & Monthly
+    & $1200\Delta\ln(PCEPI_t)$ \\
+Inflation
+    & \texttt{PCEPILFE}
+    & Monthly
+    & $1200\Delta\ln(PCEPILFE_t)$ \\
+Labour
+    & \texttt{PAYEMS}
+    & Monthly
+    & $\Delta PAYEMS_t$ \\
+Labour
+    & \texttt{UNRATE}
+    & Monthly
+    & Level \\
+Labour
+    & \texttt{CES0500000003}
+    & Monthly
+    & $1200\Delta\ln(CES0500000003_t)$ \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
-\item Notes: Replace shorthand series names and add source/release-timing details in the final paper.
+\item Notes: All source observations are obtained from the FRED/ALFRED
+real-time database. Transformations are applied to the vintage-specific
+series available at each forecast origin.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-\subsection{Ragged edges and structural missingness}
+\subsection{Forecast stages and historical origins}
+\label{subsec:forecast_stages}
+
+Forecast stages are deterministic calendar rules except for the final
+pre-release stage, which is anchored to the actual target-specific historical
+release date. This produces a sequence of historical forecast origins
+$o_{k,t,s}$ that is ordered by information arrival rather than by an arbitrary
+fixed forecast horizon.
+
+The GDP system contains five stages. For target quarter $t$, the
+\emph{early-quarter} origin is the 15th day of the first month, the
+\emph{after-month-1} origin is the 15th of the second month, the
+\emph{after-month-2} origin is the 15th of the third month, the
+\emph{quarter-end} origin is the last calendar day of the quarter, and the
+\emph{pre-advance-release} origin is one calendar day before the actual
+advance GDP release.
+
+Inflation uses four chronological stages: month open, mid-month, month end,
+and one day before the target-specific CPI or PCE release. Labour uses five:
+month open, after week 1, after week 2, month end, and one day before the
+Employment Situation release. Table~\ref{tab:forecast_stages} reports the
+audited origin counts and median distance to the corresponding target release.
+
+\begin{table}[H]
+\centering
+\caption{Historical forecast-stage calendar}
+\label{tab:forecast_stages}
+\begin{threeparttable}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llp{4.2cm}rr@{}}
+\toprule
+Domain & Stage & Calendar rule & Origins & Median days \\
+\midrule
+GDP
+ & Early quarter
+ & 15th of first month of target quarter
+ & 45 & 104 \\
+GDP
+ & After month 1
+ & 15th of second month
+ & 45 & 74 \\
+GDP
+ & After month 2
+ & 15th of third month
+ & 45 & 44 \\
+GDP
+ & Quarter end
+ & Last calendar day of target quarter
+ & 45 & 28 \\
+GDP
+ & Pre-release
+ & One day before actual advance GDP release
+ & 45 & 1 \\
+\addlinespace
+Inflation
+ & Month open
+ & First calendar day of target month
+ & 294 & 49 \\
+Inflation
+ & Mid-month
+ & 15th of target month
+ & 300 & 34 \\
+Inflation
+ & Month end
+ & Last calendar day of target month
+ & 304 & 21 \\
+Inflation
+ & Pre-release
+ & One day before target-specific release
+ & 304 & 1 \\
+\addlinespace
+Labour
+ & Month open
+ & First calendar day of target month
+ & 346 & 34 \\
+Labour
+ & After week 1
+ & Seventh calendar day
+ & 346 & 28 \\
+Labour
+ & After week 2
+ & Fourteenth calendar day
+ & 349 & 21 \\
+Labour
+ & Month end
+ & Last calendar day of target month
+ & 349 & 5 \\
+Labour
+ & Pre-report
+ & One day before Employment Situation release
+ & 349 & 1 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]\footnotesize
+\item Notes: ``Origins'' counts target--stage observations in the governed
+backtests. Initial boundary periods can contain fewer than the full set of
+stages, explaining the unequal inflation and labour counts. Median days are
+calendar days from the forecast origin to the corresponding initial target
+release.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The stage-calendar audit verifies the exact calendar rule and stored
+days-to-release value at every origin. GDP stages are strictly chronological.
+Inflation stages are also strictly chronological wherever present. Labour
+stages are non-decreasing in calendar time. In eight target months the
+month-end and pre-employment-report stages coincide because the employment
+report is released on the first day of the following month. Across the three
+labour targets this generates 24 adjacent same-calendar-day transitions. The
+stored real-time information-set hashes are identical for those transitions;
+Section~\ref{sec:methodology} therefore treats them separately from genuine
+information-arrival transitions when constructing the stage-information
+contrast.
+
+\subsection{Latest-vintage counterfactual}
+
+The latest-vintage experiment is constructed so that it changes data vintage,
+not information availability. Let
+\begin{equation}
+    A_{j,\tau}(o_{k,t,s})
+    =
+    \mathbf{1}
+    \left\{
+        (j,\tau)
+        \in
+        \It^{RT}_{k,t,s}
+    \right\}
+    \label{eq:availability_mask}
+\end{equation}
+denote the historical availability mask. A frozen latest-vintage extract is
+formed by selecting, for each $(j,\tau)$ pair, the observation labelled
+\texttt{latest} with the most recent retrieval timestamp. The counterfactual
+value is then
+\begin{equation}
+    \widetilde{x}^{LV}_{j,\tau,t,s}
+    =
+    \begin{cases}
+        x^{LV}_{j,\tau},
+        &
+        \text{if a latest-vintage counterpart exists},
+        \\[4pt]
+        x^{RT}_{j,\tau,t,s},
+        &
+        \text{otherwise}.
+    \end{cases}
+    \label{eq:masked_latest_value}
+\end{equation}
+
+The counterfactual information set is
+\begin{equation}
+    \It^{LV}_{k,t,s}
+    =
+    \left\{
+        \widetilde{x}^{LV}_{j,\tau,t,s}
+        :
+        A_{j,\tau}(o_{k,t,s})=1
+    \right\}.
+    \label{eq:latest_information_set}
+\end{equation}
+Hence, by construction,
+\begin{equation}
+    \operatorname{mask}
+    \left(
+        \It^{LV}_{k,t,s}
+    \right)
+    =
+    \operatorname{mask}
+    \left(
+        \It^{RT}_{k,t,s}
+    \right).
+    \label{eq:mask_invariance}
+\end{equation}
+
+This restriction prevents the latest-vintage arm from acquiring observations
+that are known today but had not yet been released at the historical forecast
+origin. It also applies to lagged target histories: historically admissible
+previous target observations are permitted to take their latest-vintage
+values, while the current target-period observation remains unavailable
+before its release.
+
+Five daily \texttt{DCOILWTICO} observation dates present in historical
+snapshots did not have a corresponding key in the frozen latest-vintage
+extract. For these five keys the historical value is retained under
+Equation~\eqref{eq:masked_latest_value}; no interpolation or neighbouring-date
+substitution is introduced. This preserves exact mask equality. The exception
+affects 12 unique-date information-set occurrences in the raw inflation
+snapshot audit and does not leave any missing latest-vintage counterfactual
+values.
+
+\subsection{Ragged edges, aggregation, and structural missingness}
 \label{subsec:ragged_edges}
 
-A missing observation caused by the fact that a release had not yet occurred is treated as structurally unavailable information rather than as an ordinary missing value. The empirical design therefore distinguishes data defects from observations that were legitimately unavailable in real time.
+An observation that had not yet been released is treated as structurally
+unavailable information rather than as an ordinary missing value. Such cells
+are not backfilled from future releases to make the real-time panel
+rectangular.
 
-\subsection{Estimation and evaluation samples}
+The treatment of legitimate ragged edges is model-specific but fixed across
+the real-time and latest-vintage arms. In the GDP Bridge dataset, transformed
+monthly indicators are averaged within quarters. If a current-quarter feature
+has no current quarterly value, its most recently known quarterly value is
+carried forward and the affected feature is recorded. In contrast, the GDP
+mixed-frequency factor dataset preserves missing monthly observations and
+explicitly masks the target-quarter GDP realization.
+
+For inflation, daily inputs are aggregated to monthly values before
+transformation, and forecast features can use the latest admissible value at
+or before the required lagged month subject to a maximum carry of two months.
+For labour, the analogous maximum carry is four months, with weekly claims
+first aggregated to monthly means. These rules are applied identically to the
+$RT$ and $LV$ information sets.
+
+Let $\mathcal{B}_{k,m}$ denote the production data-building operator associated
+with target $k$ and model family $m$. The model inputs for the vintage
+experiment are
+\begin{equation}
+    X^{RT}_{k,t,s,m}
+    =
+    \mathcal{B}_{k,m}
+    \left(
+        \It^{RT}_{k,t,s}
+    \right),
+    \qquad
+    X^{LV}_{k,t,s,m}
+    =
+    \mathcal{B}_{k,m}
+    \left(
+        \It^{LV}_{k,t,s}
+    \right).
+    \label{eq:production_builders}
+\end{equation}
+Thus the same transformations, aggregation rules, lag construction,
+complete-case restrictions, ragged-edge treatment, and feature-carry rules
+operate on both vintage arms.
+
+\subsection{Target realizations and evaluation samples}
 \label{subsec:samples}
-% Insert exact initial estimation windows, backtest start dates,
-% number of forecast origins, and target-by-stage counts once frozen.
+
+Forecasts are scored against the target as reported in its initial-release
+snapshot rather than against a subsequently revised final value. Denote this
+common realization by
+\begin{equation}
+    y^{eval}_{k,t}
+    =
+    y^{IR}_{k,t}.
+    \label{eq:initial_release_actual}
+\end{equation}
+
+For transformed targets, $y^{IR}_{k,t}$ is computed from the complete
+release-date snapshot using the same transformation as in
+Table~\ref{tab:targets}. The scoring convention is therefore fixed across
+forecast stages, candidate models, policy comparisons, and the real-time
+versus latest-vintage experiment.
+
+This separation is important for identification. The latest-vintage
+counterfactual changes historical model inputs but does not replace the
+evaluation outcome with a revised target. Consequently, differences between
+real-time and latest-vintage forecast losses cannot arise mechanically from
+using a different realization of the dependent variable.
+
+The audited stage calendars contain 225 GDP target--stage origins, 1,202
+inflation target--stage origins, and 1,739 labour target--stage origins.
+Incomplete stage sets at the beginning of the inflation and labour samples
+are retained rather than filled artificially; empirical comparisons use only
+the forecast-origin pairs required by the corresponding estimand.
+
+\subsection{Reproducibility and data-audit checks}
+
+The data architecture is validated before forecast estimation. First, the
+stage-calendar audit checks stage uniqueness, exact calendar rules,
+days-to-release calculations, and chronological ordering. Second, the
+governed series-registry audit verifies all 35 domain--series definitions,
+including target/feature roles, frequency, transformations, aggregation
+rules, and registry start dates.
+
+Third, the vintage experiment is audited at both the raw-information and
+model-input levels. The raw audit verifies exact historical-mask preservation
+for GDP, inflation, and labour. The production builders are then applied
+independently to the real-time and latest-vintage snapshots at every evaluated
+origin. Across 3,391 model-input constructions---225 GDP Bridge, 225 GDP
+mixed-frequency factor, 1,202 inflation, and 1,739 labour
+constructions---both vintage arms build successfully and retain identical
+indexes, feature structures, ragged-edge/imputation status, and latest
+observable periods. Every evaluated construction nevertheless contains at
+least one numerical real-time/latest-vintage difference.
+
+The frozen latest-vintage extract, its retrieval metadata, and its SHA-256
+checksum are stored with the replication artifacts. This prevents subsequent
+revisions to the source database from silently changing the latest-vintage
+counterfactual used in the empirical results.
