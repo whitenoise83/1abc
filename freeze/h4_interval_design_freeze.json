@@ -1,0 +1,62 @@
+{
+  "availability_rule": "historical actual_release_date must be strictly earlier than current forecast_date",
+  "benchmark_inference": "primary interval score minus benchmark interval score; Newey-West HAC SE with Bartlett weights and bandwidth floor(4*(n/100)^(2/9)); negative favors primary",
+  "benchmarks": {
+    "GDP": [
+      "gaussian_rmse"
+    ],
+    "Inflation": [
+      "rolling_q80",
+      "gaussian_rmse"
+    ],
+    "Labour": [
+      "rolling_q80",
+      "gaussian_rmse"
+    ]
+  },
+  "calibration_scope": "same target, same forecast stage, same frozen selected model",
+  "coverage_inference": [
+    "Wilson 95% binomial confidence interval",
+    "Christoffersen unconditional coverage LR",
+    "Christoffersen violation-independence LR",
+    "joint conditional-coverage LR"
+  ],
+  "evaluation_start": {
+    "GDP": "2023Q2",
+    "Inflation": "2023-02",
+    "Labour": "2023-02"
+  },
+  "fallback_rule": "none; cells below minimum history are H4-ineligible",
+  "gaussian_rmse_definition": "Phi^-1(0.90) times sqrt(mean prior signed-error squared), centered on point forecast",
+  "history_rule": "all prior finite errors satisfying the release-date gate are eligible before application of the domain rolling window; development, embargo, and earlier evaluation errors may enter once observable",
+  "hypothesis": "H4",
+  "interval_score": "central Winkler score with alpha=0.20",
+  "macropulse_source_commit": "c4f357e463354f72eabead3dbc7f3b14ae71bec5",
+  "nominal_coverage": 0.8,
+  "pre_h4_checkpoint": "54f70fdd6d2d673731e619a371227fc2e0d10864",
+  "primary": {
+    "GDP": {
+      "method": "rolling_q80",
+      "minimum_prior_errors": 12,
+      "quantile": "numpy higher",
+      "window": 20
+    },
+    "Inflation": {
+      "half_life_months": 18.0,
+      "method": "exp_weighted_q80",
+      "minimum_prior_errors": 24,
+      "weight": "0.5^(age/18)",
+      "window": 48
+    },
+    "Labour": {
+      "decay": 0.94,
+      "method": "exp_weighted_q80",
+      "minimum_prior_errors": 24,
+      "weight": "0.94^age",
+      "window": 48
+    }
+  },
+  "research_policy": "freeze/research_stage_policy_freeze.csv",
+  "rolling_q80_definition": "absolute-error empirical 0.80 quantile with NumPy method=higher",
+  "sample_rule": "stage-specific evaluation; no complete-stage balancing requirement"
+}
