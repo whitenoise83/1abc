@@ -1,0 +1,58 @@
+{
+  "analysis_script_sha256": "80b6886b8f449aaf8179b0fda1565790f16f1f409fc230d13d797b659cb30d96",
+  "estimand": "loss_latest_vintage_minus_loss_real_time",
+  "evaluation_start": {
+    "GDP": "2023Q2",
+    "Inflation": "2023-02",
+    "Labour": "2023-02"
+  },
+  "frozen_latest_manifest_sha256": "fd6bbf7f94cc41ef2c88b913ea061f33571959c635dd19db87dc41dcde196bf0",
+  "frozen_latest_sha256": "1f418a21ed774796da4e4426f3270340d296ecca571b205c98b24d81be1346af",
+  "gdp_rolling_rule": "Each arm uses its own prior same-stage Bridge/DFM forecast errors; window=12, min_history=8, weights in [0.10,0.70]; current errors enter only subsequent weights.",
+  "h3_input_freeze_commit": "6e6c6464d930c0782dbd998b551fad2eaf42c7ec",
+  "hypothesis": "H3",
+  "inference": "Newey-West HAC SE, Bartlett weights, bandwidth floor(4*(n/100)^(2/9)).",
+  "macropulse_source_commit": "c4f357e463354f72eabead3dbc7f3b14ae71bec5",
+  "mask_rule": "Latest-vintage values replace RT values only on the exact RT series/date mask; missing frozen-latest keys fall back to RT.",
+  "negative_value_interpretation": "latest-vintage counterfactual improves accuracy",
+  "original_h3_preanalysis_commit": "275797fd3109140737bf1095edc968252a18b925",
+  "outcome_rule": "same stored initial-release outcome in both arms",
+  "output_hashes": {
+    "h3_vintage_detail.csv": "f6dddcae40a7c3ddff23e86e19d7ae16be0dead03b7feb99604fb730806e41b0",
+    "h3_vintage_sample_audit.csv": "12337480ebec0fe86a588499bbe95b54bcc409ff3dec390b3b9da5e3dc2ce5d2",
+    "h3_vintage_summary.csv": "6f36c9333b8ed7cefeebef32286f3ed5878a0ca370bad5170158b4adfab3842f",
+    "h3_vintage_target_summary.csv": "51cfb60f2f45f9d2e1229f8bbb039b56b2d215fb44c772c9e98e68aae8e62e3d"
+  },
+  "package_versions": {
+    "duckdb": "1.5.5",
+    "numpy": "2.5.1",
+    "pandas": "2.3.3",
+    "python": "3.14.2",
+    "scikit-learn": "1.9.0",
+    "scipy": "1.18.0",
+    "statsmodels": "0.14.6"
+  },
+  "policy_freeze_commit": "420feaeb51dca3abc79e9426aacca3816fe6ad5a",
+  "preanalysis_code_commit": "1b03d73c460e226ed40d57a021d6c0684921ccaa",
+  "primary_loss": "squared_error",
+  "primary_sample_rule": "All available paired RT/LV target-stage cells are retained stage by stage; stage-cell n may differ at the end of sample.",
+  "row_counts": {
+    "detail": 1302,
+    "fallback_rows_total": 4,
+    "incomplete_target_periods": 6,
+    "origins_with_changed_values": 1302,
+    "sample_audit": 294,
+    "stage_summary": 36,
+    "target_summary": 8
+  },
+  "rt_reproduction_tolerance": 1e-06,
+  "secondary_loss": "absolute_error",
+  "source_backtest_ids": {
+    "GDP": "382b4c6b-ef76-4ca1-b52f-d5e3e1ac66b1",
+    "Inflation": "fdd2f573-a425-4abc-8056-f9843955bac2",
+    "Labour": "834e0655-ba81-4b96-b42c-e1cdda73b847"
+  },
+  "stage_policy_sha256": "e243be0c4a02ea73e95da274436d280dcc12b7b137bef56b8cb2074e96a75964",
+  "structural_hotfix_reason": "The original preanalysis code incorrectly required every target period to contain every stage. A structure-only diagnostic identified end-of-sample inflation periods with missing source stages; no H3 output files were produced by the failed run.",
+  "target_summary_rule": "Secondary target summary uses only target periods with the complete predeclared stage set, averages stage loss differentials within period, then applies HAC across periods."
+}
