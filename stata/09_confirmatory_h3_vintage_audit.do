@@ -89,20 +89,20 @@ bysort domain_name target_series target_period: ///
 
 gen complete_stage_set = ///
     observed_stage_count == expected_stage_count
-gen primary_stage_cell_included = 1
-gen secondary_target_summary_included = complete_stage_set
+
+gen primary_included = 1
+gen secondary_included = complete_stage_set
 
 keep domain_name target_series target_period ///
     expected_stage_count observed_stage_count complete_stage_set ///
-    primary_stage_cell_included secondary_target_summary_included
+    primary_included secondary_included
 duplicates drop
 
 rename expected_stage_count expected_stage_count_using
 rename observed_stage_count observed_stage_count_using
 rename complete_stage_set complete_stage_set_using
-rename primary_stage_cell_included primary_stage_cell_included_using
-rename secondary_target_summary_included ///
-    secondary_target_summary_included_using
+rename primary_included primary_included_using
+rename secondary_included secondary_included_using
 
 tempfile sample_reproduced
 save `sample_reproduced'
@@ -113,6 +113,18 @@ import delimited ///
 
 isid domain_name target_series target_period
 
+* CSV header secondary_target_summary_included is 33 characters.
+* Stata truncates it on import. Resolve both inclusion columns by prefix.
+ds primary_stage_cell*
+local primaryvar `r(varlist)'
+assert wordcount("`primaryvar'") == 1
+rename `primaryvar' primary_included
+
+ds secondary_target_summary*
+local secondaryvar `r(varlist)'
+assert wordcount("`secondaryvar'") == 1
+rename `secondaryvar' secondary_included
+
 merge 1:1 domain_name target_series target_period ///
     using `sample_reproduced'
 
@@ -122,10 +134,8 @@ drop _merge
 assert expected_stage_count == expected_stage_count_using
 assert observed_stage_count == observed_stage_count_using
 assert complete_stage_set == complete_stage_set_using
-assert primary_stage_cell_included == ///
-    primary_stage_cell_included_using
-assert secondary_target_summary_included == ///
-    secondary_target_summary_included_using
+assert primary_included == primary_included_using
+assert secondary_included == secondary_included_using
 
 /***********************************************************************
 * 3. FROZEN STAGE-POLICY IDENTITY
