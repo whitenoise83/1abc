@@ -1,0 +1,378 @@
+
+  ___  ____  ____  ____  ____ ®
+ /__    /   ____/   /   ____/      StataNow 19.5
+___/   /   /___/   /   /___/       BE—Basic Edition
+
+ Statistics and Data Science       Copyright 1985-2025 StataCorp LLC
+                                   StataCorp
+                                   4905 Lakeway Drive
+                                   College Station, Texas 77845 USA
+                                   800-782-8272        https://www.stata.com
+                                   979-696-4600        service@stata.com
+
+Stata license: Single-user , expiring  7 May 2027
+Serial number: 301909003295
+  Licensed to: Cenk Yildiran
+               Independent Researcher
+
+Notes:
+      1. Stata is running in batch mode.
+      2. Unicode is supported; see help unicode_advice.
+
+. do stata\10_confirmatory_h4_intervals_audit.do 
+
+. /***********************************************************************
+> * MacroPulse Scientific Paper
+> * Confirmatory H4 Prior-Only Prediction-Interval Audit
+> *
+> * File:
+> *   stata/10_confirmatory_h4_intervals_audit.do
+> *
+> * Purpose:
+> *   Independently audit H4 output structure, frozen research-policy
+> *   identity, strict release-date eligibility, interval algebra,
+> *   coverage/width/score summaries, and primary-vs-benchmark means.
+> *
+> * Note:
+> *   Exact weighted-quantile construction and HAC standard errors remain
+> *   frozen in the precommitted Python implementation. This Stata audit
+> *   independently verifies the resulting interval arithmetic and reported
+> *   non-HAC summary quantities.
+> ***********************************************************************/
+. 
+. version 19
+
+. clear all
+
+. set more off
+
+. 
+. display as text "============================================================
+> "
+============================================================
+
+. display as text "10_confirmatory_h4_intervals_audit.do"
+10_confirmatory_h4_intervals_audit.do
+
+. display as text "Confirmatory H4 prior-only interval audit"
+Confirmatory H4 prior-only interval audit
+
+. display as text "============================================================
+> "
+============================================================
+
+. 
+. /***********************************************************************
+> * 1. DETAIL-LEVEL STRUCTURAL AND ALGEBRAIC GATES
+> ***********************************************************************/
+. 
+. import delimited ///
+>     "outputs/confirmatory/h4_interval_detail.csv", ///
+>     clear varnames(1) encoding("UTF-8") asdouble
+(30 vars, 3,846 obs)
+
+. 
+. assert _N > 0
+
+. isid domain_name target_series target_period forecast_stage interval_method
+
+. 
+. assert abs(nominal_coverage - .8) <= 1e-6
+
+. assert inlist(eligible_h4, 0, 1)
+
+. assert inlist(is_primary, 0, 1)
+
+. 
+. assert interval_method == "rolling_q80" if domain_name == "GDP" & is_primary 
+> == 1
+
+. assert interval_method == "exp_weighted_q80" if ///
+>     inlist(domain_name, "Inflation", "Labour") & is_primary == 1
+
+. 
+. assert calibration_window == 20 if domain_name == "GDP"
+
+. assert minimum_prior_errors == 12 if domain_name == "GDP"
+
+. assert calibration_window == 48 if inlist(domain_name, "Inflation", "Labour")
+
+. assert minimum_prior_errors == 24 if inlist(domain_name, "Inflation", "Labour
+> ")
+
+. 
+. assert calibration_window_count <= calibration_window
+
+. assert prior_observable_error_count >= calibration_window_count
+
+. assert calibration_window_count >= minimum_prior_errors if eligible_h4 == 1
+
+. assert calibration_window_count < minimum_prior_errors if eligible_h4 == 0
+(null assertion)
+
+. 
+. gen double fd = date(forecast_date, "YMD")
+
+. gen double ard = date(actual_release_date, "YMD")
+
+. gen double maxcal = date(max_calibration_release_date, "YMD")
+
+. format fd ard maxcal %td
+
+. 
+. assert !missing(fd)
+
+. assert !missing(ard)
+
+. assert maxcal < fd if eligible_h4 == 1
+
+. assert calibration_cutoff_target_period != "" if eligible_h4 == 1
+
+. 
+. assert missing(interval_half_width) if eligible_h4 == 0
+(null assertion)
+
+. assert missing(lower_80) if eligible_h4 == 0
+(null assertion)
+
+. assert missing(upper_80) if eligible_h4 == 0
+(null assertion)
+
+. assert missing(interval_covered) if eligible_h4 == 0
+(null assertion)
+
+. assert missing(interval_score) if eligible_h4 == 0
+(null assertion)
+
+. 
+. assert interval_half_width >= 0 if eligible_h4 == 1
+
+. assert interval_width >= 0 if eligible_h4 == 1
+
+. 
+. assert abs(lower_80 - (point_forecast - interval_half_width)) <= ///
+>     1e-6 * max(1, abs(lower_80), abs(point_forecast), ///
+>     abs(interval_half_width)) if eligible_h4 == 1
+
+. 
+. assert abs(upper_80 - (point_forecast + interval_half_width)) <= ///
+>     1e-6 * max(1, abs(upper_80), abs(point_forecast), ///
+>     abs(interval_half_width)) if eligible_h4 == 1
+
+. 
+. assert abs(interval_width - (upper_80 - lower_80)) <= ///
+>     1e-6 * max(1, abs(interval_width), abs(upper_80), ///
+>     abs(lower_80)) if eligible_h4 == 1
+
+. 
+. gen byte covered_reproduced = ///
+>     actual >= lower_80 & actual <= upper_80 if eligible_h4 == 1
+
+. gen byte lower_reproduced = actual < lower_80 if eligible_h4 == 1
+
+. gen byte upper_reproduced = actual > upper_80 if eligible_h4 == 1
+
+. 
+. assert interval_covered == covered_reproduced if eligible_h4 == 1
+
+. assert lower_miss == lower_reproduced if eligible_h4 == 1
+
+. assert upper_miss == upper_reproduced if eligible_h4 == 1
+
+. assert violation == 1 - interval_covered if eligible_h4 == 1
+
+. assert lower_miss + upper_miss == violation if eligible_h4 == 1
+
+. 
+. gen double score_reproduced = interval_width if eligible_h4 == 1
+
+. replace score_reproduced = score_reproduced + ///
+>     10 * (lower_80 - actual) if eligible_h4 == 1 & actual < lower_80
+(180 real changes made)
+
+. replace score_reproduced = score_reproduced + ///
+>     10 * (actual - upper_80) if eligible_h4 == 1 & actual > upper_80
+(146 real changes made)
+
+. 
+. assert abs(interval_score - score_reproduced) <= ///
+>     1e-6 * max(1, abs(interval_score), abs(score_reproduced)) ///
+>     if eligible_h4 == 1
+
+. 
+. tempfile h4_detail
+
+. save `h4_detail'
+file C:\Users\Cenk\AppData\Local\Temp\ST_6fc_000001.tmp saved as .dta format
+
+. 
+. /***********************************************************************
+> * 2. FROZEN RESEARCH STAGE-POLICY IDENTITY
+> ***********************************************************************/
+. 
+. import delimited ///
+>     "freeze/research_stage_policy_freeze.csv", ///
+>     clear varnames(1) encoding("UTF-8") asdouble
+(11 vars, 36 obs)
+
+. 
+. keep domain_name target_series stage_order forecast_stage selected_model
+
+. rename selected_model frozen_model
+
+. tempfile frozen_policy
+
+. save `frozen_policy'
+file C:\Users\Cenk\AppData\Local\Temp\ST_6fc_000002.tmp saved as .dta format
+
+. 
+. use `h4_detail', clear
+
+. merge m:1 domain_name target_series stage_order forecast_stage ///
+>     using `frozen_policy'
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                             3,846  (_merge==3)
+    -----------------------------------------
+
+. 
+. assert _merge == 3
+
+. drop _merge
+
+. assert selected_model == frozen_model
+
+. drop frozen_model
+
+. 
+. /***********************************************************************
+> * 3. ELIGIBILITY-AUDIT REPRODUCTION FROM PRIMARY DETAIL
+> ***********************************************************************/
+. 
+. keep if is_primary == 1
+(2,544 observations deleted)
+
+. keep domain_name target_series stage_order forecast_stage target_period ///
+>     selected_model forecast_date actual_release_date ///
+>     prior_observable_error_count calibration_window_count ///
+>     minimum_prior_errors calibration_window ///
+>     calibration_cutoff_target_period max_calibration_release_date ///
+>     eligible_h4
+
+. 
+. rename prior_observable_error_count prior_count_using
+
+. rename calibration_window_count window_count_using
+
+. rename minimum_prior_errors min_prior_using
+
+. rename calibration_window window_using
+
+. rename calibration_cutoff_target_period cutoff_period_using
+
+. rename max_calibration_release_date max_release_using
+
+. rename eligible_h4 eligible_using
+
+. 
+. tempfile eligibility_reproduced
+
+. save `eligibility_reproduced'
+file C:\Users\Cenk\AppData\Local\Temp\ST_6fc_000003.tmp saved as .dta format
+
+. 
+. import delimited ///
+>     "outputs/confirmatory/h4_interval_eligibility_audit.csv", ///
+>     clear varnames(1) encoding("UTF-8") asdouble
+(15 vars, 1,302 obs)
+
+. 
+. isid domain_name target_series target_period forecast_stage
+
+. 
+. merge 1:1 domain_name target_series stage_order forecast_stage target_period 
+> ///
+>     selected_model forecast_date actual_release_date ///
+>     using `eligibility_reproduced'
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                             1,302  (_merge==3)
+    -----------------------------------------
+
+. 
+. assert _merge == 3
+
+. drop _merge
+
+. 
+. assert prior_observable_error_count == prior_count_using
+
+. assert calibration_window_count == window_count_using
+
+. assert minimum_prior_errors == min_prior_using
+
+. assert calibration_window == window_using
+
+. assert calibration_cutoff_target_period == cutoff_period_using
+
+. assert max_calibration_release_date == max_release_using
+
+. assert eligible_h4 == eligible_using
+
+. 
+. /***********************************************************************
+> * 4. STAGE-CELL SUMMARY REPRODUCTION
+> ***********************************************************************/
+. 
+. use `h4_detail', clear
+
+. keep if eligible_h4 == 1
+(0 observations deleted)
+
+. 
+. collapse ///
+>     (count) n_reproduced=interval_covered ///
+>     (sum) covered_reproduced=interval_covered ///
+>           violations_reproduced=violation ///
+>           lower_misses_reproduced=lower_miss ///
+>           upper_misses_reproduced=upper_miss ///
+>     (mean) avg_width_reproduced=interval_width ///
+>            avg_half_reproduced=interval_half_width ///
+>            mean_score_reproduced=interval_score ///
+>     (median) median_score_reproduced=interval_score ///
+>     (min) min_cal_reproduced=calibration_window_count ///
+>     (max) max_cal_reproduced=calibration_window_count, ///
+>     by(domain_name target_series stage_order forecast_stage selected_model //
+> /
+>        interval_method is_primary)
+
+. 
+. gen double coverage_reproduced = covered_reproduced / n_reproduced
+
+. gen double lower_rate_reproduced = lower_misses_reproduced / n_reproduced
+
+. gen double upper_rate_reproduced = upper_misses_reproduced / n_reproduced
+
+. 
+. tempfile summary_reproduced
+
+. save `summary_reproduced'
+file C:\Users\Cenk\AppData\Local\Temp\ST_6fc_000004.tmp saved as .dta format
+
+. 
+. import delimited ///
+>     "outputs/confirmatory/h4_interval_summary.csv", ///
+>     clear varnames(1) encoding("UTF-8") asdouble
+(0 vars, 0 obs)
+
+. 
+. isid domain_name target_series stage_order interval_method
+no variables defined
+r(111);
+
+end of do-file
+r(111);

@@ -1,0 +1,82 @@
+{
+  "analysis_script_sha256": "f44ba7a9e31e4b7622ebb1f71868aa521f63e924c4d25f398b01645b22eaa412",
+  "availability_rule": "A calibration error is admissible only when its stored actual_release_date is strictly earlier than the current forecast_date.",
+  "coverage_inference": "Wilson 95% confidence interval; Christoffersen unconditional coverage, violation independence, and joint conditional-coverage likelihood-ratio tests.",
+  "design_freeze_sha256": "13bf3b75e65c0a9ec0b9362d57005f170e3b1d896de8c051b948cdef8e23485c",
+  "domain_methods": {
+    "GDP": {
+      "benchmarks": [
+        "gaussian_rmse"
+      ],
+      "minimum": 12,
+      "primary": "rolling_q80",
+      "window": 20
+    },
+    "Inflation": {
+      "benchmarks": [
+        "rolling_q80",
+        "gaussian_rmse"
+      ],
+      "half_life": 18.0,
+      "minimum": 24,
+      "primary": "exp_weighted_q80",
+      "window": 48
+    },
+    "Labour": {
+      "benchmarks": [
+        "rolling_q80",
+        "gaussian_rmse"
+      ],
+      "decay": 0.94,
+      "minimum": 24,
+      "primary": "exp_weighted_q80",
+      "window": 48
+    }
+  },
+  "estimand": "prior_only_80_percent_prediction_interval_calibration",
+  "evaluation_start": {
+    "GDP": "2023Q2",
+    "Inflation": "2023-02",
+    "Labour": "2023-02"
+  },
+  "gaussian_benchmark_rule": "NormalDist().inv_cdf(0.90) * sqrt(mean(prior signed error^2)).",
+  "hypothesis": "H4",
+  "inflation_weight_rule": "0.5 ** (age / 18), newest error age zero.",
+  "labour_weight_rule": "0.94 ** age, newest error age zero.",
+  "macropulse_source_commit": "c4f357e463354f72eabead3dbc7f3b14ae71bec5",
+  "nominal_coverage": 0.8,
+  "output_hashes": {
+    "h4_interval_detail.csv": "38c747a6d575a20c1806ed076dab2da33f5a5f85dcf98f78551332519f91c68a",
+    "h4_interval_eligibility_audit.csv": "f1f71a19af27196e56dc9c3bf495a13ed1eecf1a4a0a53658d57e7ae0640dbb5",
+    "h4_interval_method_comparisons.csv": "fee3f933c94430f4d809da495cfab53046f585db09425628daf5424699d9b156",
+    "h4_interval_summary.csv": "48fd2b7bbf2d69e7916c6a13809b4e70cc24762656e3e6a678bc6b8a7e820d36"
+  },
+  "package_versions": {
+    "duckdb": "1.5.5",
+    "numpy": "2.5.1",
+    "pandas": "2.3.3",
+    "python": "3.14.2"
+  },
+  "policy_freeze_commit": "420feaeb51dca3abc79e9426aacca3816fe6ad5a",
+  "policy_rule": "Intervals surround the development-frozen research stage-policy forecast; calibration is same target, same stage, same selected model.",
+  "pre_h4_checkpoint": "54f70fdd6d2d673731e619a371227fc2e0d10864",
+  "preanalysis_code_commit": "a1a706f792580730d29021bd9c48b776d2246f09",
+  "rolling_quantile_rule": "NumPy empirical q80 with method='higher'.",
+  "row_counts": {
+    "detail": 3846,
+    "eligibility": 1302,
+    "method_comparisons": 67,
+    "primary_eligible_forecasts": 1302,
+    "primary_ineligible_forecasts": 0,
+    "summary": 103
+  },
+  "sample_rule": "Stage-specific available evaluation cells; no complete-stage balancing. Cells below the domain minimum calibration history are H4-ineligible.",
+  "score_inference": "Primary interval score minus benchmark score; Newey-West HAC SE with Bartlett weights and bandwidth floor(4*(n/100)^(2/9)); negative favours primary.",
+  "source_backtest_ids": {
+    "GDP": "382b4c6b-ef76-4ca1-b52f-d5e3e1ac66b1",
+    "Inflation": "fdd2f573-a425-4abc-8056-f9843955bac2",
+    "Labour": "834e0655-ba81-4b96-b42c-e1cdda73b847"
+  },
+  "source_stage_policy_sha256": "e243be0c4a02ea73e95da274436d280dcc12b7b137bef56b8cb2074e96a75964",
+  "stata_audit_sha256": "4bab2f434547b72dd26bba6c2d9ff77688902af4550157a26beebdfe0455400f"
+}
