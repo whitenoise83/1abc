@@ -32,7 +32,7 @@ display as text "============================================================"
 
 import delimited ///
     "outputs/confirmatory/h4_interval_detail.csv", ///
-    clear varnames(1) encoding("UTF-8")
+    clear varnames(1) encoding("UTF-8") asdouble
 
 assert _N > 0
 isid domain_name target_series target_period forecast_stage interval_method
@@ -116,7 +116,7 @@ save `h4_detail'
 
 import delimited ///
     "freeze/research_stage_policy_freeze.csv", ///
-    clear varnames(1) encoding("UTF-8")
+    clear varnames(1) encoding("UTF-8") asdouble
 
 keep domain_name target_series stage_order forecast_stage selected_model
 rename selected_model frozen_model
@@ -157,7 +157,7 @@ save `eligibility_reproduced'
 
 import delimited ///
     "outputs/confirmatory/h4_interval_eligibility_audit.csv", ///
-    clear varnames(1) encoding("UTF-8")
+    clear varnames(1) encoding("UTF-8") asdouble
 
 isid domain_name target_series target_period forecast_stage
 
@@ -204,7 +204,7 @@ save `summary_reproduced'
 
 import delimited ///
     "outputs/confirmatory/h4_interval_summary.csv", ///
-    clear varnames(1) encoding("UTF-8")
+    clear varnames(1) encoding("UTF-8") asdouble
 
 isid domain_name target_series stage_order interval_method
 merge 1:1 domain_name target_series stage_order forecast_stage ///
@@ -299,7 +299,7 @@ save `comparison_reproduced'
 
 import delimited ///
     "outputs/confirmatory/h4_interval_method_comparisons.csv", ///
-    clear varnames(1) encoding("UTF-8")
+    clear varnames(1) encoding("UTF-8") asdouble
 
 isid domain_name target_series stage_order benchmark_method
 merge 1:1 domain_name target_series stage_order forecast_stage selected_model ///
