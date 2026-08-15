@@ -187,17 +187,20 @@ collapse ///
     (count) n_reproduced=interval_covered ///
     (sum) covered_reproduced=interval_covered ///
           violations_reproduced=violation ///
-    (mean) coverage_reproduced=interval_covered ///
-           avg_width_reproduced=interval_width ///
+          lower_misses_reproduced=lower_miss ///
+          upper_misses_reproduced=upper_miss ///
+    (mean) avg_width_reproduced=interval_width ///
            avg_half_reproduced=interval_half_width ///
            mean_score_reproduced=interval_score ///
-           lower_rate_reproduced=lower_miss ///
-           upper_rate_reproduced=upper_miss ///
     (median) median_score_reproduced=interval_score ///
     (min) min_cal_reproduced=calibration_window_count ///
     (max) max_cal_reproduced=calibration_window_count, ///
     by(domain_name target_series stage_order forecast_stage selected_model ///
        interval_method is_primary)
+
+gen double coverage_reproduced = covered_reproduced / n_reproduced
+gen double lower_rate_reproduced = lower_misses_reproduced / n_reproduced
+gen double upper_rate_reproduced = upper_misses_reproduced / n_reproduced
 
 tempfile summary_reproduced
 save `summary_reproduced'
@@ -284,15 +287,19 @@ gen double coverage_diff = primary_covered - benchmark_covered
 
 collapse ///
     (count) n_reproduced=score_diff ///
-    (mean) primary_coverage_reproduced=primary_covered ///
-           benchmark_coverage_reproduced=benchmark_covered ///
-           coverage_diff_reproduced=coverage_diff ///
-           mean_score_diff_reproduced=score_diff ///
+    (sum) primary_covered_sum=primary_covered ///
+          benchmark_covered_sum=benchmark_covered ///
+          coverage_diff_sum=coverage_diff ///
+    (mean) mean_score_diff_reproduced=score_diff ///
            mean_width_diff_reproduced=width_diff ///
     (median) median_score_diff_reproduced=score_diff ///
              median_width_diff_reproduced=width_diff, ///
     by(domain_name target_series stage_order forecast_stage selected_model ///
        primary_method benchmark_method)
+
+gen double primary_coverage_reproduced = primary_covered_sum / n_reproduced
+gen double benchmark_coverage_reproduced = benchmark_covered_sum / n_reproduced
+gen double coverage_diff_reproduced = coverage_diff_sum / n_reproduced
 
 tempfile comparison_reproduced
 save `comparison_reproduced'
