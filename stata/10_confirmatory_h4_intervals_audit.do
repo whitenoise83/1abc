@@ -37,7 +37,7 @@ import delimited ///
 assert _N > 0
 isid domain_name target_series target_period forecast_stage interval_method
 
-assert nominal_coverage == .8
+assert abs(nominal_coverage - .8) <= 1e-6
 assert inlist(eligible_h4, 0, 1)
 assert inlist(is_primary, 0, 1)
 
