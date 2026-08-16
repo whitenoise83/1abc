@@ -1,0 +1,247 @@
+{
+  "confirmatory_archives": {
+    "h1_h2": "689ccd7dff4cf3ade0e92c1d717f339b6229c6d4",
+    "h3": "2c9942fdc96e7c04e84d4312ec9554d6e93015bb",
+    "h4": "1543a7cce4049dbeab01421914a3dfba7c72b49b"
+  },
+  "design_name": "MacroPulse paper robustness and sensitivity analysis",
+  "design_version": 1,
+  "exercises": [
+    {
+      "alternative_model_rule": {
+        "eligibility": "candidate must have valid forecasts at every stage used for the target on the development common sample",
+        "no_evaluation_use": true,
+        "selection": "runner-up pooled development MSE model after excluding the primary fixed comparator",
+        "selection_sample": "same primary development sample used for the frozen fixed comparator",
+        "tie_break": [
+          "pooled development MAE",
+          "model name lexical order"
+        ]
+      },
+      "evaluation": {
+        "comparisons": "same adjacent-stage pairs as primary H1",
+        "inference": "same Newey-West HAC rule as confirmatory analysis",
+        "metrics": [
+          "squared-error loss differential",
+          "absolute-error loss differential"
+        ],
+        "same_information_hash_exclusion": true,
+        "sample": "unchanged confirmatory evaluation sample"
+      },
+      "id": "R1",
+      "name": "H1 alternative fixed-model sensitivity",
+      "purpose": "Test whether the H1 information-arrival conclusion depends on the single primary fixed model chosen for each target.",
+      "report": [
+        "alternative fixed model by target",
+        "all adjacent-stage mean loss differentials and raw p-values",
+        "sign concordance with primary H1",
+        "count of lower-loss later stages",
+        "count of nominal 5% improvements and deteriorations"
+      ]
+    },
+    {
+      "alternative_development_end": {
+        "GDP": "2022Q2",
+        "Inflation": "2022-06",
+        "Labour": "2022-06"
+      },
+      "evaluation": {
+        "inference": "same Newey-West HAC rule as confirmatory H2",
+        "metrics": [
+          "squared-error loss differential",
+          "absolute-error loss differential"
+        ],
+        "same_model_ties": "reported as mechanical ties and excluded from informative comparison counts",
+        "sample": "unchanged confirmatory evaluation sample"
+      },
+      "id": "R2",
+      "name": "H2 shortened-development policy stability",
+      "purpose": "Test whether the stage-policy conclusions depend on using observations close to the original policy freeze.",
+      "report": [
+        "alternative stage-policy and fixed-comparator mappings",
+        "mapping changes relative to the primary freeze",
+        "all informative target-stage loss differentials and raw p-values",
+        "directional concordance with primary H2"
+      ],
+      "selection_rules": {
+        "candidate_universe": "unchanged frozen candidate universe",
+        "fixed_comparator": "same pooled development MSE then MAE then model-name rule",
+        "post_cutoff_pre_evaluation_observations": "excluded from selection and retained only as an unused gap before the unchanged evaluation sample",
+        "stage_policy": "same target-stage minimum development MSE rule and original tie breaks"
+      }
+    },
+    {
+      "id": "R3",
+      "inputs": "archived H3 stage-level results only; no H3 forecast regeneration",
+      "name": "H3 stage-level vintage heterogeneity",
+      "purpose": "Determine whether target-level vintage conclusions are broad across release stages or concentrated in individual stages.",
+      "report": [
+        "stage-level squared-error and absolute-error differentials for every target-stage cell",
+        "within-target sign concordance across stages",
+        "number of stages favouring latest vintage",
+        "whether target-level conclusions are driven by one stage"
+      ],
+      "rules": {
+        "loss_definition": "latest-vintage loss minus real-time loss",
+        "negative_value": "latest-vintage counterfactual improves measured accuracy",
+        "no_complete_stage_balancing": true,
+        "sample": "all available paired RT/LV stage cells from the archived H3 design"
+      }
+    },
+    {
+      "evaluation": {
+        "inference": "same Newey-West HAC bandwidth rule as frozen H4",
+        "metrics": [
+          "coverage",
+          "Wilson 95% interval",
+          "average width",
+          "Winkler interval score"
+        ],
+        "paired_comparison": "variant interval score minus frozen primary H4 interval score"
+      },
+      "id": "R4",
+      "invariants": {
+        "availability_gate": "actual_release_date < current forecast_date",
+        "evaluation_sample": "unchanged",
+        "fallback": "none",
+        "minimum_history": {
+          "GDP": 12,
+          "Inflation": 24,
+          "Labour": 24
+        },
+        "nominal_coverage": 0.8,
+        "scope": "same target, stage, and frozen selected model"
+      },
+      "name": "H4 calibration-memory sensitivity",
+      "purpose": "Test sensitivity of empirical interval performance to reasonable shorter- and longer-memory choices without changing the no-look-ahead gate.",
+      "report": [
+        "all stage-cell metrics for baseline and both variants",
+        "paired score differentials versus baseline",
+        "whether substantive H4 conclusions change under shorter or longer memory"
+      ],
+      "variants": {
+        "GDP": [
+          {
+            "method": "rolling_q80_higher",
+            "name": "short_window",
+            "window": 12
+          },
+          {
+            "method": "rolling_q80_higher",
+            "name": "long_window",
+            "window": 32
+          }
+        ],
+        "Inflation": [
+          {
+            "half_life": 12,
+            "method": "exp_weighted_q80",
+            "name": "short_memory",
+            "window": 48
+          },
+          {
+            "half_life": 24,
+            "method": "exp_weighted_q80",
+            "name": "long_memory",
+            "window": 48
+          }
+        ],
+        "Labour": [
+          {
+            "decay": 0.9,
+            "method": "exp_weighted_q80",
+            "name": "short_memory",
+            "window": 48
+          },
+          {
+            "decay": 0.97,
+            "method": "exp_weighted_q80",
+            "name": "long_memory",
+            "window": 48
+          }
+        ]
+      }
+    },
+    {
+      "alpha": 0.05,
+      "families": [
+        {
+          "name": "H1_squared_error",
+          "tests": 28
+        },
+        {
+          "name": "H1_absolute_error",
+          "tests": 28
+        },
+        {
+          "name": "H2_squared_error_informative_cells",
+          "tests": 11
+        },
+        {
+          "name": "H2_absolute_error_informative_cells",
+          "tests": 11
+        },
+        {
+          "name": "H3_target_squared_error",
+          "tests": 8
+        },
+        {
+          "name": "H3_target_absolute_error",
+          "tests": 8
+        },
+        {
+          "name": "H4_primary_unconditional_coverage",
+          "tests": 36
+        },
+        {
+          "name": "H4_primary_vs_gaussian_interval_score",
+          "tests": 36
+        },
+        {
+          "name": "H4_primary_vs_rolling_interval_score",
+          "tests": 31
+        }
+      ],
+      "id": "R5",
+      "method": "Holm step-down adjustment",
+      "name": "Multiplicity sensitivity",
+      "purpose": "Assess how cell-level significance statements change under transparent family-wise error control.",
+      "report": [
+        "raw and Holm-adjusted p-values for every test",
+        "which nominal 5% findings survive adjustment",
+        "no replacement of primary unadjusted confirmatory inference"
+      ]
+    }
+  ],
+  "explicitly_out_of_scope_for_this_robustness_phase": [
+    "new nonlinear or machine-learning model classes",
+    "new factor dimensions, ridge penalties, or forecast-combination hyperparameter sweeps",
+    "alternative release-stage boundary reconstruction requiring new upstream vintage data",
+    "alternative H3 latest-vintage definitions requiring new external vintage acquisition",
+    "a continually adaptive model-selection challenger",
+    "new post-hoc subsample searches"
+  ],
+  "frozen_policy_commit": "420feaeb51dca3abc79e9426aacca3816fe6ad5a",
+  "macropulse_source_commit": "c4f357e463354f72eabead3dbc7f3b14ae71bec5",
+  "pre_robustness_checkpoint": "07a96bceb38eeebfa8c306e082741c77dee13fca",
+  "principles": [
+    "All confirmatory H1-H4 outputs remain immutable and primary.",
+    "Robustness analyses are secondary and may not be used to redefine the confirmatory hypotheses, samples, policies, or interval methods.",
+    "No confirmatory output file may be regenerated or overwritten.",
+    "Where possible, robustness analyses reuse frozen source backtests and archived per-origin outputs rather than refitting production models.",
+    "All new selection rules use only pre-evaluation development observations.",
+    "Evaluation starts remain GDP 2023Q2 and Inflation/Labour 2023-02.",
+    "Loss signs retain the confirmatory conventions.",
+    "Robustness results will be reported comprehensively according to the rules below, not selected by statistical significance."
+  ],
+  "section7_planned_structure": [
+    "Robustness design and interpretation",
+    "Alternative H1 fixed model",
+    "Policy-development stability",
+    "Vintage-effect heterogeneity",
+    "Interval-calibration memory",
+    "Multiplicity-adjusted inference",
+    "Robustness synthesis"
+  ],
+  "status": "post-confirmatory robustness design frozen before new robustness computations"
+}
