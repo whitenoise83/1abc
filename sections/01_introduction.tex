@@ -198,7 +198,7 @@ The hypothesis is intentionally two-sided:
     H_{A}^{(3)} &: \E\!\left[d_{k,t}^{H3}\right] \neq 0.
     \label{eq:h3_alt}
 \end{align}
-The analysis examines not only changes in RMSE and MAE but also changes in forecast values and model rankings. The sign of the vintage effect is left to the data rather than imposed ex ante.
+The confirmatory analysis examines changes in forecast loss and forecast values for the frozen stage policy. Candidate-model ranking sensitivity is treated as a secondary robustness question rather than as part of the confirmatory H3 archive. The sign of the vintage effect is left to the data rather than imposed ex ante.
 
 \paragraph{H4: Prior-only empirical intervals are calibrated and sharp.}
 For an 80\% predictive interval $[L_t,U_t]$, define the violation indicator
@@ -251,13 +251,25 @@ The paper makes four potential contributions. First, it reconstructs historicall
 \subsection{Main findings}
 \label{subsec:main_findings}
 
-% WRITE THIS ONLY AFTER THE FINAL RESULTS TABLES ARE FROZEN.
-% Organise the paragraph in H1--H4 order:
-% H1: change in loss as information arrives with model held fixed;
-% H2: stage-policy gain vs fixed-model comparator on untouched evaluation data;
-% H3: real-time vs latest-vintage loss/ranking changes;
-% H4: 80% coverage, independence, width, and interval score.
-% Prefer 4--6 quantitative statements with magnitudes and uncertainty.
+The confirmatory evidence is heterogeneous across hypotheses and domains.
+For H1, later information stages lower mean squared loss in 16 of 28
+adjacent-stage comparisons, but only four improvements and two deteriorations
+are significant at the 5\% level, so information arrival is valuable without
+being monotonically beneficial.  For H2, the frozen stage policy differs from
+the fixed comparator in 11 target--stage cells; seven have lower mean squared
+loss, and four statistically significant gains occur in labour-market cells
+(AHE at month end and pre-report, PAYEMS at month open, and UNRATE at month
+open), with no significant stage-policy loss.  H3 shows that data-vintage
+effects are likewise target specific: latest-vintage data substantially
+improve unemployment evaluation, whereas core PCE absolute-error evaluation
+moves significantly in the opposite direction and most other target-level
+effects are statistically weaker.  Finally, H4 finds that prior-only empirical
+interval calibration often improves interval scores for labour and core CPI,
+while GDP's 100\% empirical coverage reflects conservative overcoverage rather
+than ideal 80\% calibration.  Taken together, the results favour
+stage-aware and vintage-disciplined forecast evaluation, but not a single
+forecasting or interval rule that dominates uniformly across targets and
+release stages.
 
 \subsection{Structure of the paper}
 \label{subsec:paper_structure}

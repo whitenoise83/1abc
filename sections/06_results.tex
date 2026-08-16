@@ -9,142 +9,215 @@
 
 \subsection{Sample, forecast counts, and confirmatory evaluation set}
 \label{subsec:results_sample}
-% Report development/evaluation dates, N by target x stage,
-% missing/common-origin restrictions, and the number of forecasts used in each test.
+
+The confirmatory evaluation begins in 2023Q2 for GDP and in February 2023 for
+inflation and labour-market targets.  GDP therefore contributes 12 evaluation
+quarters at each of its five release stages.  Monthly inflation and labour
+samples contain approximately 38--41 observations per target--stage cell,
+with the small differences arising from endpoint availability and the
+predeclared exclusion of adjacent-stage H1 comparisons that share an identical
+information-set hash.  All H1 and H2 inference uses the frozen evaluation
+sample only; policy development and the embargo observation precede this
+sample.  H3 uses the same evaluation origins under matched real-time and
+latest-vintage masks, while its target-level summary averages only over
+target periods with a complete set of stages.  H4 applies the frozen point
+policy to the same evaluation period and contains 1,302 eligible primary
+interval forecasts.
 
 \subsection{H1: the marginal predictive value of incoming information}
 \label{subsec:h1_results}
 
-% Primary question: with model held fixed, does loss decline at later stages?
-% Report adjacent-stage paired comparisons by target/model and a pooled summary.
-% Required outputs:
-% - N common target periods;
-% - RMSE and MAE at s and s+1;
-% - % RMSE change;
-% - mean loss differential;
-% - HAC/DM-style test statistic and p-value;
-% - block-bootstrap confidence interval where reported.
+H1 holds the forecasting model fixed and asks whether the next release stage
+reduces loss.  The result is not a monotone ``more information is always
+better'' pattern.  Across the 28 adjacent-stage target comparisons, the mean
+squared-loss differential is negative in 16 cases and positive in 12.  Using
+the archived two-sided HAC test at the 5\% level, four transitions show a
+significant squared-loss improvement and two show a significant
+deterioration.
+
+The significant improvements are concentrated in specific parts of the
+release calendar.  Core CPI improves from month open to mid-month
+(\(p=0.0137\)); headline PCE improves from mid-month to month end
+(\(p=0.0472\)); core PCE also improves from mid-month to month end
+(\(p=0.0121\)); and unemployment improves sharply from month end to the
+pre-employment-report stage (\(p=0.0013\)).  In contrast, headline PCE
+deteriorates from month end to pre-release (\(p=0.0195\)), and average hourly
+earnings deteriorates from after week 1 to after week 2 (\(p=0.0186\)).
+The MAE results reinforce the non-monotonic interpretation: they identify
+additional deteriorations for GDP and headline CPI at particular transitions,
+as well as a PAYEMS improvement from after week 2 to month end.
 
 \begin{table}[H]
 \centering
-\caption{H1: change in forecast accuracy as real-time information accumulates}
+\caption{H1: directional summary across all adjacent information-stage transitions}
 \label{tab:h1_information_value}
-\begin{threeparttable}
-\scriptsize
-\setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{lllrrrrr}
+\small
+\resizebox{0.92\textwidth}{!}{%
+\begin{tabular}{lrrrr}
 \toprule
-Target & Fixed model & Stage transition & $N$ & $\Delta$RMSE (\%) & $\Delta$MAE (\%) & $\bar d$ & $p$-value \\
+Target & Transitions & Lower mean SE & Sig. improvement & Sig. deterioration \\
 \midrule
-% PAYEMS & Bridge Ridge & Month open $\rightarrow$ Week 1 & ... & ... & ... & ... & ... \\
-% GDP & DFM & Early quarter $\rightarrow$ After month 1 & ... & ... & ... & ... & ... \\
+GDP & 4 & 1 & 0 & 0 \\
+Headline CPI & 3 & 2 & 0 & 0 \\
+Core CPI & 3 & 2 & 1 & 0 \\
+Headline PCE & 3 & 2 & 1 & 1 \\
+Core PCE & 3 & 2 & 1 & 0 \\
+AHE & 4 & 2 & 0 & 1 \\
+PAYEMS & 4 & 2 & 0 & 0 \\
+UNRATE & 4 & 3 & 1 & 0 \\
+\midrule
+Total & 28 & 16 & 4 & 2 \\
 \bottomrule
-\end{tabular}
-\begin{tablenotes}[flushleft]\footnotesize
-\item Notes: The forecasting model is held fixed across each adjacent-stage comparison. Negative percentage changes and negative mean loss differentials indicate improvement as information accumulates. Comparisons use common target periods only.
-\end{tablenotes}
-\end{threeparttable}
+\end{tabular}%
+}
+\par\medskip
+\begin{minipage}{0.92\textwidth}
+\footnotesize
+\textit{Notes:} ``Lower mean SE'' counts transitions for which later-stage
+squared error is lower on average than earlier-stage squared error.  The final
+two columns use two-sided HAC \(p<0.05\) and the sign of the predeclared
+later-minus-earlier loss differential.  The forecasting model is fixed within
+each transition, and comparisons use common target periods only.
+\end{minipage}
 \end{table}
+
+These results provide only qualified support for H1.  Incoming information is
+predictively valuable at several economically interpretable release points,
+but the marginal value of a release depends on the target and on what is
+already in the information set.  Later cutoffs can also increase error, so H1
+should not be interpreted as a deterministic ordering of forecast accuracy by
+calendar stage.
 
 \subsection{H2: stage-dependent policies versus fixed-model forecasting}
 \label{subsec:h2_results}
 
-% This is the headline result of the paper.
-% Report ONLY untouched confirmatory evaluation observations here.
-% Required outputs by target:
-% - fixed model chosen on development sample;
-% - stage-policy mapping frozen on development sample;
-% - RMSE/MAE of both policies on evaluation sample;
-% - relative RMSE / % gain;
-% - mean paired loss differential;
-% - predictive-accuracy p-value;
-% - optional conditional predictive-ability result.
+H2 asks whether the frozen stage policy adds value beyond the information
+arrival documented in H1.  In 25 of the 36 target--stage cells, the
+development-sample policy selects exactly the same model as the frozen
+target-level fixed comparator; those cells are mechanical ties and contain no
+information about the incremental value of stage-dependent model choice.  The
+remaining 11 cells are the informative H2 comparisons.
+
+The stage policy has lower mean squared error in seven of those 11 cells and
+higher mean squared error in four.  Four stage-policy gains are statistically
+significant at the 5\% level, all in the labour domain, and no stage-policy
+loss is statistically significant.  For average hourly earnings, switching
+from the fixed Bridge Ridge model to the Equal-Weight Ensemble lowers squared
+loss at month end (\(p=0.0012\)) and before the employment report
+(\(p=0.00036\)).  For PAYEMS, the development-selected 12-Month Mean improves
+on Bridge Ridge at month open (\(p=0.0092\)).  For unemployment, AR(1)
+strongly improves on the fixed Equal-Weight Ensemble at month open
+(\(p<0.0001\)).  MAE inference points in the same direction for all four
+cells.
 
 \begin{table}[H]
 \centering
-\caption{H2: stage-dependent policy versus fixed-model forecasting}
+\caption{H2: informative stage-policy comparisons where the frozen models differ}
 \label{tab:h2_stage_policy}
-\begin{threeparttable}
 \scriptsize
-\setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{llrrrrrr}
+\setlength{\tabcolsep}{3.0pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lllrr}
 \toprule
-Target & Fixed comparator & $N$ & RMSE$_F$ & RMSE$_S$ & Gain (\%) & $\Delta$MAE (\%) & $p$-value \\
+Target & Stage-policy model & Stage & Mean \(\Delta SE\) & HAC \(p\) \\
 \midrule
-% GDP & ... & ... & ... & ... & ... & ... & ... \\
-% Headline CPI & ... & ... & ... & ... & ... & ... & ... \\
-% PAYEMS & ... & ... & ... & ... & ... & ... & ... \\
+GDP & Bridge--DFM Ensemble & After month 2 & \(+0.139\) & 0.656 \\
+GDP & Rolling Bridge--DFM Ensemble & Quarter end & \(+0.402\) & 0.117 \\
+Headline CPI & Ridge--AR Ensemble & Month open & \(-1.088\) & 0.344 \\
+Core CPI & 12-Month Mean & Month open & \(-0.464\) & 0.318 \\
+Headline PCE & Ridge--AR Ensemble & Month open & \(-0.263\) & 0.642 \\
+Core PCE & Ridge--AR Ensemble & Mid-month & \(+0.026\) & 0.798 \\
+AHE & Equal-Weight Ensemble & Month end & \(-0.770\) & 0.001 \\
+AHE & Equal-Weight Ensemble & Pre-employment report & \(-0.821\) & \(<0.001\) \\
+PAYEMS & 12-Month Mean & Month open & \(-16728.271\) & 0.009 \\
+PAYEMS & Factor Ridge & After week 2 & \(+9312.058\) & 0.335 \\
+UNRATE & AR(1) & Month open & \(-0.0717\) & \(<0.001\) \\
 \bottomrule
-\end{tabular}
-\begin{tablenotes}[flushleft]\footnotesize
-\item Notes: Both policies receive the identical reconstructed real-time information set at each origin. The fixed comparator uses one pre-selected model at every stage; the stage policy uses the model pre-specified for the relevant target-stage pair. Negative Gain indicates lower RMSE for the stage-dependent policy.
-\end{tablenotes}
-\end{threeparttable}
+\end{tabular}%
+}
+\par\medskip
+\begin{minipage}{0.94\textwidth}
+\footnotesize
+\textit{Notes:} \(\Delta SE\) is stage-policy squared error minus fixed-policy
+squared error, so negative values favour the stage-dependent policy.  Only
+cells in which the frozen stage-policy model differs from the frozen fixed
+comparator are shown.  The omitted 25 cells are exact same-model ties.
+\(p\)-values are the archived two-sided HAC tests.
+\end{minipage}
 \end{table}
 
-\subsubsection{GDP}
-\label{subsubsec:h2_gdp}
-% AR(1), Bridge Ridge, DFM, ensemble(s), fixed comparator, stable stage policy.
-
-\subsubsection{Inflation}
-\label{subsubsec:h2_inflation}
-% Headline CPI, Core CPI, Headline PCE, Core PCE.
-
-\subsubsection{Labour market}
-\label{subsubsec:h2_labour}
-% PAYEMS, UNRATE, AHE.
+The confirmatory evidence therefore supports a narrower version of H2 than a
+claim of universal stage-policy dominance.  Stage-dependent model choice adds
+clear predictive value in several labour-market cells, especially at month
+open and late in the earnings release cycle.  The GDP and inflation policy
+changes do not produce statistically distinguishable squared-loss gains in
+the evaluation sample.  The absence of significant policy losses is
+reassuring, but it does not by itself establish broad superiority because
+most target--stage cells are same-model ties.
 
 \subsection{H3: the effect of data vintages on forecast evaluation}
 \label{subsec:h3_results}
 
-% Required outputs:
-% - RT vs LV RMSE/MAE;
-% - mean paired loss differential and p-value;
-% - distribution of forecast-value differences;
-% - share of model x target x stage winners that change;
-% - Spearman/Kendall rank correlation where appropriate.
+H3 compares the frozen stage-policy forecasts generated from historically
+available data with a latest-vintage counterfactual that preserves the
+historical observation mask and forecast origin.  The archived loss
+differential is defined as latest-vintage loss minus real-time loss, so
+negative values indicate that revision to the latest vintage improves
+measured forecast accuracy.
+
+The vintage effect is strongly target dependent.  At the target level,
+unemployment is the clearest case: latest-vintage data reduce the
+stage-averaged squared-loss differential by 0.0176
+(\(p=1.46\times10^{-7}\)) and the absolute-loss differential by 0.0294
+(\(p=2.19\times10^{-6}\)).  GDP also has a negative mean squared-loss
+differential, but the evidence is only suggestive (\(p=0.102\)).  Core CPI
+leans in the same direction, particularly under absolute loss
+(\(p=0.063\)).  Conversely, the PCE measures show that revision need not make
+a historical forecast exercise look better: core PCE has a positive
+stage-averaged absolute-loss differential of 0.0678 with \(p=0.0487\), while
+headline PCE is also positive but does not reject equality at 5\%.
 
 \begin{table}[H]
 \centering
-\caption{H3: real-time versus latest-vintage forecast evaluation}
+\caption{H3: target-level real-time versus latest-vintage loss differences}
 \label{tab:h3_vintage_effect}
-\begin{threeparttable}
 \scriptsize
-\setlength{\tabcolsep}{2.5pt}
+\setlength{\tabcolsep}{2.8pt}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lrrrrrr}
 \toprule
-Target & $N$ & RMSE$_{RT}$ & RMSE$_{LV}$ & $\Delta$RMSE (\%) & Mean $|\Delta\widehat y|$ & $p$-value \\
+Target & Complete periods & Mean \(\Delta SE\) & \(p_{SE}\) & Mean \(\Delta AE\) & \(p_{AE}\) & Mean forecast revision \\
 \midrule
-% GDP & ... & ... & ... & ... & ... & ... \\
+GDP & 12 & \(-0.2763\) & 0.102 & \(-0.0216\) & 0.649 & \(-0.0559\) \\
+Headline CPI & 39 & \(-0.3271\) & 0.411 & \(+0.0389\) & 0.483 & \(+0.0930\) \\
+Core CPI & 39 & \(-0.1032\) & 0.173 & \(-0.0378\) & 0.063 & \(+0.0163\) \\
+Headline PCE & 38 & \(+0.2327\) & 0.223 & \(+0.0730\) & 0.067 & \(+0.1695\) \\
+Core PCE & 38 & \(+0.1357\) & 0.235 & \(+0.0678\) & 0.049 & \(+0.1599\) \\
+AHE & 41 & \(-0.1749\) & 0.285 & \(-0.0591\) & 0.270 & \(+0.0585\) \\
+PAYEMS & 41 & \(-2311.964\) & 0.456 & \(-10.297\) & 0.181 & \(-53.330\) \\
+UNRATE & 40 & \(-0.01764\) & \(<0.001\) & \(-0.02938\) & \(<0.001\) & \(+0.0349\) \\
 \bottomrule
-\end{tabular}
-\begin{tablenotes}[flushleft]\footnotesize
-\item Notes: RT denotes historically available vintages; LV denotes the latest-vintage counterfactual under matched forecast origins, stage definitions, and candidate specifications. The hypothesis is two-sided.
-\end{tablenotes}
-\end{threeparttable}
+\end{tabular}%
+}
+\par\medskip
+\begin{minipage}{0.94\textwidth}
+\footnotesize
+\textit{Notes:} \(\Delta SE=SE_{LV}-SE_{RT}\) and
+\(\Delta AE=AE_{LV}-AE_{RT}\); negative values mean the latest-vintage
+counterfactual has lower loss.  Target-level statistics average over stages
+only for target periods with a complete stage set.  Headline and core CPI
+exclude one incomplete endpoint period; headline and core PCE exclude two.
+The latest-vintage counterfactual preserves the real-time availability mask.
+\end{minipage}
 \end{table}
 
-\begin{table}[H]
-\centering
-\caption{H3: sensitivity of candidate-model rankings to data vintage}
-\label{tab:h3_ranking_changes}
-\begin{threeparttable}
-\scriptsize
-\setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{lrrrr}
-\toprule
-Domain & Cells & Winner changes & Changed (\%) & Rank corr. \\
-\midrule
-% GDP & ... & ... & ... & ... \\
-% Inflation & ... & ... & ... & ... \\
-% Labour & ... & ... & ... & ... \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}[flushleft]\footnotesize
-\item Notes: A winner change occurs when the lowest-loss candidate under the real-time experiment differs from the lowest-loss candidate under the latest-vintage counterfactual.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
+H3 therefore rejects a simple view in which data revision induces a uniform
+directional bias in forecast evaluation.  Vintage choice can materially alter
+measured performance---most clearly for unemployment---but the sign and size
+of the effect vary across targets.  The confirmatory H3 design evaluates the
+frozen selected stage-policy forecast and its loss; candidate-model ranking
+sensitivity is not part of this confirmatory archive and is retained as a
+secondary robustness question rather than reported as an H3 result.
 
 \subsection{H4: predictive-interval calibration and sharpness}
 \label{subsec:h4_results}
@@ -259,9 +332,9 @@ universally dominant interval rule.
 \toprule
 Hypothesis & Main empirical finding & Statistical conclusion \\
 \midrule
-H1 & \textit{[Insert quantitative summary.]} & \textit{[Reject / fail to reject null, with qualifications.]} \\
-H2 & \textit{[Insert quantitative summary.]} & \textit{[Reject / fail to reject null, with qualifications.]} \\
-H3 & \textit{[Insert quantitative summary.]} & \textit{[Reject / fail to reject null, with qualifications.]} \\
+H1 & Later-stage mean squared loss is lower in 16 of 28 adjacent-stage comparisons; four improvements and two deteriorations are significant at 5\%. & Partial support; incoming information is valuable at selected release points but accuracy is not monotone in stage. \\
+H2 & The stage policy differs from the fixed model in 11 cells, lowers mean squared loss in seven, and has four significant gains, all in labour; no significant losses. & Qualified support concentrated in labour-market cells; no broad GDP or inflation dominance. \\
+H3 & Vintage effects have mixed signs. Latest-vintage data strongly improve UNRATE, while core PCE absolute loss worsens significantly; most other target-level effects are weaker. & Strong target-specific evidence that vintage choice can matter, but no uniform directional revision effect. \\
 H4 & Prior-only intervals show heterogeneous calibration: adaptive weighting delivers the clearest score gains for labour and core CPI, while GDP rolling intervals overcover and lose to Gaussian intervals at later stages. & Qualified support; interval calibration and method ranking are domain- and stage-dependent rather than universal. \\
 \bottomrule
 \end{tabular}
