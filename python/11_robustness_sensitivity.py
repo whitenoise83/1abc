@@ -474,12 +474,16 @@ def paired_summary(values: pd.Series) -> dict:
 
 
 def evaluation_subset(frame: pd.DataFrame, domain: str, target: str, model: str) -> pd.DataFrame:
-    return frame.loc[
+    subset = frame.loc[
         (frame["domain_name"] == domain)
         & (frame["target_series"] == target)
         & (frame["model_name"] == model)
         & frame["target_period"].map(lambda x: period_ge(domain, x, EVALUATION_START[domain]))
     ].copy()
+    return subset.sort_values(
+        ["_period_order", "forecast_date", "forecast_stage"],
+        kind="mergesort",
+    ).reset_index(drop=True)
 
 
 def build_h1_alt(frame: pd.DataFrame, alt_models: pd.DataFrame):
@@ -515,7 +519,14 @@ def build_h1_alt(frame: pd.DataFrame, alt_models: pd.DataFrame):
                     "delta_squared_error": float(r.delta_squared_error),
                     "delta_abs_error": float(r.delta_abs_error),
                 })
-            eligible = pair.loc[pair["eligible"]]
+            eligible = pair.loc[pair["eligible"]].copy()
+            eligible["_period_order"] = eligible["target_period"].map(
+                lambda x: period_ord(domain, x)
+            )
+            eligible = eligible.sort_values(
+                ["_period_order", "forecast_date_earlier", "forecast_date_later"],
+                kind="mergesort",
+            )
             sq, ae = paired_summary(eligible["delta_squared_error"]), paired_summary(eligible["delta_abs_error"])
             summary_rows.append({
                 "domain_name": domain, "target_series": target, "transition_order": order,
@@ -590,6 +601,11 @@ def build_h2_short(frame: pd.DataFrame, stage_policy: pd.DataFrame, fixed: pd.Da
                             "delta_abs_error": float(r.delta_abs_error),
                         })
                 d = pd.DataFrame([x for x in detail_rows if x["domain_name"] == domain and x["target_series"] == target and x["forecast_stage"] == stage])
+                d["_period_order"] = d["target_period"].map(lambda x: period_ord(domain, x))
+                d = d.sort_values(
+                    ["_period_order", "forecast_date"],
+                    kind="mergesort",
+                )
                 sq, ae = paired_summary(d["delta_squared_error"]), paired_summary(d["delta_abs_error"])
                 summary_rows.append({
                     "domain_name": domain, "target_series": target, "stage_order": order, "forecast_stage": stage,
@@ -703,7 +719,10 @@ def select_policy_rows(frame: pd.DataFrame, primary_stage: pd.DataFrame) -> pd.D
     key = ["domain_name", "target_series", "target_period", "forecast_stage"]
     if selected.duplicated(key, keep=False).any():
         raise RuntimeError("Frozen policy produced duplicate source rows.")
-    return selected
+    return selected.sort_values(
+        ["domain_name", "target_series", "_period_order", "stage_order", "forecast_date"],
+        kind="mergesort",
+    ).reset_index(drop=True)
 
 
 def variant_half_width(domain: str, errors: np.ndarray, spec: dict) -> float:
@@ -812,6 +831,12 @@ def build_r4(frame: pd.DataFrame, primary_stage: pd.DataFrame, paper_root: Path)
         sort=False
     ):
         domain, target, order, stage, model, variant = keys
+        g = g.copy()
+        g["_period_order"] = g["target_period"].map(lambda x: period_ord(domain, x))
+        g = g.sort_values(
+            ["forecast_date", "_period_order"],
+            kind="mergesort",
+        )
         ps = paired_summary(g["score_diff_variant_minus_primary"])
         comp_rows.append({
             "domain_name": domain, "target_series": target, "stage_order": int(order),

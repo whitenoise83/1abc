@@ -80,6 +80,25 @@ assert holm_p >= 0 & holm_p <= 1 if !missing(holm_p)
 assert raw_sig_005 == (raw_p < .05)
 assert holm_sig_005 == (holm_p < .05)
 
+count if test_family == "H1_squared_error"
+assert r(N) == 28
+count if test_family == "H1_absolute_error"
+assert r(N) == 28
+count if test_family == "H2_squared_error_informative_cells"
+assert r(N) == 11
+count if test_family == "H2_absolute_error_informative_cells"
+assert r(N) == 11
+count if test_family == "H3_target_squared_error"
+assert r(N) == 8
+count if test_family == "H3_target_absolute_error"
+assert r(N) == 8
+count if test_family == "H4_primary_unconditional_coverage"
+assert r(N) == 36
+count if test_family == "H4_primary_vs_gaussian_interval_score"
+assert r(N) == 36
+count if test_family == "H4_primary_vs_rolling_interval_score"
+assert r(N) == 31
+
 preserve
 contract test_family
 list test_family _freq, noobs abbreviate(40)
