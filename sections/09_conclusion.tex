@@ -1,10 +1,55 @@
 \section{Conclusions}
 \label{sec:conclusion}
 
-% Recommended 4-paragraph structure:
-% P1: research question and design.
-% P2: 3--4 main quantitative results.
-% P3: economic / forecasting interpretation.
-% P4: limitations and future research.
+This paper studies macroeconomic nowcasting as a sequence of forecasting
+problems indexed by the information available at the forecast origin.  Using a
+common pseudo-real-time framework for U.S. GDP, inflation, and labour-market
+targets, the analysis separates four questions that are often conflated in
+retrospective forecast comparisons: whether incoming information improves a
+fixed model, whether a pre-specified stage-dependent model policy adds value
+beyond that information-arrival effect, whether historical data vintages
+change measured performance, and whether forecast uncertainty can be
+calibrated using only errors that were observable before the forecast date.
+The design freezes policy choices before the confirmatory evaluation sample and
+preserves historical release masks in the latest-vintage counterfactual.
 
-% Do not introduce new empirical results here.
+The empirical results reject a simple universal ranking of stages or models.
+For H1, later stages have lower mean squared loss in 16 of 28 adjacent
+comparisons, with four statistically significant improvements and two
+significant deteriorations at the 5\% level.  For H2, the frozen stage policy
+differs from the fixed comparator in 11 target--stage cells, has lower mean
+squared loss in seven of them, and produces four significant gains---all in the
+labour domain---with no significant policy loss.  H3 shows that data revision
+can materially alter evaluation without having a uniform sign: the
+latest-vintage counterfactual substantially improves unemployment loss, while
+core PCE absolute-loss evaluation moves significantly in the opposite
+direction and most other target-level effects are weaker.  H4 similarly
+favours a conditional interpretation of uncertainty: prior-only empirical
+calibration produces strong interval-score gains for labour and core CPI, but
+GDP's 100\% empirical coverage is conservative relative to the nominal 80\%
+rate and does not imply uniformly superior sharpness.
+
+Taken together, the results suggest that the main advantage of a
+stage-dependent forecasting architecture is not continual model switching for
+its own sake.  The more fundamental requirement is to make the information
+boundary explicit.  Forecast performance changes because the observable data
+change, because the historical values of those data can later be revised, and,
+in selected cases, because a different forecasting rule is better suited to a
+particular release stage.  The H1--H2 decomposition makes those mechanisms
+separately measurable.  The H3 and H4 exercises extend the same principle to
+data vintages and uncertainty: a real-time forecast should be evaluated using
+only values, outcomes, and calibration errors that were actually observable at
+the relevant date.
+
+The conclusions remain conditional on a finite U.S. evaluation sample,
+pre-specified stage definitions, a limited candidate-model universe, and
+symmetric empirical interval rules.  In particular, the GDP sample is short,
+cell-level inference is not a multiplicity-adjusted test of universal stage
+effects, and the latest-vintage experiment is not a complete
+first-release-versus-final-release reconstruction for every series.  Future
+work should test alternative stage partitions and model universes, evaluate
+the sensitivity of the interval results to calibration windows and weighting
+rules, and compare the frozen policy with a strictly prior-only adaptive
+challenger.  Prospective evaluation on data accumulated after the present
+freeze would provide the strongest test of whether the stage-dependent
+relationships documented here remain stable out of sample.

@@ -3,33 +3,260 @@
 
 \subsection{Why forecast performance changes across information stages}
 \label{subsec:why_stage_changes}
-% Interpret early-stage persistence/factor dominance vs later-stage bridge/data effects.
+
+The central empirical result is that a later position in the release calendar
+does not mechanically imply a better nowcast.  In H1, where the forecasting
+rule is held fixed, later-stage mean squared loss is lower in 16 of 28 adjacent
+comparisons, but the statistically distinguishable movements include both
+improvements and deteriorations.  This pattern is economically plausible in a
+ragged-edge environment.  A new release changes the information set, but the
+marginal signal contained in that release may be small, noisy, redundant with
+information already observed, or imperfectly mapped into the target by a model
+whose coefficients were estimated over an unstable historical relationship.
+Consequently, the value of an additional observation depends on both its
+timing and the information that precedes it.  This interpretation is consistent
+with the nowcasting literature's emphasis on publication lags and the changing
+marginal contribution of hard, soft, and financial indicators through the
+release cycle \citep{banbura2011blackbox,liebermann2014realtime}.
+
+The H1 results therefore sharpen the usual statement that forecasts are
+updated as information arrives.  What matters empirically is not the amount of
+calendar time that has elapsed but whether the newly observable information
+improves the conditional forecast.  The significant gains for core CPI and the
+PCE measures around particular intra-month transitions, and for unemployment
+immediately before the employment report, coexist with significant
+deteriorations at other transitions.  The latter are not anomalous under the
+experimental design: because the model is deliberately fixed, a deterioration
+is evidence that the richer information set does not necessarily translate
+into lower realised loss for that rule and sample.  This finding is closely
+related to evidence that relative forecast performance can change as the
+release calendar progresses \citep{aastveit2014density}.
+
+H2 adds a second layer.  Once the information set is held fixed, changing the
+forecasting rule can sometimes add predictive value, but the evidence is much
+more selective than a universal stage-switching argument would imply.  The
+frozen stage policy differs from the fixed comparator in only 11 of 36
+target--stage cells, and all four statistically significant gains occur in the
+labour domain.  Thus the release stage appears to contain useful information
+about model choice in some settings, but most cells either retain the same
+development-selected model or do not show a statistically distinguishable
+gain from switching.  The appropriate interpretation is conditional rather
+than global: stage dependence can be exploitable when relative model
+performance is sufficiently stable across the development and evaluation
+samples, but it should not be imposed merely because the information set has
+changed.
+
+The interval results reinforce this interpretation.  H4 shows that uncertainty
+also evolves differently across stages.  GDP's primary rolling empirical
+interval is conservative throughout the evaluation sample, while the relative
+interval-score ranking against the Gaussian benchmark reverses as the quarter
+matures.  Unemployment coverage moves from substantial overcoverage at month
+open to undercoverage after week 2 and at month end before returning to the
+nominal rate immediately before the employment report.  A stage-aware
+forecasting system therefore needs to treat both the conditional mean and its
+uncertainty as release-calendar objects rather than assuming a single
+time-invariant performance profile.
 
 \subsection{Differences across GDP, inflation, and labour markets}
 \label{subsec:cross_domain}
-% Relate performance to release frequency, persistence, weekly information,
-% target revisions, and contemporaneous indicator availability.
+
+The cross-domain results are deliberately heterogeneous.  GDP provides the
+smallest confirmatory sample, with 12 evaluation quarters per stage.  H1 does
+not reveal a robust monotone gain as the quarter advances, and the H2
+development policy's two departures from the fixed Dynamic Factor Model do not
+produce statistically distinguishable squared-loss improvements.  This should
+not be read as evidence that within-quarter information is unimportant for GDP.
+Rather, it indicates that, in this evaluation sample and candidate set, the
+incremental information and model-switching effects are difficult to estimate
+precisely.  The GDP interval evidence makes the finite-sample issue especially
+visible: 100\% empirical coverage sounds favourable in isolation, but the
+unconditional-coverage test rejects the nominal 80\% rate and the resulting
+intervals can be too wide to dominate the Gaussian benchmark later in the
+quarter.
+
+Inflation presents a different pattern.  The information-arrival experiment
+contains several statistically meaningful transitions, but the frozen
+stage-policy substitutions are not themselves significant on squared loss.
+This distinction matters because it shows why changes in forecast accuracy
+across a release cycle should not automatically be attributed to changing
+models.  For these targets, much of the economically relevant movement appears
+to come from the evolving information set itself.  At the same time, H4 shows
+that model uncertainty and forecast uncertainty need not have the same
+structure: the exponentially weighted empirical interval performs especially
+well for core CPI even though the corresponding H2 stage-policy changes do not
+establish broad point-forecast superiority.  Point forecasting and interval
+calibration therefore provide related but distinct information about forecast
+quality.
+
+The labour results are the strongest evidence in favour of stage-dependent
+policy design.  The significant H2 gains for average hourly earnings,
+PAYEMS, and unemployment occur at different points in the monthly release
+cycle and involve different models.  H3 also identifies unemployment as the
+target for which replacing real-time values by the frozen latest-vintage
+counterfactual most clearly changes measured forecast accuracy.  H4, in turn,
+finds large interval-score gains for earnings and payroll employment and a
+strongly stage-dependent unemployment coverage profile.  One interpretation
+is that the labour domain provides a particularly rich setting in which timely
+within-month indicators, persistence, and rapidly changing conditions can
+alter the relative usefulness of simple, bridge, factor, and combination
+rules.  The experiment does not identify a causal mechanism for those gains,
+so this explanation should be regarded as an economic interpretation rather
+than a tested structural claim.
+
+The contrast across domains is consistent with the broader forecasting
+literature, which finds that the relative performance of model classes and
+combinations is sensitive to the target, forecast position, and economic
+environment \citep{timmermann2006combinations,kuzin2013pooling,
+kantpickwinter2025ml}.  The present evidence therefore argues against
+transporting a successful rule from one macroeconomic target to another
+without a fresh real-time evaluation.
 
 \subsection{Information-set construction versus model sophistication}
 \label{subsec:information_vs_model}
-% Discuss whether correct real-time design matters more than model complexity.
+
+The decomposition between H1 and H2 provides a useful perspective on the role
+of model sophistication.  H1 changes the information set while fixing the
+model; H2 holds the information set fixed while changing the model according
+to a pre-specified stage policy.  Because H1 identifies meaningful changes in
+loss even without model switching, and because 25 of 36 H2 cells are
+same-model ties, a substantial part of stage-dependent forecast behaviour is
+attributable to information-set construction rather than to continual changes
+in specification.  This does not make model choice unimportant.  The
+significant labour-market H2 gains show that the forecasting rule can matter
+materially.  It does imply, however, that sophisticated model selection cannot
+substitute for reconstructing the data that were actually observable at the
+forecast origin.
+
+H3 strengthens that conclusion.  Its latest-vintage counterfactual preserves
+the historical availability mask and changes the values populating that mask.
+The fact that measured forecast loss changes---strongly for unemployment and
+in the opposite direction for some PCE metrics---shows that even an unchanged
+model operating on an unchanged observation pattern can be evaluated
+differently when revised values replace historically available ones.  This is
+precisely why the real-time-data literature treats vintage construction as
+part of the econometric experiment rather than as a clerical preprocessing
+choice \citep{croushorestark2001realtime,starkcroushore2002forecasting,
+koenig2003useabuse}.
+
+The same discipline applies to probabilistic forecasting.  The H4 calibration
+history admits an error only after its corresponding outcome release date is
+strictly earlier than the current forecast date.  Without that gate, an
+apparently sophisticated empirical interval could use information that a
+historical forecaster did not yet possess.  Across point and interval
+forecasting, the more general lesson is therefore methodological: the validity
+of a real-time comparison depends first on the information boundary, and only
+then on the forecasting algorithm operating inside that boundary.
 
 \subsection{Stable policies versus continual model switching}
 \label{subsec:policy_stability}
-% Bias-variance / instability / chasing recent performance.
+
+The stage policy in this paper is intentionally more conservative than a fully
+adaptive model-selection scheme.  The target--stage mapping is estimated on
+the policy-development sample and then frozen before confirmatory evaluation.
+This design sacrifices the possibility of immediately exploiting recent
+forecast performance in exchange for a cleaner out-of-sample test of whether
+release stage contains persistent information about relative model
+performance.  It therefore differs from dynamic model averaging or selection,
+where model probabilities are recursively updated as new observations and
+forecast errors arrive \citep{koopkorobilis2012dma}.
+
+The H2 evidence suggests why that distinction matters.  A flexible adaptive
+algorithm could always create more opportunities to switch, but the
+confirmatory experiment finds reliable gains only in a subset of target--stage
+cells.  Continual switching would therefore face a bias--variance trade-off:
+it might respond faster when the forecasting environment genuinely changes,
+but it could also chase short-lived ranking noise.  The frozen-policy design
+cannot determine which side of that trade-off dominates; it establishes a
+stable benchmark against which a prior-only adaptive challenger can later be
+evaluated.
+
+This perspective also connects to conditional predictive-ability methods.
+Observable state variables can, in principle, help determine which forecast
+will perform better \citep{giacominiwhite2006conditional}.  Release stage is
+one such observable state variable, but the present results show that its
+usefulness for model choice is target dependent.  A natural extension is
+therefore not unrestricted ex-post switching, but a strictly prior-only
+adaptive rule whose updating speed and complexity are themselves fixed before
+evaluation.  Such an exercise would test whether recent relative performance
+adds information beyond the stable stage mapping without weakening the
+real-time boundary.
 
 \subsection{Practical implications}
 \label{subsec:implications}
-% Central banks, government forecasters, financial institutions,
-% macro-monitoring systems. Keep claims proportional to evidence.
+
+For operational nowcasting systems, the findings point to a hierarchy of
+design priorities.  First, the system should preserve timestamped historical
+data and an explicit release calendar so that each forecast can be reproduced
+from the information actually observable at its origin.  Second, forecast
+monitoring should be stage specific: an error measured at month open is not
+necessarily comparable to an error measured immediately before release, even
+when both forecasts target the same outcome.  Third, stage-dependent model
+choice should be introduced only where development-sample evidence is
+sufficiently stable to justify it; otherwise a fixed or combined benchmark can
+remain preferable.  Finally, interval calibration should be audited separately
+from point forecasting because high coverage can simply reflect excessive
+width.
+
+These implications are relevant to central-bank, government, and private-sector
+forecasting workflows, but the paper does not evaluate policy decisions,
+trading outcomes, or welfare consequences.  The evidence supports procedures
+for constructing and evaluating real-time forecasts; it does not imply that
+the statistically preferred forecast at a particular stage must generate a
+materially better downstream decision.  Users of such systems should therefore
+separate forecast-performance evidence from the economic value of acting on
+the forecast.
+
+A practical benefit of the frozen-policy approach is governance.  A production
+system can record which model is authorised for each target and release stage,
+which historical observations entered the forecast, and which prior errors
+were eligible for interval calibration.  Changes to the policy can then be
+evaluated as explicit model-governance decisions rather than being confounded
+with silent changes in data vintages or release timing.  This auditability is
+particularly valuable when the objective is reproducible policy or risk
+analysis rather than retrospective leaderboard performance.
 
 \subsection{Limitations}
 \label{subsec:limitations}
-% Candidate limitations:
-% - finite real-time evaluation history;
-% - imperfect genuine first-release availability for some series;
-% - U.S.-only application;
-% - pre-specified stage definitions;
-% - candidate-model universe;
-% - nonlinear alternatives omitted;
-% - exceptional COVID observations.
+
+Several limitations constrain the strength and generality of the conclusions.
+The first is sample size.  The GDP confirmatory evaluation contains only 12
+quarters per stage, while the monthly targets contain roughly 38--41
+observations.  HAC tests, violation-independence tests, and comparisons of
+interval coverage consequently have limited finite-sample power in some cells.
+The GDP result is especially sensitive to this constraint.  In addition, the
+paper reports many target--stage comparisons.  The cell-level \(p\)-values are
+useful for describing where the pre-specified effects appear, but they should
+not be interpreted as a single multiplicity-adjusted family-wise test of
+universal stage effects.
+
+Second, the results are conditional on the candidate-model universe and on the
+pre-specified stage definitions.  The experiment includes persistence,
+trailing-mean, bridge, ridge, factor, and combination specifications that span
+important forecasting approaches, but it does not exhaust nonlinear,
+large-scale Bayesian, or modern machine-learning alternatives.  Likewise, the
+chosen stages represent economically meaningful points in the release calendar
+rather than a claim that no alternative partition could be informative.
+
+Third, H3 is a deliberately narrow counterfactual.  It holds forecast origins
+and the real-time observation mask fixed and replaces values with a frozen
+latest-vintage extract where available.  It therefore isolates a revision
+channel more cleanly than a fully revised rectangular dataset would, but it is
+not identical to a universal first-release-versus-final-release experiment for
+every underlying series and date.  Candidate-model ranking sensitivity is also
+not part of the confirmatory H3 archive and remains a separate robustness
+question.
+
+Fourth, the H4 intervals are symmetric around the point forecast and use
+domain-specific empirical calibration rules.  They do not model asymmetric
+tail risk, forecast bias, or state-dependent skewness directly.  Coverage and
+independence tests are also difficult to interpret with short sequences, and
+the GDP case demonstrates that nominal-looking coverage metrics must be read
+together with width and proper scoring rules.
+
+Finally, the application is U.S.-specific and spans an unusually unstable
+period that includes the COVID-19 shock and its aftermath.  That instability
+is economically relevant to the forecasting problem, but it may also make
+relative model performance less portable to more tranquil samples or to other
+economies.  External validation across countries, alternative historical
+episodes, and prospectively accumulated post-study observations is therefore
+necessary before treating the estimated stage policies as generally optimal.
