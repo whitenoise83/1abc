@@ -149,37 +149,98 @@ Domain & Cells & Winner changes & Changed (\%) & Rank corr. \\
 \subsection{H4: predictive-interval calibration and sharpness}
 \label{subsec:h4_results}
 
-% Required outputs by target and method:
-% - N;
-% - realised coverage + confidence interval;
-% - unconditional-coverage p-value;
-% - independence p-value;
-% - conditional-coverage p-value;
-% - average width;
-% - mean interval score;
-% - interval-score difference vs benchmark + p-value.
+The confirmatory H4 experiment contains 1,302 primary interval forecasts
+across the GDP, inflation, and labour target--stage cells.  All evaluation
+observations satisfy the predeclared minimum calibration history.  The
+results support prior-only empirical calibration as a useful uncertainty
+procedure, but they do not support a universal ranking of interval methods
+across domains or information stages.
+
+GDP is the clearest example of the distinction between coverage and
+sharpness.  The rolling empirical interval covers all 12 evaluation
+observations at every GDP stage.  This 100\% coverage is conservative rather
+than ideally calibrated: the unconditional-coverage test rejects the nominal
+80\% rate at each stage (\(p=0.0207\)).  Relative to the Gaussian RMSE
+benchmark, rolling \(q_{0.8}\) has a significantly lower interval score at
+the early-quarter and after-month-1 stages, but significantly higher scores
+after month 2, at quarter end, and immediately before the advance release.
+Hence the preferred GDP interval benchmark reverses as the quarter matures.
+
+Inflation coverage is closer to the nominal rate.  Across stages, primary
+coverage ranges from 0.850 to 0.923 for headline CPI, 0.872 to 0.900 for core
+CPI, 0.872 to 0.921 for headline PCE, and 0.868 to 0.900 for core PCE.
+The strongest sharpness result is for core CPI: the exponentially weighted
+interval has a significantly lower mean interval score than the Gaussian
+benchmark at all four stages and than rolling \(q_{0.8}\) at the final three
+stages.  Headline CPI, headline PCE, and core PCE show smaller and less
+uniform score differences.  Month-open headline CPI and headline PCE
+overcover sufficiently for the unconditional-coverage test to reject at the
+5\% level, but the remaining inflation stage cells do not show a broad
+pattern of coverage-test rejection.
+
+Labour provides the strongest evidence for adaptive weighting.  Primary
+coverage ranges from 0.805 to 0.854 for average hourly earnings, from 0.878
+to 0.927 for payroll employment, and from 0.750 to 0.975 for unemployment.
+For both earnings and payroll employment, the exponentially weighted
+interval has a significantly lower mean interval score than both the
+Gaussian and rolling empirical benchmarks at every stage.  For unemployment,
+it significantly improves on the Gaussian benchmark at all five stages, but
+its advantage over rolling \(q_{0.8}\) is confined to month open.  The
+unemployment interval also displays the strongest stage dependence in
+calibration: month-open coverage is 0.975, whereas coverage falls to 0.750
+after week 2 and at month end before returning to exactly 0.800 immediately
+before the employment report.  Violation independence is rejected at the
+after-week-2 and month-end stages (\(p=0.0253\)), although the corresponding
+joint conditional-coverage tests are just above the 5\% threshold.
+
+Table~\ref{tab:h4_interval_performance} reports the operationally latest
+forecast stage for each target.  The complete stage-cell results are retained
+in the confirmatory H4 archive.  Score differences are primary minus
+benchmark, so negative values favour the primary interval.
 
 \begin{table}[H]
 \centering
-\caption{H4: 80\% predictive-interval calibration and sharpness}
+\caption{H4: 80\% predictive intervals at the latest forecast stage}
 \label{tab:h4_interval_performance}
-\begin{threeparttable}
 \scriptsize
-\setlength{\tabcolsep}{2.5pt}
+\setlength{\tabcolsep}{2.1pt}
+\resizebox{0.90\textwidth}{!}{%
 \begin{tabular}{llrrrrrr}
 \toprule
-Target & Method & $N$ & Coverage & Avg. width & Int. score & CC $p$ & Score $p$ \\
+Target & Stage & \(N\) & Coverage & Avg. width & Int. score & \(\Delta IS_G\) (\(p\)) & \(\Delta IS_R\) (\(p\)) \\
 \midrule
-% PAYEMS & Exp.-weighted $q_{0.8}$ & ... & ... & ... & ... & ... & ... \\
-% PAYEMS & Rolling $q_{0.8}$ & ... & ... & ... & ... & ... & ... \\
-% PAYEMS & Gaussian benchmark & ... & ... & ... & ... & ... & ... \\
+GDP & Pre-advance release & 12 & 1.000 & 11.483 & 11.483 & \(+1.933\) (\(<0.001\)) & --- \\
+Headline CPI & Pre-release & 40 & 0.850 & 8.305 & 11.742 & \(-0.227\) (0.671) & \(-0.023\) (0.956) \\
+Core CPI & Pre-release & 40 & 0.875 & 4.413 & 5.446 & \(-0.746\) (0.014) & \(-0.431\) (0.040) \\
+Headline PCE & Pre-release & 40 & 0.900 & 6.444 & 7.453 & \(-0.116\) (0.504) & \(+0.006\) (0.966) \\
+Core PCE & Pre-release & 40 & 0.900 & 4.317 & 4.922 & \(-0.336\) (0.171) & \(-0.049\) (0.783) \\
+AHE & Pre-employment report & 41 & 0.854 & 4.289 & 4.938 & \(-6.083\) (0.002) & \(-1.516\) (\(<0.001\)) \\
+PAYEMS & Pre-employment report & 41 & 0.902 & 594.271 & 710.111 & \(-3124.893\) (\(<0.001\)) & \(-414.919\) (0.002) \\
+UNRATE & Pre-employment report & 40 & 0.800 & 0.730 & 0.878 & \(-1.256\) (0.010) & \(+0.035\) (0.134) \\
 \bottomrule
-\end{tabular}
-\begin{tablenotes}[flushleft]\footnotesize
-\item Notes: Coverage is evaluated against the nominal 0.80 rate. CC denotes conditional coverage. Lower interval scores indicate better probabilistic forecast performance. Score $p$-values compare the prior-only method with the designated benchmark.
-\end{tablenotes}
-\end{threeparttable}
+\end{tabular}%
+}
+\par\medskip
+\begin{minipage}{0.90\textwidth}
+\footnotesize
+\textit{Notes:} GDP uses rolling empirical \(q_{0.8}\) as its primary interval;
+inflation and labour use exponentially weighted \(q_{0.8}\).  \(AHE\)
+denotes series CES0500000003.  \(\Delta IS_G\) and \(\Delta IS_R\) denote the
+mean primary-minus-Gaussian and primary-minus-rolling interval-score
+differentials, respectively; parentheses report two-sided Newey--West HAC
+\(p\)-values.  Negative score differentials favour the primary method.
+GDP has no separate rolling benchmark because rolling \(q_{0.8}\) is itself
+the primary method.
+\end{minipage}
 \end{table}
+
+Taken together, H4 receives qualified support.  Prior-only empirical
+calibration frequently improves probabilistic forecast scores, especially
+for labour and core CPI, while GDP demonstrates that high raw coverage can
+reflect excessive width and that the preferred calibration method may change
+with the information stage.  The evidence therefore favours
+domain- and stage-aware uncertainty calibration rather than a single
+universally dominant interval rule.
 
 \subsection{Cross-domain synthesis}
 \label{subsec:cross_domain_results}
@@ -201,7 +262,7 @@ Hypothesis & Main empirical finding & Statistical conclusion \\
 H1 & \textit{[Insert quantitative summary.]} & \textit{[Reject / fail to reject null, with qualifications.]} \\
 H2 & \textit{[Insert quantitative summary.]} & \textit{[Reject / fail to reject null, with qualifications.]} \\
 H3 & \textit{[Insert quantitative summary.]} & \textit{[Reject / fail to reject null, with qualifications.]} \\
-H4 & \textit{[Insert coverage/sharpness summary.]} & \textit{[Calibration and score conclusion.]} \\
+H4 & Prior-only intervals show heterogeneous calibration: adaptive weighting delivers the clearest score gains for labour and core CPI, while GDP rolling intervals overcover and lose to Gaussian intervals at later stages. & Qualified support; interval calibration and method ranking are domain- and stage-dependent rather than universal. \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize

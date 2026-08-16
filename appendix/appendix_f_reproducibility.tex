@@ -11,3 +11,38 @@
 % - research-data build date;
 % - repository commit/tag;
 % - instructions to rebuild tables and figures.
+
+\subsection{Confirmatory H4 provenance}
+
+The H4 design was frozen before confirmatory interval results were observed.
+The pre-analysis commit is
+\texttt{a1a706f79258}.  The frozen H4 design records
+the pre-H4 checkpoint
+\texttt{54f70fdd6d2d} and the pinned MacroPulse
+source \texttt{c4f357e46335}; the research stage policy
+had previously been frozen at commit
+\texttt{420feaeb51dc}.
+
+The first confirmatory Python execution passed its pre-analysis boundary gate
+before producing results.  The original H4 analytical artifacts were hashed
+immediately.  Subsequent changes were confined to the independent Stata
+audit layer: a numerical tolerance for the imported nominal-coverage
+constant, double-precision CSV import, and reconstruction of coverage rates
+from exact integer counts.  Two uncommitted local CSV files were accidentally
+truncated during the audit workflow; each was restored only after its
+SHA-256 hash exactly reproduced the hash recorded from the first confirmatory
+run.  Neither truncation nor any regenerated alternative result was
+committed.
+
+The final independent audit was run in StataNow 19.5 and verified the frozen
+stage-policy identity, strict release-date calibration gate, interval
+lower/upper/width algebra, inclusive coverage classification, 80\% Winkler
+score arithmetic, eligibility summaries, Wilson intervals, and
+primary-versus-benchmark non-HAC summary quantities.  Exact weighted-quantile
+construction and Newey--West HAC standard errors remain those of the
+precommitted Python implementation.  The successful audit and all failed
+audit logs are retained in the repository for provenance.  The immutable H4
+result archive is commit
+\texttt{1543a7cce404}.  Commit identifiers are abbreviated here for
+typesetting; the complete SHA-1 values and SHA-256 artifact hashes are
+recorded in the archived H4 provenance file.

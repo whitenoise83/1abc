@@ -2,33 +2,193 @@
 \label{app:intervals}
 
 \subsection{Exact prior-only calibration algorithm}
-% Give the exact exp_weighted_q80 algorithm.
-% Document target coverage, minimum error history, rolling window,
-% decay factor, weighted-quantile definition, fallback behaviour,
-% target/stage pooling rules, and strict availability rules.
+
+The confirmatory H4 analysis uses the frozen stage-policy point forecast for
+each target and forecast stage.  Historical calibration errors are pooled
+only within the same target series, forecast stage, and frozen selected
+model.  For a current forecast dated \(t\), a historical error is admissible
+only when its stored outcome release date is strictly earlier than \(t\).
+The admissible history is sorted by outcome release date, target-period
+order, and forecast date; the most recent observations up to the
+domain-specific window length are then retained.
+
+Let \(v_j=|e_j|\) denote absolute calibration errors, with \(j=0\) the newest
+observation after the admissibility and window rules have been applied.
+The 80\% intervals are symmetric around the point forecast.
+
+For GDP the primary half-width is the unweighted empirical 0.80 quantile of
+the most recent 20 absolute errors, subject to at least 12 available errors.
+The implementation uses NumPy's \texttt{quantile} with
+\texttt{method="higher"}; equivalently, the selected half-width is the first
+observed order statistic at or above the requested empirical quantile.
+
+For inflation and labour the primary half-width is a weighted empirical
+0.80 quantile over at most 48 errors, subject to at least 24 available
+errors.  Inflation uses
+\[
+    w_j = 0.5^{j/18},
+\]
+while labour uses
+\[
+    w_j = 0.94^j.
+\]
+To evaluate the weighted quantile, the absolute errors are stably sorted in
+ascending order together with their positive weights.  If
+\(v_{(1)}\leq\cdots\leq v_{(M)}\) are the sorted errors, the reported
+half-width is
+\[
+    q_{0.8}^{w}
+    =
+    v_{(r)},\qquad
+    r=\min\left\{
+        m:\sum_{i=1}^{m}w_{(i)}
+        \geq 0.8\sum_{i=1}^{M}w_{(i)}
+    \right\}.
+\]
+There is no fallback rule.  A forecast with fewer than the required number
+of admissible prior errors is H4-ineligible.  The confirmatory evaluation is
+stage specific and does not require a balanced set of stages at the end of
+the sample.
 
 \subsection{Benchmark interval methods}
-% At minimum document:
-% 1. Conventional Gaussian forecast interval;
-% 2. Rolling empirical q80;
-% 3. Exponentially weighted q80 (primary).
-% Optional: target-shrunk q80 and EWMA Gaussian.
+
+GDP is evaluated against one benchmark, a Gaussian RMSE interval.  Inflation
+and labour are evaluated against both the Gaussian RMSE interval and an
+unweighted rolling empirical \(q_{0.8}\) interval.
+
+The rolling benchmark uses the same 48-observation maximum window and
+24-error minimum history as the inflation and labour primary methods, and
+uses the same ``higher'' 0.80 empirical quantile convention.  The Gaussian
+benchmark uses the same admissible calibration window as the primary method.
+Its half-width is
+\[
+    q^G
+    =
+    \Phi^{-1}(0.90)
+    \sqrt{\frac{1}{M}\sum_{j=1}^{M} e_j^2},
+\]
+and is centred on the point forecast.  The Gaussian benchmark is therefore
+an RMSE-scaled central 80\% interval and does not apply a separate
+forecast-bias adjustment.
 
 \subsection{Coverage and independence diagnostics}
-% Write out the likelihood functions and LR statistics used for:
-% - unconditional coverage;
-% - independence of violations;
-% - joint conditional coverage.
-% Define finite-sample treatment for zero cells if necessary.
 
-\subsection{Sharpness and proper scoring}
-% Document average interval width and interval score.
-% Define how interval-score differentials are compared statistically.
+Let \(I_t=1\) denote an interval violation and \(I_t=0\) a covered
+realisation.  With \(x=\sum_t I_t\), \(N\) observations, and nominal
+violation probability \(\alpha=0.20\), the unconditional-coverage statistic
+is
+\[
+    LR_{\mathrm{uc}}
+    =
+    -2\left[
+        \ell(\alpha)-\ell(\widehat p)
+    \right],
+    \qquad
+    \widehat p=x/N,
+\]
+where
+\[
+    \ell(p)=x\log p+(N-x)\log(1-p).
+\]
+Under the reference asymptotics,
+\(LR_{\mathrm{uc}}\sim\chi^2_1\).  A 95\% Wilson binomial confidence interval
+is also reported for the coverage probability itself.
 
-\subsection{Calibration hyperparameters}
-% Current governed labour calibration values to verify before publication:
-% target coverage = 0.80;
-% minimum prior errors = 24;
-% rolling window = 48;
-% decay = 0.940.
-% Add corresponding exact settings for GDP and inflation after freezing them.
+For violation independence, let \(n_{ij}\) count transitions from state
+\(i\) to state \(j\), \(i,j\in\{0,1\}\).  Define
+\[
+    \widehat\pi
+    =
+    \frac{n_{01}+n_{11}}{n_{00}+n_{01}+n_{10}+n_{11}},
+    \quad
+    \widehat\pi_{01}
+    =
+    \frac{n_{01}}{n_{00}+n_{01}},
+    \quad
+    \widehat\pi_{11}
+    =
+    \frac{n_{11}}{n_{10}+n_{11}}.
+\]
+The independence statistic is
+\[
+    LR_{\mathrm{ind}}
+    =
+    -2\left[
+        \ell_{\mathrm{iid}}-\ell_{\mathrm{Markov}}
+    \right]
+    \sim\chi^2_1,
+\]
+and joint conditional coverage is
+\[
+    LR_{\mathrm{cc}}
+    =
+    LR_{\mathrm{uc}}+LR_{\mathrm{ind}}
+    \sim\chi^2_2.
+\]
+In computation, zero-count log-likelihood terms contribute zero; transition
+probabilities with a zero denominator are set to zero, matching the
+precommitted implementation.  Independence and joint tests are left missing
+when a stage cell contains fewer than two interval observations.
+
+\subsection{Sharpness, interval score, and benchmark inference}
+
+Average interval width is
+\[
+    AIW=N^{-1}\sum_{t=1}^{N}(U_t-L_t).
+\]
+For \(\alpha=0.20\), the Winkler interval score is
+\[
+    IS_{\alpha,t}
+    =
+    (U_t-L_t)
+    +\frac{2}{\alpha}(L_t-y_t)\I(y_t<L_t)
+    +\frac{2}{\alpha}(y_t-U_t)\I(y_t>U_t).
+\]
+The primary benchmark comparison is based on the paired score differential
+\[
+    d_t^{IS}
+    =
+    IS_t^{\mathrm{primary}}
+    -
+    IS_t^{\mathrm{benchmark}}.
+\]
+Negative values favour the primary calibration method.  The reported
+standard error of \(\bar d^{IS}\) is Newey--West HAC with Bartlett weights
+and bandwidth
+\[
+    B
+    =
+    \left\lfloor
+        4(N/100)^{2/9}
+    \right\rfloor,
+\]
+capped at \(N-1\).  The two-sided \(p\)-value is based on the corresponding
+normal statistic.
+
+\subsection{Frozen calibration hyperparameters}
+
+\begin{table}[H]
+\centering
+\caption{Frozen H4 interval-calibration specification}
+\label{tab:h4_hyperparameters}
+\small
+\resizebox{0.94\textwidth}{!}{%
+\begin{tabular}{lllll}
+\toprule
+Domain & Primary method & Window & Minimum history & Weight/quantile rule \\
+\midrule
+GDP & Rolling \(q_{0.8}\) & 20 & 12 & NumPy ``higher'' \\
+Inflation & Exp.-weighted \(q_{0.8}\) & 48 & 24 & \(0.5^{j/18}\) \\
+Labour & Exp.-weighted \(q_{0.8}\) & 48 & 24 & \(0.94^j\) \\
+\bottomrule
+\end{tabular}%
+}
+\par\medskip
+\begin{minipage}{0.94\textwidth}
+\footnotesize
+\textit{Notes:} All methods use only finite historical errors whose outcome
+release date is strictly earlier than the current forecast date.  Calibration
+is restricted to the same target, forecast stage, and frozen selected model.
+There is no fallback below the minimum history.
+\end{minipage}
+\end{table}
