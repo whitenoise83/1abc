@@ -1,0 +1,37 @@
+domain_name,target_series,stage_order,forecast_stage,selected_model,development_end,development_n,development_mse,development_mae,primary_selected_model,mapping_changed
+GDP,GDPC1,1,early_quarter,Dynamic Factor Model,2022Q2,30,56.583152393962635,3.3020253243691484,Dynamic Factor Model,0
+GDP,GDPC1,2,after_month_1,Dynamic Factor Model,2022Q2,30,30.021878709951149,2.8875577241010806,Dynamic Factor Model,0
+GDP,GDPC1,3,after_month_2,Bridge–DFM Ensemble,2022Q2,30,10.322620134034288,2.2022859700337625,Bridge–DFM Ensemble,0
+GDP,GDPC1,4,quarter_end,Rolling Bridge–DFM Ensemble,2022Q2,30,9.5691969296687951,2.0888462456149073,Rolling Bridge–DFM Ensemble,0
+GDP,GDPC1,5,pre_advance_release,Dynamic Factor Model,2022Q2,30,11.326499194912662,2.2888320896297158,Dynamic Factor Model,0
+Inflation,CPIAUCSL,1,month_open,Inflation Ridge-AR Ensemble,2022-06,28,21.948635269953062,3.6125445506352771,Inflation Ridge-AR Ensemble,0
+Inflation,CPIAUCSL,2,mid_month,Inflation Bridge Ridge,2022-06,29,15.271103368989433,2.9796180113437223,Inflation Bridge Ridge,0
+Inflation,CPIAUCSL,3,month_end,Inflation Bridge Ridge,2022-06,29,15.264805568182393,2.9749158507168132,Inflation Bridge Ridge,0
+Inflation,CPIAUCSL,4,pre_release,Inflation Bridge Ridge,2022-06,29,15.102626148758622,2.9527171810435182,Inflation Bridge Ridge,0
+Inflation,CPILFESL,1,month_open,Inflation 12-Month Mean,2022-06,28,14.179977836409618,2.828764094924201,Inflation 12-Month Mean,0
+Inflation,CPILFESL,2,mid_month,Inflation Ridge-AR Ensemble,2022-06,29,8.666584711832451,2.1699765924915719,Inflation Ridge-AR Ensemble,0
+Inflation,CPILFESL,3,month_end,Inflation Ridge-AR Ensemble,2022-06,29,8.6661523235636011,2.1690190807723351,Inflation Ridge-AR Ensemble,0
+Inflation,CPILFESL,4,pre_release,Inflation Ridge-AR Ensemble,2022-06,29,8.6832662986789479,2.1648459940858622,Inflation Ridge-AR Ensemble,0
+Inflation,PCEPI,1,month_open,Inflation Bridge Ridge,2022-06,28,8.8166933317685618,2.4265528807577503,Inflation Ridge-AR Ensemble,1
+Inflation,PCEPI,2,mid_month,Inflation Bridge Ridge,2022-06,28,6.6333863752561104,1.9475868395854019,Inflation Bridge Ridge,0
+Inflation,PCEPI,3,month_end,Inflation Bridge Ridge,2022-06,29,6.2780787158866724,1.8199023534262913,Inflation Bridge Ridge,0
+Inflation,PCEPI,4,pre_release,Inflation Bridge Ridge,2022-06,29,6.3236913202276517,1.8125126386003703,Inflation Bridge Ridge,0
+Inflation,PCEPILFE,1,month_open,Inflation Bridge Ridge,2022-06,28,4.6441847947178916,1.711160006756737,Inflation Bridge Ridge,0
+Inflation,PCEPILFE,2,mid_month,Inflation Bridge Ridge,2022-06,28,5.0217528683720074,1.819024596627133,Inflation Ridge-AR Ensemble,1
+Inflation,PCEPILFE,3,month_end,Inflation Bridge Ridge,2022-06,29,3.9397169248817439,1.4923983020642886,Inflation Bridge Ridge,0
+Inflation,PCEPILFE,4,pre_release,Inflation Bridge Ridge,2022-06,29,3.9217200060897408,1.4849061256596192,Inflation Bridge Ridge,0
+Labour,CES0500000003,1,month_open,Labour Bridge Ridge,2022-06,61,30.939140159000964,2.8374319338498988,Labour Bridge Ridge,0
+Labour,CES0500000003,2,after_week_1,Labour Bridge Ridge,2022-06,61,21.932715468790224,2.6461795784104711,Labour Bridge Ridge,0
+Labour,CES0500000003,3,after_week_2,Labour Bridge Ridge,2022-06,62,44.051009156101074,3.07221769974353,Labour Bridge Ridge,0
+Labour,CES0500000003,4,month_end,Labour Equal-Weight Ensemble,2022-06,62,51.969904828200598,2.8401522763687828,Labour Equal-Weight Ensemble,0
+Labour,CES0500000003,5,pre_employment_report,Labour Equal-Weight Ensemble,2022-06,62,52.514228873696091,2.8674646801447148,Labour Equal-Weight Ensemble,0
+Labour,PAYEMS,1,month_open,Labour 12-Month Mean,2022-06,71,6955922.3390062591,744.19014084507046,Labour 12-Month Mean,0
+Labour,PAYEMS,2,after_week_1,Labour Bridge Ridge,2022-06,71,5771974.3831765251,744.05992596660553,Labour Bridge Ridge,0
+Labour,PAYEMS,3,after_week_2,Labour Factor Ridge,2022-06,72,6475171.2188844411,681.15291943544867,Labour Factor Ridge,0
+Labour,PAYEMS,4,month_end,Labour Bridge Ridge,2022-06,72,6435558.5860446161,737.6733044506916,Labour Bridge Ridge,0
+Labour,PAYEMS,5,pre_employment_report,Labour Bridge Ridge,2022-06,72,6406345.8594185719,741.2219538323219,Labour Bridge Ridge,0
+Labour,UNRATE,1,month_open,Labour AR(1),2022-06,71,4.7396339978826267,0.8927929832036311,Labour AR(1),0
+Labour,UNRATE,2,after_week_1,Labour Equal-Weight Ensemble,2022-06,71,3.2593083816526636,0.55411974437225586,Labour Equal-Weight Ensemble,0
+Labour,UNRATE,3,after_week_2,Labour Equal-Weight Ensemble,2022-06,72,2.0781546425366328,0.42388218361844193,Labour Equal-Weight Ensemble,0
+Labour,UNRATE,4,month_end,Labour Equal-Weight Ensemble,2022-06,72,1.8759939744348388,0.40639061301726176,Labour Equal-Weight Ensemble,0
+Labour,UNRATE,5,pre_employment_report,Labour Equal-Weight Ensemble,2022-06,72,1.856224487954889,0.40229290123116695,Labour Equal-Weight Ensemble,0

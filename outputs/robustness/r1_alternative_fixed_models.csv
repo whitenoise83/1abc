@@ -1,0 +1,9 @@
+domain_name,target_series,primary_fixed_model,alternative_fixed_model,development_n,development_mse,development_mae,selection_rule
+GDP,GDPC1,Dynamic Factor Model,Bridge–DFM Ensemble,160,36.823441657986862,2.7081277439129341,runner_up_pooled_development_MSE_then_MAE_then_model_name
+Inflation,CPIAUCSL,Inflation Bridge Ridge,Inflation Ridge-AR Ensemble,139,20.365927659017661,3.4522567980972698,runner_up_pooled_development_MSE_then_MAE_then_model_name
+Inflation,CPILFESL,Inflation Ridge-AR Ensemble,Inflation AR(1),139,9.9245627916942585,2.4983602537348761,runner_up_pooled_development_MSE_then_MAE_then_model_name
+Inflation,PCEPI,Inflation Bridge Ridge,Inflation Ridge-AR Ensemble,138,9.1571320186028675,2.4254269138150479,runner_up_pooled_development_MSE_then_MAE_then_model_name
+Inflation,PCEPILFE,Inflation Bridge Ridge,Inflation Ridge-AR Ensemble,138,5.1310008198897297,1.7834392754167794,runner_up_pooled_development_MSE_then_MAE_then_model_name
+Labour,CES0500000003,Labour Bridge Ridge,Labour Equal-Weight Ensemble,338,44.116815193082125,2.6983092415454801,runner_up_pooled_development_MSE_then_MAE_then_model_name
+Labour,PAYEMS,Labour Bridge Ridge,Labour 12-Month Mean,388,6471564.1419494562,686.33999140893479,runner_up_pooled_development_MSE_then_MAE_then_model_name
+Labour,UNRATE,Labour Equal-Weight Ensemble,Labour AR(1),388,3.6223979218985778,0.69481790418753986,runner_up_pooled_development_MSE_then_MAE_then_model_name

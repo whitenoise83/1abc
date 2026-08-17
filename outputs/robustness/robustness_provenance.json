@@ -1,0 +1,71 @@
+{
+  "analysis": "MacroPulse paper post-confirmatory robustness R1-R5",
+  "analysis_script_sha256": "50d5de906309a6ab7819bb2579a8983a70b887f55a14641165cc1a90c09f3a84",
+  "analysis_status": "completed successfully and independently audited in Stata",
+  "audit_scope": {
+    "R1": "28 adjacent-stage summary rows; eligibility and sign-concordance flags; nominal squared-loss direction counts.",
+    "R2": "36 target-stage summary rows; same-model zero-loss arithmetic; 9 informative cells; nominal squared-loss direction counts.",
+    "R3": "36 stage cells and 8 target concordance rows; latest-vintage direction flags.",
+    "R4": "2,604 interval variant rows, 72 summaries, 72 paired comparisons; interval arithmetic and Winkler score reproduced in Stata.",
+    "R5": "197 tests; p-value bounds, Holm monotonicity lower bound, significance flags, and exact predeclared family sizes."
+  },
+  "interpretation_boundary": "R1-R5 are post-confirmatory robustness and sensitivity analyses. They do not replace or redefine the frozen H1-H4 confirmatory analyses.",
+  "macropulse_source_commit": "c4f357e463354f72eabead3dbc7f3b14ae71bec5",
+  "policy_freeze_commit": "420feaeb51dca3abc79e9426aacca3816fe6ad5a",
+  "preanalysis_code_commit": "c3f46c9a3dc84c96b004d808142dbde6adbf78e7",
+  "python_first_successful_run_log": {
+    "path": "logs/11_robustness_sensitivity.log",
+    "sha256": "29183a55ed8236e21303c7a623a8ed565a5ae82879366e9a120339b9205ad30b",
+    "success_marker": "ROBUSTNESS R1-R5 COMPLETED SUCCESSFULLY"
+  },
+  "python_runtime": {
+    "duckdb": "1.5.5",
+    "numpy": "2.5.1",
+    "pandas": "2.3.3",
+    "python": "3.12.4"
+  },
+  "robustness_freeze_commit": "f9800620ea451ebfef20eaf05042e1623dad1031",
+  "robustness_freeze_sha256": "c67fa3f3d6d318ef87448bed0ccca538200cb18c77ee27a5d0046535bd530980",
+  "robustness_manifest_sha256": "2753b3a34cc810ca1802f22bf5dd387b3b04ca9e78ae7435e09194a9406108e3",
+  "robustness_output_hashes": {
+    "r1_alternative_fixed_models.csv": "3c5acf7b481f3ce19e9deaf3ca276fa666918eda3d75e930d6538792291ca89e",
+    "r1_h1_alternative_fixed_detail.csv": "5490c262597dbdf2b18c7dd209539cc1a0f015fa74cb117f9887249262e35f5a",
+    "r1_h1_alternative_fixed_summary.csv": "4ffc30566e468ef50d9ecb7f3bab87a2e6bba25d06d2319fc8942ae0cd2e9c51",
+    "r2_h2_shortdev_detail.csv": "4c4a48ad8143510d54a1a91c7000c2529f54754c286997f91e700e68f0bcce5a",
+    "r2_h2_shortdev_summary.csv": "050f4d3d715961a3d38d8894c0c26fb7b66a203f03c483eabd4c30f6affa917e",
+    "r2_shortdev_fixed_comparator.csv": "adb5c8fe0e0b6ef74cc39ded378b956d9c97962e9e6348b5bb43106e5964673d",
+    "r2_shortdev_stage_policy.csv": "24738321dba644c6bccfa9a85292dcd6cfb5cbd8723e080febff543f744e2f84",
+    "r3_h3_stage_heterogeneity.csv": "147fee907857a8ede3cb8a9304a1e8317ba7844fc8c7453dc3e8ed7ea58dc1ea",
+    "r3_h3_target_stage_concordance.csv": "a47ff52dae774fe3dbde140e74c13a4ebe8d14e9dc934c247bb77901d4fca880",
+    "r4_h4_memory_comparisons.csv": "5703e76d49dd5caefa48c0ab0ce9cd2aa0609e0c461ddde7273de3f2b89a4fe9",
+    "r4_h4_memory_detail.csv": "5e440d4a04b5187b828650a7949b4ea0d57354c69283147077d8599c9dd621a9",
+    "r4_h4_memory_summary.csv": "e47debc31a8aa83026fb402800eabfbfed4a69e3ca84339cc66b188757414796",
+    "r5_holm_adjusted_pvalues.csv": "37b56da433c75b5746dd426bc882e1aca7871c3975fbc2fafe474642feeaf0b8"
+  },
+  "robustness_output_row_counts": {
+    "r1_alternative_fixed_models.csv": 8,
+    "r1_h1_alternative_fixed_detail.csv": 1008,
+    "r1_h1_alternative_fixed_summary.csv": 28,
+    "r2_h2_shortdev_detail.csv": 1302,
+    "r2_h2_shortdev_summary.csv": 36,
+    "r2_shortdev_fixed_comparator.csv": 8,
+    "r2_shortdev_stage_policy.csv": 36,
+    "r3_h3_stage_heterogeneity.csv": 36,
+    "r3_h3_target_stage_concordance.csv": 8,
+    "r4_h4_memory_comparisons.csv": 72,
+    "r4_h4_memory_detail.csv": 2604,
+    "r4_h4_memory_summary.csv": 72,
+    "r5_holm_adjusted_pvalues.csv": 197
+  },
+  "stata_audit_log": {
+    "path": "logs/11_robustness_sensitivity_audit.log",
+    "sha256": "9edf617116c545917f9d38a9a4d71de8864d5e777813ef8394f22671e67a140b",
+    "success_marker": "ROBUSTNESS R1-R5 STATA AUDIT COMPLETED SUCCESSFULLY"
+  },
+  "stata_audit_sha256": "40c4e6b2d14859890ec3dcbc722b3ba2ddd6754d548e85531e990acd10b70d9a",
+  "stata_runtime": {
+    "do_file_version_directive": "19.0",
+    "edition_observed_in_audit_log": "BE",
+    "version_observed_in_audit_log": "StataNow 19.5"
+  }
+}

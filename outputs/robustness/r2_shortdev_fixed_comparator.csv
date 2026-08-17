@@ -1,0 +1,9 @@
+domain_name,target_series,selected_model,development_end,development_n,development_mse,development_mae,primary_selected_model,mapping_changed
+GDP,GDPC1,Dynamic Factor Model,2022Q2,150,24.361704521935064,2.6257062997817724,Dynamic Factor Model,0
+Inflation,CPIAUCSL,Inflation Bridge Ridge,2022-06,115,17.182842743085924,3.1560505262264926,Inflation Bridge Ridge,0
+Inflation,CPILFESL,Inflation Ridge-AR Ensemble,2022-06,115,10.024993574519581,2.3516751164819953,Inflation Ridge-AR Ensemble,0
+Inflation,PCEPI,Inflation Bridge Ridge,2022-06,114,7.0004698495088258,1.9983854994594863,Inflation Bridge Ridge,0
+Inflation,PCEPILFE,Inflation Bridge Ridge,2022-06,114,4.3739291716200892,1.6244473447258043,Inflation Bridge Ridge,0
+Labour,CES0500000003,Labour Bridge Ridge,2022-06,308,42.795500106566202,3.0550112585430309,Labour Bridge Ridge,0
+Labour,PAYEMS,Labour Bridge Ridge,2022-06,358,6649216.8403431503,765.26447135603019,Labour Bridge Ridge,0
+Labour,UNRATE,Labour Equal-Weight Ensemble,2022-06,358,2.8209393460336174,0.49477691768203858,Labour Equal-Weight Ensemble,0

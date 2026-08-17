@@ -1,0 +1,181 @@
+================================================================================================
+ROBUSTNESS AND SENSITIVITY ANALYSIS R1-R5
+================================================================================================
+PRE-ANALYSIS CODE COMMIT: c3f46c9a3dc84c96b004d808142dbde6adbf78e7
+PYTHON SCRIPT SHA256: 50d5de906309a6ab7819bb2579a8983a70b887f55a14641165cc1a90c09f3a84
+STATA AUDIT SHA256: 40c4e6b2d14859890ec3dcbc722b3ba2ddd6754d548e85531e990acd10b70d9a
+CONFIRMATORY ARCHIVES VERIFIED: 12 files
+ROBUSTNESS FREEZE SHA256: c67fa3f3d6d318ef87448bed0ccca538200cb18c77ee27a5d0046535bd530980
+
+================================================================================================
+R1 SUMMARY
+================================================================================================
+domain_name target_series earlier_stage           later_stage      alternative_fixed_model  mean_delta_squared_error  hac_p_sq  sq_sign_concordant_with_primary
+        GDP         GDPC1 early_quarter         after_month_1          Bridge–DFM Ensemble                  1.159901  0.000654                                1
+        GDP         GDPC1 after_month_1         after_month_2          Bridge–DFM Ensemble                 -0.572885  0.035913                                0
+        GDP         GDPC1 after_month_2           quarter_end          Bridge–DFM Ensemble                  0.359839  0.198220                                1
+        GDP         GDPC1   quarter_end   pre_advance_release          Bridge–DFM Ensemble                 -0.344508  0.042393                                1
+  Inflation      CPIAUCSL    month_open             mid_month  Inflation Ridge-AR Ensemble                 -1.523671  0.131416                                1
+  Inflation      CPIAUCSL     mid_month             month_end  Inflation Ridge-AR Ensemble                 -0.014964  0.777983                                1
+  Inflation      CPIAUCSL     month_end           pre_release  Inflation Ridge-AR Ensemble                  0.035502  0.277023                                1
+  Inflation      CPILFESL    month_open             mid_month              Inflation AR(1)                 -0.645742  0.018492                                1
+  Inflation      CPILFESL     mid_month             month_end              Inflation AR(1)                  0.000000       NaN                                0
+  Inflation      CPILFESL     month_end           pre_release              Inflation AR(1)                  0.021975  0.291001                                1
+  Inflation         PCEPI    month_open             mid_month  Inflation Ridge-AR Ensemble                 -0.097664  0.477039                                1
+  Inflation         PCEPI     mid_month             month_end  Inflation Ridge-AR Ensemble                 -0.463549  0.113322                                1
+  Inflation         PCEPI     month_end           pre_release  Inflation Ridge-AR Ensemble                 -0.025975  0.780421                                0
+  Inflation      PCEPILFE    month_open             mid_month  Inflation Ridge-AR Ensemble                 -0.036529  0.364423                                1
+  Inflation      PCEPILFE     mid_month             month_end  Inflation Ridge-AR Ensemble                 -0.392365  0.008802                                1
+  Inflation      PCEPILFE     month_end           pre_release  Inflation Ridge-AR Ensemble                 -0.009396  0.685848                                0
+     Labour CES0500000003    month_open          after_week_1 Labour Equal-Weight Ensemble                 -0.060353  0.269536                                1
+     Labour CES0500000003  after_week_1          after_week_2 Labour Equal-Weight Ensemble                  0.025988  0.390285                                1
+     Labour CES0500000003  after_week_2             month_end Labour Equal-Weight Ensemble                  0.029769  0.436796                                0
+     Labour CES0500000003     month_end pre_employment_report Labour Equal-Weight Ensemble                 -0.015349  0.695153                                0
+     Labour        PAYEMS    month_open          after_week_1         Labour 12-Month Mean               -290.730522  0.359877                                0
+     Labour        PAYEMS  after_week_1          after_week_2         Labour 12-Month Mean               -397.109417  0.417346                                0
+     Labour        PAYEMS  after_week_2             month_end         Labour 12-Month Mean                -42.989499  0.834755                                1
+     Labour        PAYEMS     month_end pre_employment_report         Labour 12-Month Mean               -674.858187  0.114782                                1
+     Labour        UNRATE    month_open          after_week_1                 Labour AR(1)                  0.002392  0.619852                                0
+     Labour        UNRATE  after_week_1          after_week_2                 Labour AR(1)                 -0.000187  0.759418                                0
+     Labour        UNRATE  after_week_2             month_end                 Labour AR(1)                 -0.000736  0.596107                                1
+     Labour        UNRATE     month_end pre_employment_report                 Labour AR(1)                 -0.003359  0.153069                                1
+
+================================================================================================
+R2 POLICY MAPPING CHANGES
+================================================================================================
+Stage-policy changes: 2 / 36
+Fixed-comparator changes: 0 / 8
+domain_name target_series        forecast_stage           stage_policy_model                  fixed_model  mean_delta_squared_error  hac_p_sq  sq_sign_concordant_with_primary
+        GDP         GDPC1         after_month_2          Bridge–DFM Ensemble         Dynamic Factor Model                  0.139469  0.656423                                1
+        GDP         GDPC1           quarter_end  Rolling Bridge–DFM Ensemble         Dynamic Factor Model                  0.402319  0.117341                                1
+  Inflation      CPIAUCSL            month_open  Inflation Ridge-AR Ensemble       Inflation Bridge Ridge                 -1.087786  0.344160                                1
+  Inflation      CPILFESL            month_open      Inflation 12-Month Mean  Inflation Ridge-AR Ensemble                 -0.463614  0.318363                                1
+     Labour CES0500000003             month_end Labour Equal-Weight Ensemble          Labour Bridge Ridge                 -0.770031  0.001185                                1
+     Labour CES0500000003 pre_employment_report Labour Equal-Weight Ensemble          Labour Bridge Ridge                 -0.820928  0.000364                                1
+     Labour        PAYEMS            month_open         Labour 12-Month Mean          Labour Bridge Ridge             -16728.270606  0.009206                                1
+     Labour        PAYEMS          after_week_2          Labour Factor Ridge          Labour Bridge Ridge               9312.058276  0.334515                                1
+     Labour        UNRATE            month_open                 Labour AR(1) Labour Equal-Weight Ensemble                 -0.071739  0.000039                                1
+
+================================================================================================
+R3 TARGET STAGE-CONCORDANCE
+================================================================================================
+domain_name target_series  stage_count  sq_latest_better_stages  abs_latest_better_stages  sq_nominal_sig_stages  abs_nominal_sig_stages  largest_abs_stage_share_sq  largest_abs_stage_share_abs  all_sq_same_sign  all_abs_same_sign
+        GDP         GDPC1            5                        5                         3                      0                       0                    0.423831                     0.766258                 1                  0
+  Inflation      CPIAUCSL            4                        4                         1                      0                       0                    0.567527                     0.335199                 1                  0
+  Inflation      CPILFESL            4                        4                         4                      0                       1                    0.346389                     0.346332                 1                  1
+  Inflation         PCEPI            4                        1                         1                      0                       1                    0.418922                     0.437288                 0                  0
+  Inflation      PCEPILFE            4                        0                         0                      0                       1                    0.283172                     0.330538                 1                  1
+     Labour CES0500000003            5                        4                         4                      0                       0                    0.398799                     0.499873                 0                  0
+     Labour        PAYEMS            5                        4                         4                      0                       1                    0.301704                     0.261976                 0                  0
+     Labour        UNRATE            5                        5                         4                      4                       4                    0.271131                     0.273716                 1                  0
+
+================================================================================================
+R4 MEMORY SENSITIVITY
+================================================================================================
+domain_name target_series        forecast_stage      variant  mean_score_diff_variant_minus_primary  hac_p_score_two_sided
+        GDP         GDPC1         early_quarter short_window                              -1.825781           7.380603e-02
+        GDP         GDPC1         early_quarter  long_window                              -2.050337           3.115153e-11
+        GDP         GDPC1         after_month_1 short_window                              -2.450410           1.904645e-05
+        GDP         GDPC1         after_month_1  long_window                              -2.509622           3.197160e-08
+        GDP         GDPC1         after_month_2 short_window                              -3.015693           2.803753e-04
+        GDP         GDPC1         after_month_2  long_window                              -1.986578           4.097458e-03
+        GDP         GDPC1           quarter_end short_window                              -2.065243           1.051573e-03
+        GDP         GDPC1           quarter_end  long_window                              -3.655336           2.336287e-11
+        GDP         GDPC1   pre_advance_release short_window                              -3.862455           8.011303e-11
+        GDP         GDPC1   pre_advance_release  long_window                              -3.316406           7.035712e-04
+  Inflation      CPIAUCSL            month_open short_memory                              -0.129074           2.683225e-01
+  Inflation      CPIAUCSL            month_open  long_memory                              -0.025724           8.376878e-01
+  Inflation      CPIAUCSL             mid_month short_memory                              -0.288797           2.216736e-01
+  Inflation      CPIAUCSL             mid_month  long_memory                               0.059251           7.069545e-01
+  Inflation      CPIAUCSL             month_end short_memory                              -0.203764           2.858973e-01
+  Inflation      CPIAUCSL             month_end  long_memory                               0.130826           3.322175e-01
+  Inflation      CPIAUCSL           pre_release short_memory                              -0.248352           2.036992e-01
+  Inflation      CPIAUCSL           pre_release  long_memory                               0.260082           8.035998e-02
+  Inflation      CPILFESL            month_open short_memory                              -0.093958           3.100902e-01
+  Inflation      CPILFESL            month_open  long_memory                               0.035815           5.913923e-01
+  Inflation      CPILFESL             mid_month short_memory                              -0.113336           2.342759e-01
+  Inflation      CPILFESL             mid_month  long_memory                               0.068637           2.640684e-01
+  Inflation      CPILFESL             month_end short_memory                              -0.114054           2.876941e-01
+  Inflation      CPILFESL             month_end  long_memory                               0.056523           3.723334e-01
+  Inflation      CPILFESL           pre_release short_memory                              -0.140666           2.140400e-01
+  Inflation      CPILFESL           pre_release  long_memory                               0.030574           7.278351e-01
+  Inflation         PCEPI            month_open short_memory                               0.023865           8.176935e-01
+  Inflation         PCEPI            month_open  long_memory                               0.030863           2.995031e-01
+  Inflation         PCEPI             mid_month short_memory                              -0.040215           7.435693e-01
+  Inflation         PCEPI             mid_month  long_memory                              -0.111662           2.980381e-01
+  Inflation         PCEPI             month_end short_memory                               0.149498           4.676686e-01
+  Inflation         PCEPI             month_end  long_memory                              -0.010533           9.166592e-01
+  Inflation         PCEPI           pre_release short_memory                               0.071011           5.812332e-01
+  Inflation         PCEPI           pre_release  long_memory                               0.013476           8.535261e-01
+  Inflation      PCEPILFE            month_open short_memory                              -0.008625           9.209558e-01
+  Inflation      PCEPILFE            month_open  long_memory                               0.082843           1.698895e-01
+  Inflation      PCEPILFE             mid_month short_memory                              -0.007260           9.225370e-01
+  Inflation      PCEPILFE             mid_month  long_memory                               0.027159           3.698199e-01
+  Inflation      PCEPILFE             month_end short_memory                              -0.025388           6.869399e-01
+  Inflation      PCEPILFE             month_end  long_memory                              -0.006553           9.350094e-01
+  Inflation      PCEPILFE           pre_release short_memory                              -0.008973           8.987659e-01
+  Inflation      PCEPILFE           pre_release  long_memory                              -0.035960           6.321721e-01
+     Labour CES0500000003            month_open short_memory                               0.157195           6.841966e-01
+     Labour CES0500000003            month_open  long_memory                               0.117457           4.975189e-01
+     Labour CES0500000003          after_week_1 short_memory                              -0.074267           7.619046e-01
+     Labour CES0500000003          after_week_1  long_memory                               0.294765           8.568698e-02
+     Labour CES0500000003          after_week_2 short_memory                              -0.211457           4.154323e-01
+     Labour CES0500000003          after_week_2  long_memory                               0.359335           5.837662e-02
+     Labour CES0500000003             month_end short_memory                              -0.453816           5.658757e-02
+     Labour CES0500000003             month_end  long_memory                               0.544591           1.100751e-01
+     Labour CES0500000003 pre_employment_report short_memory                              -0.429364           1.027046e-01
+     Labour CES0500000003 pre_employment_report  long_memory                               0.538263           1.005049e-01
+     Labour        PAYEMS            month_open short_memory                            -143.528455           6.954047e-02
+     Labour        PAYEMS            month_open  long_memory                             405.723577           4.503237e-03
+     Labour        PAYEMS          after_week_1 short_memory                             -40.009063           5.181362e-02
+     Labour        PAYEMS          after_week_1  long_memory                             115.930509           2.098462e-03
+     Labour        PAYEMS          after_week_2 short_memory                             -51.687359           8.785262e-02
+     Labour        PAYEMS          after_week_2  long_memory                              93.509010           1.486048e-02
+     Labour        PAYEMS             month_end short_memory                             -30.532136           4.451050e-01
+     Labour        PAYEMS             month_end  long_memory                             123.862032           1.350239e-02
+     Labour        PAYEMS pre_employment_report short_memory                             -75.681336           2.647694e-02
+     Labour        PAYEMS pre_employment_report  long_memory                             159.557960           4.753826e-03
+     Labour        UNRATE            month_open short_memory                              -0.164056           3.538829e-03
+     Labour        UNRATE            month_open  long_memory                               0.306171           8.754074e-06
+     Labour        UNRATE          after_week_1 short_memory                               0.017865           1.400531e-01
+     Labour        UNRATE          after_week_1  long_memory                              -0.008069           5.924706e-01
+     Labour        UNRATE          after_week_2 short_memory                               0.014306           3.005728e-01
+     Labour        UNRATE          after_week_2  long_memory                              -0.014217           2.782108e-01
+     Labour        UNRATE             month_end short_memory                               0.017592           2.256196e-01
+     Labour        UNRATE             month_end  long_memory                              -0.006969           5.441263e-01
+     Labour        UNRATE pre_employment_report short_memory                               0.024792           9.894452e-02
+     Labour        UNRATE pre_employment_report  long_memory                              -0.020342           4.711400e-02
+
+================================================================================================
+R5 HOLM SURVIVORS
+================================================================================================
+                          test_family  tests  raw_sig_005  holm_sig_005
+                    H1_absolute_error     28            9             1
+                     H1_squared_error     28            6             1
+  H2_absolute_error_informative_cells     11            4             1
+   H2_squared_error_informative_cells     11            4             3
+             H3_target_absolute_error      8            2             1
+              H3_target_squared_error      8            1             1
+    H4_primary_unconditional_coverage     36            9             1
+H4_primary_vs_gaussian_interval_score     36           27            17
+ H4_primary_vs_rolling_interval_score     31           14             9
+
+================================================================================================
+ROBUSTNESS OUTPUT HASHES
+================================================================================================
+r1_alternative_fixed_models.csv: 3c5acf7b481f3ce19e9deaf3ca276fa666918eda3d75e930d6538792291ca89e
+r1_h1_alternative_fixed_detail.csv: 5490c262597dbdf2b18c7dd209539cc1a0f015fa74cb117f9887249262e35f5a
+r1_h1_alternative_fixed_summary.csv: 4ffc30566e468ef50d9ecb7f3bab87a2e6bba25d06d2319fc8942ae0cd2e9c51
+r2_h2_shortdev_detail.csv: 4c4a48ad8143510d54a1a91c7000c2529f54754c286997f91e700e68f0bcce5a
+r2_h2_shortdev_summary.csv: 050f4d3d715961a3d38d8894c0c26fb7b66a203f03c483eabd4c30f6affa917e
+r2_shortdev_fixed_comparator.csv: adb5c8fe0e0b6ef74cc39ded378b956d9c97962e9e6348b5bb43106e5964673d
+r2_shortdev_stage_policy.csv: 24738321dba644c6bccfa9a85292dcd6cfb5cbd8723e080febff543f744e2f84
+r3_h3_stage_heterogeneity.csv: 147fee907857a8ede3cb8a9304a1e8317ba7844fc8c7453dc3e8ed7ea58dc1ea
+r3_h3_target_stage_concordance.csv: a47ff52dae774fe3dbde140e74c13a4ebe8d14e9dc934c247bb77901d4fca880
+r4_h4_memory_comparisons.csv: 5703e76d49dd5caefa48c0ab0ce9cd2aa0609e0c461ddde7273de3f2b89a4fe9
+r4_h4_memory_detail.csv: 5e440d4a04b5187b828650a7949b4ea0d57354c69283147077d8599c9dd621a9
+r4_h4_memory_summary.csv: e47debc31a8aa83026fb402800eabfbfed4a69e3ca84339cc66b188757414796
+r5_holm_adjusted_pvalues.csv: 37b56da433c75b5746dd426bc882e1aca7871c3975fbc2fafe474642feeaf0b8
+Manifest: C:\Users\Cenk\OneDrive\1abc\outputs\robustness\robustness_manifest.json
+
+ROBUSTNESS R1-R5 COMPLETED SUCCESSFULLY
