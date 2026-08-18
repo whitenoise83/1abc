@@ -52,10 +52,15 @@ interval is conservative throughout the evaluation sample, while the relative
 interval-score ranking against the Gaussian benchmark reverses as the quarter
 matures.  Unemployment coverage moves from substantial overcoverage at month
 open to undercoverage after week 2 and at month end before returning to the
-nominal rate immediately before the employment report.  A stage-aware
-forecasting system therefore needs to treat both the conditional mean and its
-uncertainty as release-calendar objects rather than assuming a single
-time-invariant performance profile.
+nominal rate immediately before the employment report.  The robustness analysis further shows that the exact GDP calibration
+memory is consequential: both 12- and 32-observation windows lower mean
+interval scores relative to the frozen 20-observation rule at every stage, and
+the 32-observation window improves significantly at all five stages. By
+contrast, none of the 32 inflation half-life perturbations is significant at
+5\%. A stage-aware forecasting system therefore needs to treat both the
+conditional mean and its uncertainty as release-calendar objects rather than
+assuming a single time-invariant performance profile, and it should avoid
+treating one calibration-memory choice as universally optimal.
 
 \subsection{Differences across GDP, inflation, and labour markets}
 \label{subsec:cross_domain}
@@ -170,6 +175,18 @@ cannot determine which side of that trade-off dominates; it establishes a
 stable benchmark against which a prior-only adaptive challenger can later be
 evaluated.
 
+The robustness evidence strengthens the case for treating the frozen policy as
+a stable benchmark rather than an arbitrary sample artefact. Shortening the
+development period changes only 2 of 36 stage-policy mappings and none of the
+8 target-level fixed comparators, while all 9 remaining informative H2 cells
+retain the sign of the primary squared-loss differential. Holm adjustment
+narrows the individually strongest H2 squared-loss evidence from four
+nominally significant labour cells to three: the two average-hourly-earnings
+gains and the UNRATE month-open gain survive, whereas the PAYEMS month-open
+gain does not. Development-window stability is therefore strong, but the
+multiplicity exercise supports a narrower interpretation of which individual
+cells carry the most statistical weight.
+
 This perspective also connects to conditional predictive-ability methods.
 Observable state variables can, in principle, help determine which forecast
 will perform better \citep{giacominiwhite2006conditional}.  Release stage is
@@ -224,10 +241,13 @@ quarters per stage, while the monthly targets contain roughly 38--41
 observations.  HAC tests, violation-independence tests, and comparisons of
 interval coverage consequently have limited finite-sample power in some cells.
 The GDP result is especially sensitive to this constraint.  In addition, the
-paper reports many target--stage comparisons.  The cell-level \(p\)-values are
-useful for describing where the pre-specified effects appear, but they should
-not be interpreted as a single multiplicity-adjusted family-wise test of
-universal stage effects.
+paper reports many target--stage comparisons. The confirmatory cell-level
+\(p\)-values remain the predeclared unadjusted tests for target--stage
+estimands; the secondary Holm exercise shows that family-wise adjustment
+substantially reduces the number of individually significant H1--H3 cells.
+The strongest UNRATE results and the two late-stage average-hourly-earnings H2
+gains are comparatively robust, but marginal cell-level findings should not be
+read as evidence for a universal stage effect.
 
 Second, the results are conditional on the candidate-model universe and on the
 pre-specified stage definitions.  The experiment includes persistence,
@@ -242,9 +262,10 @@ and the real-time observation mask fixed and replaces values with a frozen
 latest-vintage extract where available.  It therefore isolates a revision
 channel more cleanly than a fully revised rectangular dataset would, but it is
 not identical to a universal first-release-versus-final-release experiment for
-every underlying series and date.  Candidate-model ranking sensitivity is also
-not part of the confirmatory H3 archive and remains a separate robustness
-question.
+every underlying series and date.  The secondary stage-level decomposition
+shows whether the archived vintage effect is broad or concentrated across
+release stages, but candidate-model ranking sensitivity remains outside the
+present analysis.
 
 Fourth, the H4 intervals are symmetric around the point forecast and use
 domain-specific empirical calibration rules.  They do not model asymmetric

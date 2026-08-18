@@ -29,6 +29,18 @@ calibration produces strong interval-score gains for labour and core CPI, but
 GDP's 100\% empirical coverage is conservative relative to the nominal 80\%
 rate and does not imply uniformly superior sharpness.
 
+The frozen robustness exercises sharpen these conclusions without reversing
+them. Replacing the H1 fixed comparator preserves the non-monotonic
+information-arrival pattern; shortening H2 policy development changes only 2
+of 36 stage mappings and no fixed comparator; and the H3 stage decomposition
+shows that the UNRATE improvement and core-PCE deterioration are broad across
+their respective release cycles rather than single-stage artefacts. H4 is
+more tuning-sensitive for GDP, where both alternative rolling windows improve
+mean interval scores relative to the 20-observation baseline, while the
+inflation conclusions are locally insensitive to the tested half-lives. Holm
+adjustment materially contracts the number of significant H1--H3 cells but
+leaves the strongest UNRATE and average-hourly-earnings findings intact.
+
 Taken together, the results suggest that the main advantage of a
 stage-dependent forecasting architecture is not continual model switching for
 its own sake.  The more fundamental requirement is to make the information
@@ -44,12 +56,14 @@ the relevant date.
 The conclusions remain conditional on a finite U.S. evaluation sample,
 pre-specified stage definitions, a limited candidate-model universe, and
 symmetric empirical interval rules.  In particular, the GDP sample is short,
-cell-level inference is not a multiplicity-adjusted test of universal stage
-effects, and the latest-vintage experiment is not a complete
-first-release-versus-final-release reconstruction for every series.  Future
-work should test alternative stage partitions and model universes, evaluate
-the sensitivity of the interval results to calibration windows and weighting
-rules, and compare the frozen policy with a strictly prior-only adaptive
-challenger.  Prospective evaluation on data accumulated after the present
+the confirmatory cell-level tests are unadjusted even though the secondary
+Holm analysis documents their multiplicity sensitivity, and the latest-vintage
+experiment is not a complete first-release-versus-final-release reconstruction
+for every series. The robustness results also show that the GDP interval
+conclusions are sensitive to calibration-memory length, so the frozen
+20-observation window should not be interpreted as uniquely preferred.  Future
+work should test broader model universes and alternative stage partitions,
+allow asymmetric or state-dependent predictive distributions, and compare the
+frozen policy with a strictly prior-only adaptive challenger.  Prospective evaluation on data accumulated after the present
 freeze would provide the strongest test of whether the stage-dependent
 relationships documented here remain stable out of sample.
