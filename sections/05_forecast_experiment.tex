@@ -34,15 +34,12 @@ Model-selection histories, combination weights, calibration errors, and all othe
 \subsection{Policy-development and final evaluation samples}
 \label{subsec:development_evaluation}
 
-The stage-dependent policy and the fixed-model comparator used in H2 must be selected independently of the observations used for the final confirmatory comparison. Let $\mathcal{T}_{D}$ denote the policy-development sample and $\mathcal{T}_{E}$ the final evaluation sample, with
+The stage-dependent policy and the fixed-model comparator used in H2 are selected independently of the observations used for the final confirmatory comparison. Let $\mathcal{T}_{D}$ denote the policy-development sample and $\mathcal{T}_{E}$ the final evaluation sample, with
 \begin{equation}
     \max(\mathcal{T}_{D}) < \min(\mathcal{T}_{E}).
     \label{eq:development_split}
 \end{equation}
-The stage policy $\mathcal{P}(k,s)$ and fixed comparator $m_k^{F}$ are determined using only $\mathcal{T}_{D}$ and are frozen before forecasts in $\mathcal{T}_{E}$ are evaluated. The final dates should be chosen before the confirmatory analysis after inspecting only data availability and forecast counts, not comparative forecast performance.
-
-% If a clean temporal holdout is too short, document the alternative nested
-% rolling policy-selection procedure here and preserve strict prior-only selection.
+The stage policy $\mathcal{P}(k,s)$ and fixed comparator $m_k^{F}$ are determined using only $\mathcal{T}_{D}$ and are frozen before forecasts in $\mathcal{T}_{E}$ are evaluated. For GDP, development spans 2015Q1--2022Q4, 2023Q1 is an embargo quarter, and confirmatory evaluation spans 2023Q2--2026Q1. For inflation, development spans February 2020--December 2022, January 2023 is embargoed, and evaluation begins in February 2023. For labour targets, development runs through December 2022, January 2023 is embargoed, and evaluation begins in February 2023. These splits were frozen before confirmatory H1--H4 results were opened.
 
 \subsection{Forecast errors and loss functions}
 \label{subsec:forecast_errors}
@@ -108,16 +105,7 @@ H1 is evaluated by holding model $m$ fixed and comparing the same forecast targe
     L\!\left(e_{k,t,s}^{(m)}\right).
     \label{eq:h1_experiment_diff}
 \end{equation}
-The economic magnitude is reported as the percentage change in RMSE:
-\begin{equation}
-    \Delta \RMSE_{s\rightarrow s+1}
-    =
-    100\left(
-        \frac{\RMSE_{s+1}}{\RMSE_s}-1
-    \right).
-    \label{eq:h1_rmse_change}
-\end{equation}
-A negative value indicates improved accuracy at the later stage. Comparisons are paired at common target periods so that sample composition does not drive the result.
+The confirmatory test is based on the mean paired squared-error differential, with the corresponding absolute-error differential reported as a secondary loss metric. RMSE and MAE are retained as descriptive accuracy summaries. A negative loss differential indicates improved accuracy at the later stage. Comparisons are paired at common target periods so that sample composition does not drive the result, and adjacent-stage pairs with identical information-set hashes are excluded from H1.
 
 \subsection{H2: stage-dependent versus fixed-model policies}
 \label{subsec:h2_design}
@@ -138,17 +126,7 @@ while the fixed-policy forecast is
 \end{equation}
 where the same fixed model $m_k^{F}$ is used at all stages. Both policies use the identical real-time information set at each forecast origin. Consequently, the H2 comparison isolates model-policy choice rather than information availability.
 
-The principal effect size is
-\begin{equation}
-    Gain_k^{H2}
-    =
-    100\left(
-        \frac{\RMSE_k^{\mathrm{stage}}}
-        {\RMSE_k^{\mathrm{fixed}}}-1
-    \right),
-    \label{eq:h2_gain}
-\end{equation}
-with negative values indicating lower RMSE for the stage-dependent policy.
+The confirmatory comparison uses paired squared-error differentials between the stage policy and the fixed comparator, with absolute-error differentials as a secondary loss metric. Negative values favour the stage-dependent policy. RMSE and MAE are also reported descriptively. Cells in which the frozen stage policy and fixed comparator select the same model are exact mechanical ties and are separated from the informative H2 comparisons.
 
 \subsection{H3: real-time versus latest-vintage counterfactual}
 \label{subsec:h3_design}
@@ -163,16 +141,25 @@ H3 uses two otherwise identical forecast experiments. The real-time system uses 
     \label{eq:h3_lv_forecast}
 \end{align}
 
-The analysis records: (i) differences in forecast loss; (ii) forecast-value revisions,
+The confirmatory loss differential is
+\begin{equation}
+    d_{k,t,s}^{H3}
+    =
+    L\!\left(e_{k,t,s}^{LV}\right)
+    -
+    L\!\left(e_{k,t,s}^{RT}\right),
+    \label{eq:h3_experiment_loss}
+\end{equation}
+so negative values indicate lower loss under latest-vintage data. The analysis also records forecast-value revisions,
 \begin{equation}
     \Delta \widehat{y}_{k,t,s}^{vintage}
     =
     \widehat{y}_{k,t,s}^{LV}
     -
-    \widehat{y}_{k,t,s}^{RT};
+    \widehat{y}_{k,t,s}^{RT}.
     \label{eq:h3_forecast_change}
 \end{equation}
-and (iii) changes in candidate-model rankings by target and stage. Rank robustness is summarised using the share of winning models that change and rank-correlation measures.
+Stage-level inference uses every available paired real-time/latest-vintage cell. Target-level summaries average across stages only for target periods with a complete stage set. Candidate-model ranking sensitivity is not part of the present H3 analysis.
 
 \subsection{Statistical forecast comparison}
 \label{subsec:forecast_tests}
@@ -182,12 +169,7 @@ For paired forecasts, define the generic loss differential
     d_t=L(e_{1,t})-L(e_{2,t}).
     \label{eq:loss_diff}
 \end{equation}
-Equal predictive accuracy corresponds to $\E[d_t]=0$. The main point-forecast comparisons use a Diebold--Mariano-type statistic with a heteroskedasticity-and-autocorrelation-consistent long-run variance estimator. Block-bootstrap confidence intervals for the mean loss differential are reported when the effective sample is short or dependence is material.
-
-For comparisons where conditional predictive ability is substantively important, a Giacomini--White-type test is reported as a secondary analysis. Clark--West adjustments are reserved for comparisons in which the nested-model setting makes the unadjusted mean-squared-error differential systematically unfavourable to the larger model.
-
-% Add formal formulas, finite-sample correction, HAC lag rule, and bootstrap
-% block-length rule after the final implementation has been frozen.
+Equal predictive accuracy corresponds to $\E[d_t]=0$. The confirmatory H1--H3 archive reports two-sided tests of the mean paired loss differential using a Newey--West heteroskedasticity-and-autocorrelation-consistent long-run variance estimator under the frozen implementation. Direction is interpreted from the sign of the corresponding loss differential. Absolute-error tests use the same paired-HAC construction. The post-confirmatory multiplicity exercise in Section~\ref{subsec:multiplicity} applies Holm adjustment within the predeclared H1--H4 test families; it does not replace the archived unadjusted confirmatory tests.
 
 \subsection{H4: prior-only predictive interval calibration}
 \label{subsec:interval_calibration}

@@ -134,7 +134,7 @@ The empirical analysis addresses four linked questions:
 \begin{enumerate}[label=\textbf{RQ\arabic*:}, leftmargin=*]
     \item Does incremental information arriving within the target period improve nowcast accuracy when the forecasting model is held fixed?
     \item Does a pre-specified stage-dependent model policy add predictive value beyond the information-arrival effect captured in RQ1?
-    \item Do genuine real-time data vintages materially alter measured forecast performance or model rankings relative to latest-vintage data?
+    \item Do genuine real-time data vintages materially alter measured forecast performance relative to latest-vintage data?
     \item Do prediction intervals calibrated only from previously observable forecast errors achieve appropriate coverage while remaining sufficiently sharp?
 \end{enumerate}
 
@@ -160,7 +160,7 @@ The null and alternative are
     H_{A}^{(1)} &: \E\!\left[d_{k,t}^{H1}\right] < 0.
     \label{eq:h1_alt}
 \end{align}
-The model is deliberately held fixed across stages so that H1 isolates the marginal predictive value of the expanding real-time information set. The primary outcome is the change in RMSE, with MAE used as a robustness metric. Statistical evidence is based on paired loss differentials with heteroskedasticity-and-autocorrelation-consistent inference and, where useful, block-bootstrap confidence intervals.
+The model is deliberately held fixed across stages so that H1 isolates the marginal predictive value of the expanding real-time information set. The primary inferential loss is squared error, with absolute error used as a secondary loss metric; RMSE and MAE provide descriptive summaries in the corresponding units. Statistical evidence is based on paired loss differentials with two-sided Newey--West heteroskedasticity-and-autocorrelation-consistent inference.
 
 \paragraph{H2: Stage-dependent model policies outperform fixed-model forecasting.}
 Let $\mathcal{P}(k,s)=m^{*}_{k,s}$ denote the pre-specified stage-dependent policy, and let $m_k^{F}$ denote a fixed model selected for target $k$ using a policy-development sample only. Define
@@ -179,16 +179,21 @@ The null and alternative are
     H_{A}^{(2)} &: \E\!\left[d_{k,t}^{H2}\right] < 0.
     \label{eq:h2_alt}
 \end{align}
-H2 is the principal hypothesis of the paper. It tests whether allowing model choice to depend on the forecast stage provides additional predictive value after the changing information set itself has been accounted for. To avoid policy-selection bias, the stage policy and the fixed comparator are selected using observations prior to the final evaluation sample. The primary evidence is relative RMSE, supplemented by MAE and formal predictive-accuracy tests.
+H2 is the principal hypothesis of the paper. It tests whether allowing model choice to depend on the forecast stage provides additional predictive value after the changing information set itself has been accounted for. To avoid policy-selection bias, the stage policy and the fixed comparator are selected using observations prior to the final evaluation sample. Inference uses paired squared-error differentials, with absolute-error differentials as a secondary metric and RMSE/MAE as descriptive summaries.
+
+For H1 and H2, the economic hypotheses are directional, but the archived
+confirmatory implementation reports conservative two-sided HAC \(p\)-values;
+directional support is therefore determined jointly by the sign of the loss
+differential and the two-sided test.
 
 \paragraph{H3: Real-time data vintages materially affect forecast evaluation.}
 For identical forecast origins, models, and stage definitions, let $e_{k,t}^{RT}$ denote forecast errors generated from historically available vintages and $e_{k,t}^{LV}$ denote errors from a latest-vintage counterfactual. Define
 \begin{equation}
     d_{k,t}^{H3}
     =
-    L\!\left(e_{k,t}^{RT}\right)
+    L\!\left(e_{k,t}^{LV}\right)
     -
-    L\!\left(e_{k,t}^{LV}\right).
+    L\!\left(e_{k,t}^{RT}\right).
     \label{eq:h3_loss_diff}
 \end{equation}
 The hypothesis is intentionally two-sided:
@@ -198,7 +203,7 @@ The hypothesis is intentionally two-sided:
     H_{A}^{(3)} &: \E\!\left[d_{k,t}^{H3}\right] \neq 0.
     \label{eq:h3_alt}
 \end{align}
-The confirmatory analysis examines changes in forecast loss and forecast values for the frozen stage policy. Candidate-model ranking sensitivity is treated as a secondary robustness question rather than as part of the confirmatory H3 archive. The sign of the vintage effect is left to the data rather than imposed ex ante.
+The confirmatory analysis examines changes in forecast loss and forecast values for the frozen stage policy. With the loss differential defined as latest-vintage minus real-time loss, negative values indicate lower loss under the latest-vintage counterfactual. Candidate-model ranking sensitivity is outside the present analysis. The sign of the vintage effect is left to the data rather than imposed ex ante.
 
 \paragraph{H4: Prior-only empirical intervals are calibrated and sharp.}
 For an 80\% predictive interval $[L_t,U_t]$, define the violation indicator
@@ -228,8 +233,8 @@ Hyp. & Scientific question & Null hypothesis & Primary evidence \\
 \midrule
 H1 & Does incremental information improve nowcasts when the model is fixed? & Later-stage expected loss is no lower than earlier-stage expected loss. & RMSE/MAE changes; paired loss-differential test. \\
 H2 & Does stage-dependent model choice add value beyond information arrival? & Expected loss of the stage policy is no lower than that of a fixed policy. & Relative RMSE; MAE; predictive-accuracy tests. \\
-H3 & Do genuine historical vintages change forecast evaluation? & Real-time and latest-vintage expected losses are equal. & Loss differential; forecast changes; ranking changes. \\
-H4 & Are prior-only 80\% intervals calibrated and informative? & Coverage differs from the nominal rate and/or violations are not well behaved. & Coverage; independence; width; interval score. \\
+H3 & Do genuine historical vintages change forecast evaluation? & Real-time and latest-vintage expected losses are equal. & Loss differential; forecast-value revisions. \\
+H4 & Are prior-only 80\% intervals calibrated and informative? & Coverage equals the nominal rate and violations show no systematic dependence. & Coverage; independence; width; interval score. \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize
@@ -246,7 +251,7 @@ The framework is evaluated across three macroeconomic domains: current-quarter r
 \subsection{Contributions}
 \label{subsec:contributions}
 
-The paper makes four potential contributions. First, it reconstructs historically feasible information sets at each forecast origin rather than evaluating models on a fully revised rectangular dataset. Second, it formalises stage-dependent forecast policies that allow the preferred forecasting rule to vary with the information available within the target period. Third, it evaluates the same general architecture across GDP, inflation, and labour-market targets with distinct release calendars and information structures. Fourth, it evaluates predictive intervals calibrated only from forecast errors that were observable before the forecast origin.
+The paper makes four contributions. First, it reconstructs historically feasible information sets at each forecast origin rather than evaluating models on a fully revised rectangular dataset. Second, it formalises stage-dependent forecast policies that allow the preferred forecasting rule to vary with the information available within the target period. Third, it evaluates the same general architecture across GDP, inflation, and labour-market targets with distinct release calendars and information structures. Fourth, it evaluates predictive intervals calibrated only from forecast errors that were observable before the forecast origin.
 
 \subsection{Main findings}
 \label{subsec:main_findings}
@@ -269,7 +274,13 @@ while GDP's 100\% empirical coverage reflects conservative overcoverage rather
 than ideal 80\% calibration.  Taken together, the results favour
 stage-aware and vintage-disciplined forecast evaluation, but not a single
 forecasting or interval rule that dominates uniformly across targets and
-release stages.
+release stages. The predeclared robustness analysis preserves this qualitative
+interpretation: shortening H2 policy development changes only 2 of 36 stage
+mappings, the stage-level H3 decomposition shows that the UNRATE vintage effect
+is broad across the release cycle, and Holm correction narrows the set of
+individually significant point-forecast findings. H4 is more tuning-sensitive
+for GDP, where alternative rolling calibration windows improve interval scores
+relative to the frozen 20-observation rule.
 
 \subsection{Structure of the paper}
 \label{subsec:paper_structure}
