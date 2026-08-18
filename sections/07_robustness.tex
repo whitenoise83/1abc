@@ -1,56 +1,285 @@
 \section{Robustness and Sensitivity Analysis}
 \label{sec:robustness}
 
-\subsection{Alternative policy-development and evaluation splits}
-\label{subsec:alternative_splits}
-% Re-estimate H2 under defensible alternative temporal splits or nested
-% prior-only policy selection. The confirmatory split remains primary.
+\subsection{Robustness design and interpretation}
+\label{subsec:robustness_design}
 
-\subsection{Alternative estimation windows}
-\label{subsec:alternative_windows}
-% Expanding vs rolling; alternative rolling lengths.
+The analyses in this section are secondary robustness exercises rather than
+additional confirmatory hypotheses. Their design was frozen after completion
+of H1--H4 and before the robustness results were computed. The confirmatory
+evaluation samples, loss conventions, stage definitions, frozen research
+policy, and H4 no-look-ahead rule are therefore unchanged. No confirmatory
+output is regenerated or replaced. The robustness exercises instead ask
+whether the interpretation of the main findings is sensitive to five
+predeclared dimensions: the fixed model used in H1, the length of the
+development period used to select the H2 policy, stage-level heterogeneity in
+the archived H3 vintage comparison, the memory parameter used for H4 interval
+calibration, and multiplicity adjustment of the archived confirmatory
+\(p\)-values.
 
-\subsection{Alternative ridge penalties}
-\label{subsec:alternative_lambda}
+This distinction is important for interpretation. A robustness result can
+show that the qualitative conclusion survives an alternative specification
+without promoting that alternative specification to the status of a new
+primary model. Conversely, sensitivity of a particular cell or tuning
+parameter does not retroactively invalidate the frozen confirmatory result; it
+identifies where the evidence is specification dependent and where subsequent
+applications should be cautious. Table~\ref{tab:robustness_overview}
+summarises the five exercises.
 
-\subsection{Alternative factor specifications}
-\label{subsec:alternative_factors}
-% Number of factors; state dynamics; exact DFM vs PCA approximation if relevant.
+\begin{table}[H]
+\centering
+\caption{Overview of the frozen robustness and sensitivity exercises}
+\label{tab:robustness_overview}
+\scriptsize
+\setlength{\tabcolsep}{3.0pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lp{0.27\textwidth}p{0.55\textwidth}}
+\toprule
+Exercise & Perturbation & Main result \\
+\midrule
+R1 & Replace each H1 fixed model by the development-sample runner-up & 20 of 28 later-stage squared-loss differentials are negative, 7 positive, and 1 zero; 4 nominal improvements and 1 deterioration are significant. \\
+R2 & Shorten policy development to 2022Q2 for GDP and June 2022 for monthly targets & Only 2 of 36 stage-policy mappings change and none of the 8 fixed comparators changes; all 9 remaining informative H2 cells retain the primary squared-loss sign. \\
+R3 & Inspect archived H3 effects stage by stage & UNRATE improves under latest-vintage data at all 5 stages; core PCE worsens at all 4 stages. Other targets are more heterogeneous. \\
+R4 & Use shorter/longer H4 calibration memory & GDP is highly window-sensitive; inflation is insensitive to the half-life perturbations; labour sensitivity is concentrated in PAYEMS and UNRATE. \\
+R5 & Holm step-down correction within nine predeclared families & Cell-level significance contracts sharply for H1--H3, but the strongest labour findings survive; many H4 score comparisons remain significant after adjustment. \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
 
-\subsection{Alternative forecast-combination weights}
-\label{subsec:alternative_weights}
-% Equal, inverse-RMSE, inverse-MAE, exponentially weighted performance.
-
-\subsection{Alternative stage definitions}
-\label{subsec:alternative_stages}
-% Demonstrate that H1/H2 results are not an artefact of arbitrary stage boundaries.
-
-\subsection{Alternative H1 fixed-model choices}
+\subsection{Alternative H1 fixed model}
 \label{subsec:h1_alternative_models}
-% Repeat information-arrival tests with more than one defensible fixed model.
-% This prevents the H1 conclusion from depending on one arbitrary model choice.
 
-\subsection{Alternative latest-vintage counterfactual definitions}
-\label{subsec:h3_counterfactuals}
-% Preserve matched origins while checking alternative rules for revised values,
-% first-release targets, and series for which full ALFRED coverage is unavailable.
+The confirmatory H1 experiment intentionally holds one development-selected
+fixed model constant within each target. R1 asks whether the information-
+arrival conclusion depends on that particular comparator. For each target,
+the alternative model is the runner-up by pooled development-sample MSE after
+excluding the primary fixed comparator, with MAE and then model name used as
+the predeclared tie breakers. Selection uses the same common development
+sample as the primary comparator and does not use evaluation-period
+performance. The resulting alternatives are Bridge--DFM Ensemble for GDP,
+Ridge--AR Ensemble for headline CPI, AR(1) for core CPI, Ridge--AR Ensemble
+for both PCE targets, Equal-Weight Ensemble for average hourly earnings,
+12-Month Mean for PAYEMS, and AR(1) for UNRATE.
 
-\subsection{Alternative predictive-interval benchmarks and calibration settings}
+Under these alternative fixed models, the later information set has lower
+mean squared loss in 20 of the 28 adjacent-stage comparisons, higher loss in
+7, and exactly the same loss in one. The squared-loss sign agrees with the
+primary H1 result in 18 of 28 transitions. Five alternative-model transitions
+are significant at the unadjusted 5\% level: four improvements and one
+deterioration. The improvements are GDP after month 1 to after month 2
+(\(p=0.0359\)), GDP quarter end to pre-advance release (\(p=0.0424\)),
+core CPI month open to mid-month (\(p=0.0185\)), and core PCE mid-month to
+month end (\(p=0.0088\)). The deterioration is GDP early quarter to after
+month 1 (\(p=0.00065\)).
+
+The robustness result therefore strengthens the broad H1 interpretation while
+weakening any attempt to attach too much importance to an individual
+transition. In particular, the primary UNRATE month-end to
+pre-employment-report improvement is no longer significant with the runner-up
+AR(1) comparator, whereas several GDP transitions become significant. What
+is stable is the non-monotonic structure: changing only the fixed model does
+not produce an ordering in which every later stage is more accurate. The
+marginal predictive value of incoming information remains conditional on both
+the target and the forecasting model.
+
+\subsection{Policy-development stability}
+\label{subsec:policy_development_stability}
+
+R2 shortens the policy-development sample while leaving the evaluation sample
+unchanged. The alternative development endpoint is 2022Q2 for GDP and June
+2022 for inflation and labour. Candidate models, common-sample restrictions,
+MSE--MAE--model-name selection rules, and the target-level fixed-comparator
+rule are otherwise identical to the primary policy freeze. Observations
+between the shortened development endpoint and the confirmatory evaluation
+start are not used to choose the alternative policy.
+
+The selected policy is highly stable. Only 2 of the 36 target--stage mappings
+change, and none of the 8 target-level fixed comparators changes. The two
+changes occur in inflation: headline PCE at month open switches from the
+Ridge--AR Ensemble to Bridge Ridge, while core PCE at mid-month switches from
+the Ridge--AR Ensemble to Bridge Ridge. In both cases the shortened-sample
+choice becomes identical to the target-level fixed comparator, so those cells
+become mechanical ties rather than informative H2 comparisons. The
+shortened-development exercise therefore contains 9 informative cells instead
+of the primary 11.
+
+All nine remaining informative cells retain the same sign of the mean
+squared-loss differential as in the primary H2 evaluation. Four policy gains
+remain significant at the unadjusted 5\% level and there are again no
+significant policy losses: the Equal-Weight Ensemble for average hourly
+earnings at month end and before the employment report, the 12-Month Mean for
+PAYEMS at month open, and AR(1) for UNRATE at month open. The GDP policy
+departures remain positive but statistically weak, while the headline and core
+CPI month-open policy gains remain negative but statistically weak.
+
+This exercise makes the labour-market interpretation of H2 materially more
+credible. The strongest stage-dependent policy gains are not generated by a
+small number of observations immediately before the original December 2022
+development cutoff. At the same time, the two inflation mapping changes show
+why a frozen ex-ante policy is preferable to presenting a continually
+reselected policy as if it were uniquely determined by the data.
+
+\subsection{Vintage-effect heterogeneity across stages}
+\label{subsec:h3_stage_heterogeneity}
+
+R3 does not generate new H3 forecasts. It uses only the archived stage-level
+real-time versus latest-vintage comparisons and therefore preserves the
+confirmatory H3 information mask, outcomes, selected models, and loss
+definition. As in Section~\ref{subsec:h3_results}, a negative differential
+means that latest-vintage data lower measured loss.
+
+The stage-level results clarify which target-level effects are broad and which
+are concentrated. For GDP, the mean squared-loss differential is negative at
+all five stages, although no individual stage rejects equality at the 5\%
+level. Headline CPI and core CPI are also negative at all four stages in
+squared loss; core CPI additionally has negative absolute-loss differentials
+at all four stages. These patterns show that the negative target-level signs
+for GDP and core CPI are not produced by a single release stage, even though
+their target-level statistical evidence remains weaker than for
+unemployment.
+
+The PCE measures provide the counterexample. Headline PCE favours
+latest-vintage data in squared loss at only one of four stages. Core PCE has
+positive mean squared- and absolute-loss differentials at all four stages:
+using latest-vintage predictors makes the historical exercise worse throughout
+the release cycle rather than only at one endpoint. Average hourly earnings
+and PAYEMS each favour latest-vintage data at four of five stages but without a
+uniformly significant stage pattern.
+
+UNRATE is the strongest case. Latest-vintage data lower squared loss at all
+five stages and lower absolute loss at four of five. Four of the five
+stage-level squared-loss comparisons and four of the five absolute-loss
+comparisons are individually significant at 5\%. Hence the very small
+target-level H3 \(p\)-values for UNRATE are not driven by a single stage. R3
+therefore reinforces the confirmatory conclusion that revision effects are
+target specific: some are broad across the release calendar, but their
+direction is not common across macroeconomic variables.
+
+\subsection{Interval-calibration memory}
 \label{subsec:h4_interval_robustness}
-% Compare exp_weighted_q80 with rolling q80, conventional Gaussian intervals,
-% target-shrunk q80, EWMA Gaussian, and reasonable decay/window choices.
 
-\subsection{Subsamples and structural instability}
-\label{subsec:subsamples}
-% COVID, post-pandemic inflation, crisis exclusions, rolling performance.
+R4 retains the H4 nominal 80\% coverage target, the same target--stage--model
+calibration scope, the strict requirement that the calibration outcome be
+released before the current forecast date, the same minimum-history
+requirements, and no fallback rule. It perturbs only the memory parameter.
+For GDP, rolling-\(q_{0.8}\) windows of 12 and 32 observations are compared
+with the frozen 20-observation window. For inflation, exponential half-lives
+of 12 and 24 months are compared with the frozen half-life of 18. For labour,
+decay factors of 0.90 and 0.97 are compared with the frozen value of 0.94.
+The paired interval-score differential is alternative minus frozen-primary, so
+negative values favour the robustness variant.
 
-\subsection{Alternative loss functions and forecast-comparison inference}
-\label{subsec:alternative_loss}
-% Squared vs absolute error; alternative HAC lag rules; block bootstrap;
-% Clark-West for genuinely nested cases; conditional predictive-ability tests.
+GDP is the clearest sensitivity finding. Both alternative windows have lower
+mean interval scores than the frozen 20-observation rule at every stage.
+Nine of the ten comparisons reject equality at the unadjusted 5\% level; the
+only exception is the 12-observation window at the early-quarter stage
+(\(p=0.0738\)). The 32-observation window significantly improves the score at
+all five stages. This result is consistent with the confirmatory diagnosis of
+conservative GDP intervals, but it also shows that the exact 20-observation
+calibration window should not be interpreted as an empirically unique or
+optimal choice. The substantive H4 conclusion is robustness of the
+prior-only calibration principle, not robustness of one GDP memory length.
 
-\subsection{Frozen stable policy versus prior-only adaptive challenger}
-\label{subsec:stable_vs_adaptive}
-% Secondary research question, not one of H1--H4.
-% Ask whether continually adapting to recent forecast performance improves on
-% the frozen ex-ante stage policy, while retaining strict prior-only selection.
+Inflation is much less sensitive. Across 32 target--stage--memory
+comparisons, none of the half-life-12 or half-life-24 score differentials is
+significant at 5\%. Signs vary across targets and stages, but there is no
+evidence that modestly faster or slower exponential decay overturns the
+inflation results. The frozen half-life of 18 therefore appears to be a
+reasonable representative choice within the predeclared local sensitivity
+range.
+
+Labour lies between these cases. Average hourly earnings has no significant
+memory perturbation. PAYEMS is notably sensitive to slower decay: the
+0.97-decay variant has significantly higher interval scores at all five
+stages, while faster decay significantly improves the pre-employment-report
+score. For UNRATE, faster decay improves month-open performance, whereas
+slower decay worsens month open but modestly improves the
+pre-employment-report score. Thus the H4 labour result that adaptive weighting
+can be valuable is robust, but the preferred memory can itself be
+target- and stage-dependent.
+
+\subsection{Multiplicity-adjusted inference}
+\label{subsec:multiplicity}
+
+The confirmatory tests are reported with their predeclared unadjusted
+two-sided \(p\)-values because the paper's estimands are target--stage
+specific. R5 additionally applies Holm's step-down family-wise correction
+within nine predeclared families. This is a sensitivity analysis of the
+strength of individual significance statements, not a replacement of the
+confirmatory inference.
+
+\begin{table}[H]
+\centering
+\caption{Multiplicity sensitivity under Holm family-wise adjustment}
+\label{tab:holm_robustness}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Test family & Tests & Raw \(p<0.05\) & Holm \(p<0.05\) \\
+\midrule
+H1 squared error & 28 & 6 & 1 \\
+H1 absolute error & 28 & 9 & 1 \\
+H2 squared error, informative cells & 11 & 4 & 3 \\
+H2 absolute error, informative cells & 11 & 4 & 1 \\
+H3 target squared error & 8 & 1 & 1 \\
+H3 target absolute error & 8 & 2 & 1 \\
+H4 unconditional coverage & 36 & 9 & 1 \\
+H4 primary vs Gaussian interval score & 36 & 27 & 17 \\
+H4 primary vs rolling interval score & 31 & 14 & 9 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The adjustment materially narrows the cell-level point-forecast evidence. For
+H1, the only squared- and absolute-loss result that survives is the UNRATE
+month-end to pre-employment-report improvement (Holm \(p=0.0351\) for squared
+loss and \(0.0387\) for absolute loss). For H2 squared loss, the two
+average-hourly-earnings gains at month end and before the employment report
+survive, as does the UNRATE month-open gain; the PAYEMS month-open result no
+longer survives family-wise correction. For H2 absolute loss, only the
+UNRATE month-open gain remains significant. For H3, the UNRATE result
+survives under both squared and absolute loss, whereas the core-PCE
+absolute-loss deterioration does not.
+
+For H4 unconditional coverage, only the severe UNRATE month-open overcoverage
+survives Holm adjustment. The interval-score evidence is less dependent on
+unadjusted significance: 17 of the 36 primary-versus-Gaussian comparisons and
+9 of the 31 primary-versus-rolling comparisons remain significant after
+family-wise correction. These counts include both favourable and
+unfavourable score differences and therefore should not be read as a pooled
+``win rate.'' They show instead that many of the method-ranking differences
+are large enough to remain statistically distinguishable even under a
+conservative multiplicity correction.
+
+\subsection{Robustness synthesis}
+\label{subsec:robustness_synthesis}
+
+The robustness exercises sharpen rather than reverse the main conclusions.
+First, H1 remains non-monotonic when the fixed comparator is replaced by a
+development-sample runner-up, although the identity of the individually
+significant transition is model sensitive. Second, H2 is unusually stable:
+shortening the development sample changes only two inflation policy mappings,
+leaves every fixed comparator unchanged, and preserves the sign of every
+remaining informative squared-loss comparison. The strongest policy evidence
+continues to come from labour.
+
+Third, the H3 stage decomposition shows that the two clearest target-level
+directions are not single-stage artefacts: UNRATE improves under
+latest-vintage information throughout the release cycle, whereas core PCE
+worsens throughout it. Fourth, H4 is robust at the level of its general
+message but not every tuning parameter. Inflation is locally insensitive to
+the decay perturbation, while GDP and some labour targets reveal economically
+meaningful memory sensitivity. Finally, Holm correction removes many
+marginal cell-level significance claims but leaves the strongest UNRATE and
+average-hourly-earnings results, together with a substantial set of
+probabilistic score differences.
+
+Accordingly, the robustness evidence does not justify a stronger claim of
+universal stage dependence or universal superiority of one forecasting or
+interval method. It supports the narrower conclusion developed throughout
+the paper: release-stage information, model choice, data vintage, and
+uncertainty calibration interact in target-specific ways, and a credible
+real-time forecasting system should make those information boundaries and
+selection rules explicit rather than treating them as hidden implementation
+details.
