@@ -167,16 +167,18 @@ forecast errors arrive \citep{koopkorobilis2012dma}.
 
 The H2 evidence suggests why that distinction matters.  A flexible adaptive
 algorithm could always create more opportunities to switch, but the
-confirmatory experiment finds reliable gains only in a subset of target--stage
-cells.  Continual switching would therefore face a bias--variance trade-off:
+confirmatory experiment finds statistically significant gains only in a subset
+of target--stage cells.  Continual switching would therefore face a bias--variance trade-off:
 it might respond faster when the forecasting environment genuinely changes,
 but it could also chase short-lived ranking noise.  The frozen-policy design
 cannot determine which side of that trade-off dominates; it establishes a
 stable benchmark against which a prior-only adaptive challenger can later be
 evaluated.
 
-The robustness evidence strengthens the case for treating the frozen policy as
-a stable benchmark rather than an arbitrary sample artefact. Shortening the
+The robustness evidence supports treating the frozen policy as a stable
+benchmark within the tested development-window perturbation rather than as a
+mapping driven entirely by the final six months of the original development
+sample. Shortening the
 development period changes only 2 of 36 stage-policy mappings and none of the
 8 target-level fixed comparators, while all 9 remaining informative H2 cells
 retain the sign of the primary squared-loss differential. Holm adjustment
