@@ -4,74 +4,129 @@
 \subsection{General forecasting framework}
 \label{subsec:general_framework}
 
-For target $k$, forecast stage $s$, and candidate model $m$, define
+For target \(k\), forecast stage \(s\), and candidate model \(m\), define
 \begin{equation}
     \widehat{y}_{k,t+h\mid t,s}^{(m)}
     =
     f_m\!\left(\It_{t,s};\widehat{\theta}_{m,t,s}\right).
     \label{eq:general_forecast}
 \end{equation}
-
-The stage-dependent production forecast is
+All estimation, transformation, combination, and model-selection inputs are
+restricted to information admissible at the corresponding historical forecast
+origin. The stage-dependent production forecast is
 \begin{equation}
     \widehat{y}_{k,t+h\mid t,s}^{P}
     =
     \widehat{y}_{k,t+h\mid t,s}^{\left(m^*_{k,s}\right)},
     \label{eq:production_forecast}
 \end{equation}
-where $m^*_{k,s}$ is the model pre-specified for target $k$ at stage $s$.
+where \(m^*_{k,s}\) is frozen from the policy-development sample before the
+confirmatory evaluation sample is opened.
+
+The candidate universe differs by domain because the data frequency and
+production architecture differ. GDP uses an AR(1), Bridge Ridge, a
+Bridge--DFM ensemble, the Dynamic Factor Model (DFM), and a rolling
+Bridge--DFM ensemble. Inflation uses a trailing 12-month mean, AR(1), Bridge
+Ridge, and a Ridge--AR ensemble. Labour uses a trailing 12-month mean, AR(1),
+Bridge Ridge, Factor Ridge, and an equal-weight ensemble. The exact frozen
+stage mappings and target-level fixed comparators are reported in
+Appendix~\ref{app:policies}.
 
 \subsection{Benchmark forecasts}
 \label{subsec:benchmarks}
 
-\subsubsection{Historical mean}
-For targets where it is used, a trailing historical mean provides a simple benchmark.
+\subsubsection{Trailing historical mean}
+
+For the monthly inflation and labour candidate sets, the trailing-mean
+benchmark is the arithmetic mean of the most recent 12 admissible target
+observations. It therefore adapts only through the expanding historical target
+series and does not use contemporaneous predictors.
 
 \subsubsection{AR(1)}
+
+The common autoregressive benchmark is
 \begin{equation}
     y_t = \alpha + \phi y_{t-1}+\varepsilon_t.
     \label{eq:ar1}
 \end{equation}
+For the monthly inflation and labour systems the AR(1) is estimated by OLS on
+the admissible target history. The GDP implementation uses one autoregressive
+lag with a constant and deterministic time trend. No lag order is selected
+using the confirmatory evaluation sample.
 
 \subsection{Bridge Ridge regression}
 \label{subsec:bridge_ridge}
 
-Let $X_t$ contain the mixed-frequency predictors available for target period $t$ at the relevant forecast stage. Ridge estimates solve
+Let \(X_{k,t,s}\) contain the stage-specific bridge predictors available for
+target \(k\) at forecast origin \((t,s)\). Ridge estimates solve
 \begin{equation}
     \widehat{\beta}^{\mathrm{ridge}}
     =
     \arg\min_{\beta}
     \left\{
-        \sum_{t=1}^{T}
-        \left(y_t-X_t'\beta\right)^2
+        \sum_{\tau\in\mathcal{T}_{t,s}}
+        \left(y_{k,\tau}-X_{k,\tau,s}'\beta\right)^2
         +
         \lambda\sum_{j=1}^{p}\beta_j^2
-    \right\}.
+    \right\},
     \label{eq:ridge}
 \end{equation}
+where \(\mathcal{T}_{t,s}\) contains only historically admissible training
+observations. Predictors are standardised using the training sample before the
+ridge penalty is applied. The frozen penalty is \(\lambda=10\) for GDP and
+labour Bridge Ridge and \(\lambda=8\) for inflation Bridge Ridge. Ragged-edge
+and stage-specific predictor construction follows the data-building rules in
+Section~\ref{sec:data}; no future observation is used to fill an unavailable
+current-period value.
 
-% Explain standardisation, treatment of intercept, penalty choice,
-% stage-specific construction of X_t, and missing current-period values.
+For inflation, the Ridge--AR ensemble is the equal-weight average of the
+inflation Bridge Ridge and inflation AR(1) forecasts,
+\[
+    \widehat y^{RA}_{t,s}
+    =
+    0.5\,\widehat y^{Ridge}_{t,s}
+    +
+    0.5\,\widehat y^{AR(1)}_{t,s}.
+\]
 
 \subsection{Dynamic Factor Model}
 \label{subsec:dfm}
 
-A dynamic factor representation can be written as
+The GDP mixed-frequency candidate uses a one-factor state-space representation
+of the form
 \begin{align}
     X_t &= \Lambda F_t + e_t, \\
     F_t &= A F_{t-1}+u_t,
     \label{eq:dfm}
 \end{align}
-where $F_t$ denotes a low-dimensional latent factor and $X_t$ the observed macroeconomic panel.
+estimated with the production mixed-frequency DFM implementation. The frozen
+specification uses one latent factor with factor order one, AR(1)
+idiosyncratic disturbances, and standardisation of the observed panel.
+Estimation uses the EM algorithm with a maximum of 100 iterations and
+convergence tolerance \(10^{-4}\). Missing monthly observations at the ragged
+edge are preserved in the mixed-frequency state-space input rather than
+backfilled with future releases. Further implementation details are collected
+in Appendix~\ref{app:econometrics}.
 
-% Give exact state-space system and GDP mapping in Appendix A.
+The static Bridge--DFM ensemble is
+\[
+    \widehat y^{BDFM}_{t,s}
+    =
+    0.5\,\widehat y^{Bridge}_{t,s}
+    +
+    0.5\,\widehat y^{DFM}_{t,s}.
+\]
 
 \subsection{Factor Ridge model}
 \label{subsec:factor_ridge}
 
-% Describe factor extraction from the labour panel and subsequent
-% penalised target regression. Make clear whether factors are static PCA,
-% dynamic factors, or another exact construction.
+The labour Factor Ridge candidate first standardises the admissible labour
+predictor panel, extracts four static principal components, and then regresses
+the target on those factors using Ridge regression with penalty
+\(\lambda=8\). Factor extraction and target regression are re-estimated using
+only the information available at each forecast origin. This candidate is
+distinct from the GDP DFM: it uses static PCA followed by a penalised target
+regression rather than a mixed-frequency state-space model.
 
 \subsection{Forecast combinations}
 \label{subsec:combinations}
@@ -84,16 +139,23 @@ An equal-weight combination is
     \widehat{y}_{t+h\mid t}^{(m)}.
     \label{eq:equal_weight}
 \end{equation}
+The labour equal-weight ensemble averages the labour Bridge Ridge, AR(1), and
+Factor Ridge forecasts with weights \(1/3\) each.
 
-For inverse-RMSE weighting, define
+For the GDP rolling Bridge--DFM ensemble, raw inverse-RMSE weights are
 \begin{equation}
-    w_{m,t}
+    \widetilde w_{m,t}
     =
     \frac{\RMSE_{m,t}^{-1}}
     {\sum_{j=1}^{M}\RMSE_{j,t}^{-1}},
     \label{eq:inverse_rmse_weight}
 \end{equation}
-so that
+using only prior forecast errors whose target realizations were observable
+before origin \(t\). The rolling history contains at most the most recent 12
+eligible forecast errors and requires at least 8 observations. Component
+weights are bounded between 0.10 and 0.70 and renormalised after bounding; when
+the minimum eligible history is unavailable, the ensemble falls back to equal
+weights. The resulting forecast is
 \begin{equation}
     \widehat{y}_{t+h\mid t}^{Comb}
     =
@@ -101,8 +163,6 @@ so that
     \widehat{y}_{t+h\mid t}^{(m)}.
     \label{eq:combined_forecast}
 \end{equation}
-
-Only forecast errors whose target outcomes were observable before forecast origin $t$ may enter $\RMSE_{m,t}$.
 
 \subsection{Stage-dependent forecast policy}
 \label{subsec:stage_policy}
@@ -112,11 +172,31 @@ Define a forecast policy as the mapping
     \mathcal{P}:(k,s)\mapsto m,
     \label{eq:policy_mapping}
 \end{equation}
-which assigns a candidate model to each target-stage pair.
+which assigns one candidate model to each target--stage pair. For every
+target--stage cell, all candidate models are first restricted to their common
+development-sample forecast origins. The stage winner minimises mean squared
+error on that common sample; ties within \(10^{-12}\) are broken by mean
+absolute error and then lexicographically by model name. This procedure yields
+36 frozen target--stage assignments.
+
+The fixed comparator for H2 is selected separately for each target. Candidate
+losses are pooled across the common development samples for all stages of that
+target, and the same MSE--MAE--lexical rule is applied. The resulting model is
+then used at every stage of the target's confirmatory evaluation. The fixed
+comparators are the DFM for GDP; Bridge Ridge for headline CPI, headline PCE,
+core PCE, average hourly earnings, and payroll employment; Ridge--AR for core
+CPI; and the equal-weight ensemble for unemployment.
 
 \subsection{Stable policy and adaptive challenger}
 \label{subsec:stable_adaptive}
 
-% Define the frozen ex-ante policy and the prior-only adaptive/shadow
-% challenger in academic terms. State the training/freeze sample and
-% prohibit future information from revising historical choices.
+The reported confirmatory forecasts use the frozen development-sample policy;
+historical model choices are never revised using later evaluation outcomes.
+This stable-policy design separates the question of whether a pre-specified
+stage map adds value from the different question of whether an online adaptive
+selector can learn from accumulating forecast errors. A strictly prior-only
+adaptive challenger is therefore treated as future work rather than as part of
+the H1--H4 confirmatory estimands. The post-confirmatory robustness exercises
+vary predeclared fixed comparators, development windows, H3 stage aggregation,
+interval-memory parameters, and multiplicity treatment without redefining the
+frozen confirmatory policy.

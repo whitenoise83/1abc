@@ -1,14 +1,90 @@
 \section{Vintage Reconstruction and Release-Date Handling}
 \label{app:vintages}
 
-% Document:
-% - source identifiers;
-% - first-release / vintage rules;
-% - observation dates;
-% - publication dates;
-% - information cutoffs;
-% - release-calendar treatment;
-% - ragged edges;
-% - structural missingness;
-% - target leakage tests;
-% - max-observation-date checks.
+The real-time design distinguishes three objects that can otherwise be
+conflated: the calendar date attached to an economic observation, the date on
+which that observation became available to a historical forecaster, and the
+numerical vintage of the value stored for that observation. The empirical
+pipeline freezes these objects before forecast evaluation and preserves the
+historical availability mask in all real-time/latest-vintage comparisons.
+
+\subsection{Historical information mask}
+
+For forecast origin \(o_{k,t,s}\), an observation can enter the information set
+only if its governed release-calendar rule indicates that it was available by
+that origin. In addition, training-target observations must precede the current
+target period, so the target history obeys the stricter leakage restriction
+\[
+    \text{value date}<\text{forecast-period start}.
+\]
+Observations that had not yet been released are treated as structurally
+unavailable rather than filled from later releases. The stage-calendar audit
+checks stage uniqueness, chronological ordering, the stored days-to-release
+measure, and information-set hashes. Adjacent H1 transitions with identical
+information-set hashes are excluded from the information-arrival contrast.
+
+\subsection{Target realizations}
+
+Forecasts are evaluated against the target value contained in the
+initial-release snapshot. For transformed targets, the initial-release target
+is calculated from the complete release-date snapshot using the same
+transformation as in the main data architecture. This scoring realization is
+held fixed across stages, candidate models, policy comparisons, and the H3
+real-time/latest-vintage experiment. Later revisions therefore cannot improve
+one H3 arm mechanically by changing the dependent variable used for scoring.
+
+\subsection{Latest-vintage counterfactual}
+
+H3 changes the numerical vintage while holding historical information
+availability fixed. Let \(A_{j,\tau}(o_{k,t,s})\) denote the frozen historical
+availability mask. For every observation already present in that mask, the
+counterfactual substitutes the frozen latest-vintage value when a matching
+series/date key exists; otherwise it retains the historical value. No
+observation absent from the historical mask is introduced. Thus
+\[
+    \operatorname{mask}\!\left(\It^{LV}_{k,t,s}\right)
+    =
+    \operatorname{mask}\!\left(\It^{RT}_{k,t,s}\right).
+\]
+The same production data builders, transformations, lag construction,
+ragged-edge treatment, and feature-carry rules are then applied to both arms.
+
+This construction should not be interpreted as claiming that every value in
+the production staging database is a literal first-release vintage. The
+historical experiment is governed by release-calendar feasibility and frozen
+snapshot provenance, while the H3 counterfactual is a separately frozen,
+matched-mask comparison of historical and latest-vintage inputs. This
+distinction is important when interpreting H3 as a data-revision sensitivity
+experiment rather than as a universal first-release-versus-final-release
+reconstruction for every predictor.
+
+\subsection{Ragged edges and structural missingness}
+
+The GDP bridge builder aggregates transformed monthly indicators to quarterly
+features and records any permitted carry-forward of a previously known
+quarterly feature. The GDP mixed-frequency factor builder instead preserves
+missing monthly observations and explicitly masks the current target-quarter
+GDP realization. Inflation daily inputs are aggregated to monthly values and
+permit a maximum two-month carry for the latest admissible lagged value.
+Labour permits a maximum four-month carry, with weekly claims first aggregated
+to monthly means. These rules are identical in the real-time and latest-vintage
+arms.
+
+\subsection{Vintage and builder audits}
+
+The frozen vintage audit verifies exact preservation of the historical
+availability mask for GDP, inflation, and labour. The production builders are
+then applied independently to both vintage arms. Across 3,391 audited model
+input constructions---225 GDP Bridge, 225 GDP mixed-frequency factor, 1,202
+inflation, and 1,739 labour constructions---both arms build successfully and
+retain identical indexes, feature structures, ragged-edge/imputation status,
+and latest observable periods. Every evaluated construction contains at least
+one numerical real-time/latest-vintage difference.
+
+Five daily \texttt{DCOILWTICO} dates in historical snapshots have no matching
+key in the frozen latest-vintage extract. The historical value is retained for
+those keys rather than interpolated or replaced by a neighbouring date; this
+preserves exact mask equality and leaves no missing latest-vintage
+counterfactual values. The frozen latest-vintage extract, retrieval metadata,
+and SHA-256 checksum are stored with the replication artifacts so that later
+source-database revisions cannot silently alter H3.

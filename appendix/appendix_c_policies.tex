@@ -1,62 +1,172 @@
 \section{Frozen Stage-Specific Forecast Policies}
+
 \label{app:policies}
 
+The tables below reproduce the development-sample policy freeze used in H2.
+
+``Different'' identifies the target--stage cells in which the frozen stage
+policy and the target-level fixed comparator select different models. There
+are 11 such cells out of 36; the remaining 25 cells are mechanical ties in H2.
+
 \subsection{GDP policy}
-% Insert exact stage -> model mapping from the frozen evaluation.
+
+\begin{table}[H]
+
+\centering
+
+\caption{Frozen GDP forecasting policy}
+
+\label{tab:gdp_policy}
+
+\footnotesize
+
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llll}
+
+\toprule
+
+Stage & Stage-policy model & Fixed comparator & Different \\
+
+\midrule
+
+Early quarter & Dynamic Factor Model & Dynamic Factor Model & No \\
+
+After month 1 & Dynamic Factor Model & Dynamic Factor Model & No \\
+
+After month 2 & Bridge--DFM Ensemble & Dynamic Factor Model & Yes \\
+
+Quarter end & Rolling Bridge--DFM Ensemble & Dynamic Factor Model & Yes \\
+
+Pre-advance release & Dynamic Factor Model & Dynamic Factor Model & No \\
+
+\bottomrule
+
+\end{tabular}%
+}
+
+\end{table}
 
 \subsection{Inflation policy}
+
 \begin{table}[H]
+
 \centering
+
 \caption{Frozen inflation forecasting policy}
+
 \label{tab:inflation_policy}
-\begin{tabular}{lll}
+
+\footnotesize
+
+\setlength{\tabcolsep}{4pt}
+
+\begin{tabular}{lllll}
+
 \toprule
-Target & Stage & Production candidate \\
+
+Target & Stage & Stage-policy model & Fixed comparator & Different \\
+
 \midrule
-Headline CPI & Month open & Ridge--AR ensemble \\
-Headline CPI & Mid-month & Ridge--AR ensemble \\
-Headline CPI & Pre-release & Ridge--AR ensemble \\
-Headline CPI & Month end & Ridge--AR ensemble \\
-Core CPI & Month open & 12-month mean \\
-Core CPI & Mid-month & Ridge--AR ensemble \\
-Core CPI & Pre-release & Ridge--AR ensemble \\
-Core CPI & Month end & Ridge--AR ensemble \\
-Headline PCE & Month open & Bridge Ridge \\
-Headline PCE & Mid-month & Bridge Ridge \\
-Headline PCE & Pre-release & Bridge Ridge \\
-Headline PCE & Month end & Bridge Ridge \\
-Core PCE & Month open & Bridge Ridge \\
-Core PCE & Mid-month & Ridge--AR ensemble \\
-Core PCE & Pre-release & Ridge--AR ensemble \\
-Core PCE & Month end & Ridge--AR ensemble \\
+
+Headline CPI & Month open & Ridge--AR Ensemble & Bridge Ridge & Yes \\
+
+Headline CPI & Mid-month & Bridge Ridge & Bridge Ridge & No \\
+
+Headline CPI & Month end & Bridge Ridge & Bridge Ridge & No \\
+
+Headline CPI & Pre-release & Bridge Ridge & Bridge Ridge & No \\
+
+Core CPI & Month open & 12-Month Mean & Ridge--AR Ensemble & Yes \\
+
+Core CPI & Mid-month & Ridge--AR Ensemble & Ridge--AR Ensemble & No \\
+
+Core CPI & Month end & Ridge--AR Ensemble & Ridge--AR Ensemble & No \\
+
+Core CPI & Pre-release & Ridge--AR Ensemble & Ridge--AR Ensemble & No \\
+
+Headline PCE & Month open & Ridge--AR Ensemble & Bridge Ridge & Yes \\
+
+Headline PCE & Mid-month & Bridge Ridge & Bridge Ridge & No \\
+
+Headline PCE & Month end & Bridge Ridge & Bridge Ridge & No \\
+
+Headline PCE & Pre-release & Bridge Ridge & Bridge Ridge & No \\
+
+Core PCE & Month open & Bridge Ridge & Bridge Ridge & No \\
+
+Core PCE & Mid-month & Ridge--AR Ensemble & Bridge Ridge & Yes \\
+
+Core PCE & Month end & Bridge Ridge & Bridge Ridge & No \\
+
+Core PCE & Pre-release & Bridge Ridge & Bridge Ridge & No \\
+
 \bottomrule
+
 \end{tabular}
+
 \end{table}
 
 \subsection{Labour-market policy}
+
 \begin{table}[H]
+
 \centering
+
 \caption{Frozen labour-market forecasting policy}
+
 \label{tab:labour_policy}
-\begin{tabular}{lll}
+
+\footnotesize
+
+\setlength{\tabcolsep}{4pt}
+
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lllll}
+
 \toprule
-Target & Stage & Production candidate \\
+
+Target & Stage & Stage-policy model & Fixed comparator & Different \\
+
 \midrule
-AHE & Month open & Labour Bridge Ridge \\
-AHE & After week 1 & Labour Bridge Ridge \\
-AHE & After week 2 & Equal-weight ensemble \\
-AHE & Pre-employment report & Equal-weight ensemble \\
-AHE & Month end & Equal-weight ensemble \\
-PAYEMS & Month open & 12-month mean \\
-PAYEMS & After week 1 & Equal-weight ensemble \\
-PAYEMS & After week 2 & Labour Bridge Ridge \\
-PAYEMS & Pre-employment report & Labour Bridge Ridge \\
-PAYEMS & Month end & Labour Bridge Ridge \\
-UNRATE & Month open & Equal-weight ensemble \\
-UNRATE & After week 1 & Equal-weight ensemble \\
-UNRATE & After week 2 & Equal-weight ensemble \\
-UNRATE & Pre-employment report & Equal-weight ensemble \\
-UNRATE & Month end & Equal-weight ensemble \\
+
+AHE & Month open & Bridge Ridge & Bridge Ridge & No \\
+
+AHE & After week 1 & Bridge Ridge & Bridge Ridge & No \\
+
+AHE & After week 2 & Bridge Ridge & Bridge Ridge & No \\
+
+AHE & Month end & Equal-Weight Ensemble & Bridge Ridge & Yes \\
+
+AHE & Pre-employment report & Equal-Weight Ensemble & Bridge Ridge & Yes \\
+
+PAYEMS & Month open & 12-Month Mean & Bridge Ridge & Yes \\
+
+PAYEMS & After week 1 & Bridge Ridge & Bridge Ridge & No \\
+
+PAYEMS & After week 2 & Factor Ridge & Bridge Ridge & Yes \\
+
+PAYEMS & Month end & Bridge Ridge & Bridge Ridge & No \\
+
+PAYEMS & Pre-employment report & Bridge Ridge & Bridge Ridge & No \\
+
+UNRATE & Month open & AR(1) & Equal-Weight Ensemble & Yes \\
+
+UNRATE & After week 1 & Equal-Weight Ensemble & Equal-Weight Ensemble & No \\
+
+UNRATE & After week 2 & Equal-Weight Ensemble & Equal-Weight Ensemble & No \\
+
+UNRATE & Month end & Equal-Weight Ensemble & Equal-Weight Ensemble & No \\
+
+UNRATE & Pre-employment report & Equal-Weight Ensemble & Equal-Weight Ensemble & No \\
+
 \bottomrule
-\end{tabular}
+
+\end{tabular}%
+}
+
 \end{table}
+
+The stage policy is selected separately within each target--stage common
+development sample by minimum MSE, then MAE, then model name for ties within
+\(10^{-12}\). The fixed comparator is selected once per target by applying the
+same rule to the pooled common development samples across all stages.

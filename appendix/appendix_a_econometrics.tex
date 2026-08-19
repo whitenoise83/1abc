@@ -1,16 +1,97 @@
 \section{Additional Econometric Details}
 \label{app:econometrics}
 
+This appendix records the implementation details that are fixed in the
+production candidate universe. All quantities described below are recomputed
+using only the training information admissible at the historical forecast
+origin; the confirmatory evaluation sample is not used for hyperparameter
+selection.
+
+\subsection{Autoregressive and trailing-mean benchmarks}
+
+The monthly inflation and labour AR(1) candidates estimate
+\[
+    y_\tau=\alpha+\phi y_{\tau-1}+\varepsilon_\tau
+\]
+by OLS on the admissible target history. The corresponding 12-month-mean
+candidate is
+\[
+    \widehat y_{t}^{Mean12}
+    =
+    \frac{1}{12}\sum_{j=1}^{12} y_{t-j},
+\]
+provided the required target history is available. The GDP AR candidate uses
+one lag with a constant and linear deterministic trend.
+
 \subsection{Bridge Ridge implementation}
-% Exact standardisation, penalty tuning, intercept handling,
-% stage-specific feature construction.
+
+For each target and stage, the bridge dataset is rebuilt from the historical
+information set before estimation. Predictors are standardised using moments
+computed on the training sample, after which the Ridge objective in
+Equation~\eqref{eq:ridge} is solved. The frozen penalties are
+\[
+    \lambda_{GDP}=10,\qquad
+    \lambda_{\pi}=8,\qquad
+    \lambda_{Labour}=10.
+\]
+The stage-specific feature matrix therefore changes as releases arrive, but
+the penalty does not change with the confirmatory outcome.
+
+For the GDP bridge system, transformed monthly indicators are aggregated to
+quarterly predictors. When a current-quarter bridge feature has no current
+quarterly observation, the most recently known quarterly feature value can be
+carried forward under the frozen production builder; the affected feature is
+recorded by the data audit. Inflation daily inputs are aggregated to monthly
+frequency before transformation and may use the latest admissible value at or
+before the required lagged month subject to a maximum carry of two months.
+The analogous maximum carry in the labour builder is four months, with weekly
+claims first aggregated to monthly means.
 
 \subsection{Dynamic Factor Model}
-% Full measurement equation, transition equation, initialization,
-% number of factors, estimation method, convergence criteria.
+
+The GDP DFM is implemented as a mixed-frequency state-space model using one
+latent factor. The frozen configuration is:
+\begin{itemize}[leftmargin=*]
+    \item one factor and factor autoregressive order one;
+    \item AR(1) idiosyncratic disturbances;
+    \item standardisation of the observed panel;
+    \item EM estimation with at most 100 iterations;
+    \item convergence tolerance \(10^{-4}\).
+\end{itemize}
+The mixed-frequency input preserves ragged-edge missing observations and masks
+the target-quarter GDP realization. Consequently, the DFM can condition on the
+irregular release pattern without filling the panel with observations that
+were not yet available.
 
 \subsection{Factor Ridge implementation}
-% Full labour factor construction.
+
+The labour Factor Ridge model standardises the admissible predictor panel and
+extracts four static principal components. These four factors enter a Ridge
+target regression with \(\lambda=8\). Both PCA and the penalised regression are
+fit afresh using the admissible training sample at each forecast origin.
 
 \subsection{Forecast combinations}
-% Rolling-history definition and exact weight calculation.
+
+Two fixed equal-weight combinations enter the candidate universe. The
+inflation Ridge--AR ensemble uses weights \((0.5,0.5)\) on Bridge Ridge and
+AR(1). The labour equal-weight ensemble uses weights \((1/3,1/3,1/3)\) on
+Bridge Ridge, AR(1), and Factor Ridge. The GDP Bridge--DFM ensemble uses fixed
+weights \((0.5,0.5)\).
+
+The rolling GDP Bridge--DFM ensemble instead estimates weights from prior
+forecast performance. At origin \(t\), only forecast errors whose target
+realizations were already observable may enter the weighting history. At most
+the 12 most recent eligible errors are used, with a minimum history of 8.
+Raw inverse-RMSE weights are bounded to the interval \([0.10,0.70]\) and
+renormalised. If the minimum history is unavailable, the implementation uses
+equal weights. These restrictions prevent current or future target outcomes
+from affecting the combination assigned to a historical origin.
+
+\subsection{Frozen policy-selection rule}
+
+Stage-specific and fixed-comparator choices are made on common candidate
+samples in the policy-development period. Within each target--stage cell,
+models are ordered by development MSE, then MAE, then model name, with numerical
+ties defined by tolerance \(10^{-12}\). For the target-level fixed comparator,
+the same rule is applied after pooling the common development samples over all
+stages. The exact resulting map is reported in Appendix~\ref{app:policies}.
