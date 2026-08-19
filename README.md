@@ -1,24 +1,54 @@
-# Elsevier real-time macro nowcasting working-paper template
+# Real-Time Macroeconomic Nowcasting with Stage-Dependent Model Policies
 
-This is a modular LaTeX working-paper skeleton tailored to the MacroPulse-style research design:
+This repository contains the manuscript, frozen research-design artifacts,
+confirmatory outputs, robustness analyses, audit logs, and reproducibility
+materials for:
 
-- real-time / vintage-aware information sets;
-- stage-dependent model policies;
-- GDP, inflation, and labour-market applications;
-- pseudo-real-time evaluation;
-- prior-only 80% predictive-interval calibration;
-- robustness and reproducibility appendices.
+**Real-Time Macroeconomic Nowcasting with Stage-Dependent Model Policies:
+Evidence from U.S. GDP, Inflation, and Labour Markets**
 
-## Confirmatory research structure
+The paper evaluates a vintage-aware, stage-dependent pseudo-real-time
+forecasting framework for U.S. real GDP growth, four inflation measures,
+payroll employment, unemployment, and average hourly earnings.
 
-The manuscript is now organised around four pre-specified hypotheses:
+## Research design
 
-- **H1 - Information arrival:** holding the forecasting model fixed, later real-time information stages should reduce forecast loss.
-- **H2 - Stage-dependent policy:** a pre-specified target-by-stage model policy should outperform a single fixed model selected on a development sample. This is the headline hypothesis.
-- **H3 - Data vintage validity:** forecast evaluation and/or model rankings may differ when genuine historical vintages are replaced by latest-vintage data.
-- **H4 - Predictive uncertainty:** prior-only 80% empirical prediction intervals should be evaluated jointly for calibration, independence of violations, sharpness, and interval score.
+The empirical study is organised around four frozen confirmatory hypotheses:
 
-The template deliberately separates H1 from H2 so that the value of incoming information is not confounded with the value of changing models. It also requires policy selection to occur before the final H2 evaluation sample.
+- **H1 — Information arrival:** holding the forecasting model fixed, assess
+  whether adjacent release stages change forecast loss.
+- **H2 — Stage-dependent policy:** compare a development-frozen
+  target-by-stage model policy with a development-frozen target-level fixed
+  comparator.
+- **H3 — Data vintages:** compare historically available and frozen
+  latest-vintage inputs while preserving the historical observation mask and
+  the common initial-release evaluation outcome.
+- **H4 — Predictive uncertainty:** evaluate prior-only 80% prediction
+  intervals for calibration, violation independence, sharpness, and interval
+  score.
+
+H1--H4 were frozen and archived before the separate R1--R5 robustness and
+sensitivity programme. The robustness analyses do not redefine the
+confirmatory estimands.
+
+## Reproducibility structure
+
+- `main.tex` — master manuscript
+- `sections/` — main paper
+- `appendix/` — technical and reproducibility appendices
+- `references.bib` — bibliography
+- `freeze/` — pre-analysis and design-freeze artifacts
+- `outputs/confirmatory/` — immutable H1--H4 result archives and manifests
+- `outputs/robustness/` — immutable R1--R5 robustness archive and provenance
+- `python/` — analysis and audit-support scripts
+- `stata/` — independent Stata audit programs
+- `logs/` — retained execution/audit logs
+- `data/` — governed paper-side data artifacts and metadata
+
+The production MacroPulse source is pinned in the archived manifests. Full
+commit identifiers, source backtest identifiers, analysis-script hashes, row
+counts, and SHA-256 result hashes are preserved in the confirmatory and
+robustness provenance files.
 
 ## Compile
 
@@ -31,17 +61,11 @@ pdflatex main.tex
 pdflatex main.tex
 ```
 
-It is also suitable for upload to Overleaf as a project.
+The modular source tree is suitable for local TeX/Overleaf work. A target
+journal may require a flattened source package at final submission.
 
-## Working structure
+## Analysis boundary
 
-- `main.tex` - front matter and master document
-- `sections/` - main paper
-- `appendix/` - technical appendices
-- `references.bib` - bibliography
-- `figures/` - working figures
-- `tables/` - optional generated table fragments
-
-## Elsevier submission note
-
-The modular folder structure is convenient while writing. Before source-file submission through Elsevier Editorial Manager, create a flattened submission package if required by the journal/workflow, because Editorial Manager does not process LaTeX subfolder structures.
+The confirmatory and robustness archives are treated as immutable. Manuscript
+editing after those freezes changes presentation and interpretation only; it
+does not regenerate the archived empirical results.

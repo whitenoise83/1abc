@@ -1,48 +1,81 @@
 \section{Reproducibility and Computational Environment}
 \label{app:reproducibility}
 
-% Report at publication:
-% - Python version;
-% - Stata version if used for independent replication;
-% - package versions;
-% - operating system;
-% - random seeds;
-% - public data-source identifiers;
-% - research-data build date;
-% - repository commit/tag;
-% - instructions to rebuild tables and figures.
+The research archive uses commit- and hash-based provenance rather than a
+single mutable ``final'' dataset or software environment. Design freezes,
+analysis code, confirmatory outputs, robustness outputs, audit logs, and
+machine-readable manifests are retained in the public replication repository.
+The manifests record source backtest identifiers, row counts, analysis-script
+hashes, and SHA-256 hashes for the archived result files.
 
-\subsection{Confirmatory H4 provenance}
+\subsection{Frozen analysis chain}
 
-The H4 design was frozen before confirmatory interval results were observed.
-The pre-analysis commit is
-\texttt{a1a706f79258}.  The frozen H4 design records
-the pre-H4 checkpoint
-\texttt{54f70fdd6d2d} and the pinned MacroPulse
-source \texttt{c4f357e46335}; the research stage policy
-had previously been frozen at commit
-\texttt{420feaeb51dc}.
+The production MacroPulse source used by the paper is pinned at commit
+\texttt{c4f357\allowbreak e46335}. The development-sample stage policy and
+target-level fixed comparators were frozen at
+\texttt{420fea\allowbreak eb51dc}. H1--H2 pre-analysis code was frozen at
+\texttt{fb3246\allowbreak 6397b8}, and the confirmatory H1--H2 archive is
+\texttt{689ccd\allowbreak 7dff4c}.
 
-The first confirmatory Python execution passed its pre-analysis boundary gate
-before producing results.  The original H4 analytical artifacts were hashed
-immediately.  Subsequent changes were confined to the independent Stata
-audit layer: a numerical tolerance for the imported nominal-coverage
-constant, double-precision CSV import, and reconstruction of coverage rates
-from exact integer counts.  Two uncommitted local CSV files were accidentally
-truncated during the audit workflow; each was restored only after its
-SHA-256 hash exactly reproduced the hash recorded from the first confirmatory
-run.  Neither truncation nor any regenerated alternative result was
-committed.
+For H3, the latest-vintage counterfactual inputs were frozen at
+\texttt{6e6c64\allowbreak 64d930}. The original H3 pre-analysis commit is
+\texttt{275797\allowbreak fd3109}; a structure-only end-of-sample hotfix was
+committed at \texttt{1b03d7\allowbreak 3c460e} before any H3 output was
+produced, followed by a Stata-variable-name audit hotfix at
+\texttt{9d64c2\allowbreak d5114d}. The immutable H3 results archive is
+\texttt{2c9942\allowbreak fdc96e}.
 
-The final independent audit was run in StataNow 19.5 and verified the frozen
+The H4 design was frozen at \texttt{a1a706\allowbreak f79258} against the
+pre-H4 checkpoint \texttt{54f70f\allowbreak dd6d2d}. Its immutable
+confirmatory archive is \texttt{1543a7\allowbreak cce404}. The
+post-confirmatory robustness design was separately frozen at
+\texttt{f98006\allowbreak 20ea45}; the final pre-result chronology hotfix is
+\texttt{c3f46c\allowbreak 9a3dc8}, and the immutable R1--R5 archive is
+\texttt{0b93ae\allowbreak a58056}. Commit identifiers are abbreviated here
+for typesetting; full Git SHA-1 values and artifact SHA-256 hashes are retained
+in the corresponding manifests and provenance files.
+
+\subsection{Archived computational environments}
+
+The frozen H3 and H4 manifests record Python 3.14.2 with DuckDB 1.5.5,
+NumPy 2.5.1, and pandas 2.3.3. H3 additionally records
+scikit-learn 1.9.0, SciPy 1.18.0, and statsmodels 0.14.6. The H1--H2
+manifest records the analysis-script hash, policy-freeze commit, source
+backtest identifiers, inference rule, row counts, and SHA-256 output hashes;
+the paper does not retrospectively infer package versions that were not stored
+in that manifest.
+
+The R1--R5 robustness provenance records Python 3.12.4 with DuckDB 1.5.5,
+NumPy 2.5.1, and pandas 2.3.3. The independent robustness audit was executed
+in StataNow 19.5 BE with a \texttt{version 19.0} do-file directive. The
+independent H4 audit was likewise completed in StataNow 19.5. These runtime
+records are analysis-specific: the paper does not assume that every frozen
+analysis was executed in an identical Python environment.
+
+\subsection{Confirmatory H4 audit boundary}
+
+The first successful confirmatory H4 Python execution passed its pre-analysis
+boundary gate before producing results, and the resulting analytical artifacts
+were hashed. The independent Stata audit subsequently verified the frozen
 stage-policy identity, strict release-date calibration gate, interval
 lower/upper/width algebra, inclusive coverage classification, 80\% Winkler
 score arithmetic, eligibility summaries, Wilson intervals, and
-primary-versus-benchmark non-HAC summary quantities.  Exact weighted-quantile
-construction and Newey--West HAC standard errors remain those of the
-precommitted Python implementation.  The successful audit and all failed
-audit logs are retained in the repository for provenance.  The immutable H4
-result archive is commit
-\texttt{1543a7cce404}.  Commit identifiers are abbreviated here for
-typesetting; the complete SHA-1 values and SHA-256 artifact hashes are
-recorded in the archived H4 provenance file.
+primary-versus-benchmark non-HAC summary quantities.
+
+The Stata layer does not claim independent reproduction of the exact weighted
+empirical quantile algorithm or the Python Newey--West HAC standard errors.
+Those quantities remain those of the precommitted Python implementation. This
+boundary is preserved in the archived H4 provenance rather than being
+generalised beyond what the independent audit actually verified.
+
+\subsection{Post-confirmatory robustness provenance}
+
+The R1--R5 robustness archive is explicitly post-confirmatory and does not
+replace or redefine H1--H4. Its provenance file records the predeclared
+robustness freeze, analysis and audit script hashes, runtime versions, output
+row counts, and SHA-256 hashes for every robustness result file. The
+independent Stata audit verifies the predeclared row counts, exact family
+counts, structural arithmetic, eligibility and sign flags, and the interval
+arithmetic that lies within its audit scope. Weighted-quantile construction
+and Python HAC quantities remain frozen in the Python archive where the Stata
+audit does not reproduce them exactly.

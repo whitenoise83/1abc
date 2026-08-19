@@ -1,39 +1,46 @@
-\section{Additional Forecast Evaluation Results}
+\section{Archived Confirmatory Evaluation Files}
 \label{app:extra_results}
 
-% ------------------------------------------------------------
-% H1 full results
-% ------------------------------------------------------------
-\subsection{Full H1 adjacent-stage comparisons}
-% Target x fixed model x adjacent stage:
-% N, RMSE_s, RMSE_s+1, % change, MAE change, mean loss differential,
-% HAC standard error, test statistic, p-value, bootstrap CI.
+The main text reports the predeclared H1--H4 estimands and the tables needed
+for substantive interpretation. The complete machine-readable confirmatory
+outputs are retained in the repository under
+\path{outputs/confirmatory/}. They are archival results rather than tables
+recomputed when the manuscript is compiled.
 
-% ------------------------------------------------------------
-% H2 full results
-% ------------------------------------------------------------
-\subsection{Full H2 policy comparisons}
-% Target x stage and aggregate target results:
-% fixed comparator, frozen stage model, N, RMSE, MAE, bias,
-% relative RMSE, loss-differential inference, GW result where used.
+\begin{description}[leftmargin=3.2cm,style=nextline]
+    \item[\textbf{H1}]
+    \path{h1_information_gain_detail.csv} contains the eligible paired
+    forecast-origin observations and
+    \path{h1_information_gain_summary.csv} contains the 28 adjacent-stage
+    summary comparisons.
 
-% ------------------------------------------------------------
-% H3 full results
-% ------------------------------------------------------------
-\subsection{Full H3 real-time/latest-vintage comparisons}
-% Forecast-value differences; RMSE/MAE; paired loss tests;
-% model-ranking tables; Spearman/Kendall correlations.
+    \item[\textbf{H2}]
+    \path{h2_stage_policy_detail.csv} contains the paired stage-policy and
+    fixed-comparator forecast-origin observations and
+    \path{h2_stage_policy_summary.csv} contains all 36 target--stage cells,
+    including the 25 exact same-model ties.
 
-% ------------------------------------------------------------
-% H4 full results
-% ------------------------------------------------------------
-\subsection{Full H4 interval-evaluation results}
-% Target x interval method:
-% N, coverage, binomial CI, unconditional coverage,
-% independence, conditional coverage, average width,
-% interval score, score differentials and p-values.
+    \item[\textbf{H3}]
+    \path{h3_vintage_detail.csv} contains the paired real-time and
+    latest-vintage forecast-origin observations;
+    \path{h3_vintage_summary.csv} contains the 36 stage-level summaries;
+    \path{h3_vintage_target_summary.csv} contains the eight target-level
+    complete-stage summaries; and
+    \path{h3_vintage_sample_audit.csv} records the H3 sample construction.
 
-\subsection{Complete descriptive forecast diagnostics}
-% Put remaining target x model x stage tables here:
-% N, RMSE, MAE, bias, median AE, P90 AE, max AE,
-% directional accuracy where meaningful, interval coverage, width, score.
+    \item[\textbf{H4}]
+    \path{h4_interval_detail.csv} contains the forecast-level interval
+    results; \path{h4_interval_summary.csv} contains the stage--method
+    summaries; \path{h4_interval_method_comparisons.csv} contains the paired
+    interval-score comparisons; and
+    \path{h4_interval_eligibility_audit.csv} records the prior-only
+    calibration-history eligibility checks.
+\end{description}
+
+The confirmatory archives have corresponding manifests in the same directory.
+The manifests record the frozen design or policy anchors, source backtest
+identifiers, row counts, analysis-script hashes, and SHA-256 hashes of the
+archived output files. The H1--H4 results reported in
+Section~\ref{sec:results} are summaries of these immutable archives; this
+appendix does not introduce additional bootstrap, conditional-predictive-
+ability, model-ranking, or post-hoc specification results.
