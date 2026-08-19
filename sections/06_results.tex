@@ -245,7 +245,7 @@ overcover sufficiently for the unconditional-coverage test to reject at the
 5\% level, but the remaining inflation stage cells do not show a broad
 pattern of coverage-test rejection.
 
-Labour provides the strongest evidence for adaptive weighting.  Primary
+Labour provides the strongest evidence for exponentially weighted calibration.  Primary
 coverage ranges from 0.805 to 0.854 for average hourly earnings, from 0.878
 to 0.927 for payroll employment, and from 0.750 to 0.975 for unemployment.
 For both earnings and payroll employment, the exponentially weighted
@@ -311,10 +311,6 @@ universally dominant interval rule.
 
 \subsection{Cross-domain synthesis}
 \label{subsec:cross_domain_results}
-% Summarise which hypotheses receive the strongest/weakest support across GDP,
-% inflation, and labour. Do not collapse heterogeneous target results into one
-% pooled statistic unless economically justified.
-
 \begin{table}[H]
 \centering
 \caption{Summary of empirical evidence for the four research hypotheses}
@@ -329,7 +325,7 @@ Hypothesis & Main empirical finding & Statistical conclusion \\
 H1 & Later-stage mean squared loss is lower in 16 of 28 adjacent-stage comparisons; four improvements and two deteriorations are significant at 5\%. & Partial support; incoming information is valuable at selected release points but accuracy is not monotone in stage. \\
 H2 & The stage policy differs from the fixed model in 11 cells, lowers mean squared loss in seven, and has four significant gains, all in labour; no significant losses. & Qualified support concentrated in labour-market cells; no broad GDP or inflation dominance. \\
 H3 & Vintage effects have mixed signs. Latest-vintage data strongly improve UNRATE, while core PCE absolute loss worsens significantly; most other target-level effects are weaker. & Strong target-specific evidence that vintage choice can matter, but no uniform directional revision effect. \\
-H4 & Prior-only intervals show heterogeneous calibration: adaptive weighting delivers the clearest score gains for labour and core CPI, while GDP rolling intervals overcover and lose to Gaussian intervals at later stages. & Qualified support; interval calibration and method ranking are domain- and stage-dependent rather than universal. \\
+H4 & Prior-only intervals show heterogeneous calibration: exponentially weighted calibration delivers the clearest score gains for labour and core CPI, while GDP rolling intervals overcover and lose to Gaussian intervals at later stages. & Qualified support; interval calibration and method ranking are domain- and stage-dependent rather than universal. \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]\footnotesize

@@ -28,9 +28,6 @@ The core restriction is
 
 Model-selection histories, combination weights, calibration errors, and all other adaptive quantities are subject to the same restriction. A historical forecast is stored as an immutable object and is not recomputed after later data releases or revisions become available.
 
-% Describe exact target-leakage tests, release-date checks, vintage handling,
-% and the distinction between structurally unavailable and defective missing data.
-
 \subsection{Policy-development and final evaluation samples}
 \label{subsec:development_evaluation}
 
@@ -64,7 +61,7 @@ with absolute-error loss,
     L_1(e)=|e|,
     \label{eq:absolute_loss}
 \end{equation}
-used as a robustness criterion.
+used as a secondary loss metric.
 
 \subsection{Point forecast evaluation}
 \label{subsec:point_metrics}
