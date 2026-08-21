@@ -129,7 +129,7 @@ The empirical analysis addresses four linked questions:
 
 The four research questions are translated into the following pre-specified hypotheses. Throughout the paper, inference is stated in terms of rejection or failure to reject the corresponding null hypothesis rather than ``acceptance'' of an alternative.
 
-\paragraph{H1: Incremental real-time information has predictive value.}
+\paragraph{H1: Incremental real-time information has predictive value}
 Let $e_{k,t,s}^{(m)}$ denote the forecast error for target $k$ from a \emph{fixed} model $m$ at information stage $s$. For adjacent stages $s$ and $s+1$, define the loss differential
 \begin{equation}
     d_{k,t}^{H1}(m;s,s+1)
@@ -148,7 +148,7 @@ The null and alternative are
 \end{align}
 The model is deliberately held fixed across stages so that H1 isolates the marginal predictive value of the expanding real-time information set. The primary inferential loss is squared error, with absolute error used as a secondary loss metric; RMSE and MAE provide descriptive summaries in the corresponding units. Statistical evidence is based on paired loss differentials with two-sided Newey--West heteroskedasticity-and-autocorrelation-consistent inference.
 
-\paragraph{H2: Stage-dependent model policies outperform fixed-model forecasting.}
+\paragraph{H2: Stage-dependent model policies outperform fixed-model forecasting}
 Let $\mathcal{P}(k,s)=m^{*}_{k,s}$ denote the pre-specified stage-dependent policy, and let $m_k^{F}$ denote a fixed model selected for target $k$ using a policy-development sample only. Define
 \begin{equation}
     d_{k,t}^{H2}
@@ -172,7 +172,7 @@ confirmatory implementation reports conservative two-sided HAC \(p\)-values;
 directional support is therefore determined jointly by the sign of the loss
 differential and the two-sided test.
 
-\paragraph{H3: Real-time data vintages materially affect forecast evaluation.}
+\paragraph{H3: Real-time data vintages materially affect forecast evaluation}
 For identical forecast origins, models, and stage definitions, let $e_{k,t}^{RT}$ denote forecast errors generated from historically available vintages and $e_{k,t}^{LV}$ denote errors from a latest-vintage counterfactual. Define
 \begin{equation}
     d_{k,t}^{H3}
@@ -191,7 +191,7 @@ The hypothesis is intentionally two-sided:
 \end{align}
 The confirmatory analysis examines changes in forecast loss and forecast values for the frozen stage policy. With the loss differential defined as latest-vintage minus real-time loss, negative values indicate lower loss under the latest-vintage counterfactual. Candidate-model ranking sensitivity is outside the present analysis. The sign of the vintage effect is left to the data rather than imposed ex ante.
 
-\paragraph{H4: Prior-only empirical intervals are calibrated and sharp.}
+\paragraph{H4: Prior-only empirical intervals are calibrated and sharp}
 For an 80\% predictive interval $[L_t,U_t]$, define the violation indicator
 \begin{equation}
     V_t = \I\!\left(y_t<L_t \;\text{or}\; y_t>U_t\right).
@@ -213,7 +213,7 @@ In addition, interval violations should not exhibit systematic serial dependence
 \begin{threeparttable}
 \footnotesize
 \setlength{\tabcolsep}{3pt}
-\begin{tabular}{p{0.055\textwidth}p{0.285\textwidth}p{0.285\textwidth}p{0.265\textwidth}}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.055\textwidth}>{\raggedright\arraybackslash}p{0.285\textwidth}>{\raggedright\arraybackslash}p{0.285\textwidth}>{\raggedright\arraybackslash}p{0.265\textwidth}}
 \toprule
 Hyp. & Scientific question & Null hypothesis & Primary evidence \\
 \midrule
