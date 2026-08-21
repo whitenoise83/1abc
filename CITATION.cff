@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this repository or its research outputs, please cite the working paper below."
+
+title: "Replication materials for Real-Time Macroeconomic Nowcasting with Stage-Dependent Model Policies"
+type: software
+
+authors:
+  - family-names: "Yildiran"
+    given-names: "Cenk Ufuk"
+
+version: "1.0"
+date-released: 2026-08-21
+
+repository-code: "https://github.com/whitenoise83/1abc"
+
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Yildiran"
+      given-names: "Cenk Ufuk"
+  title: "Real-Time Macroeconomic Nowcasting with Stage-Dependent Model Policies: Evidence from U.S. GDP, Inflation, and Labour Markets"
+  year: 2026
+  doi: "10.5281/zenodo.22042549"
+  url: "https://doi.org/10.5281/zenodo.22042549"
