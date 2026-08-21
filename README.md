@@ -1,3 +1,19 @@
+## Working Paper
+
+**Real-Time Macroeconomic Nowcasting with Stage-Dependent Model Policies:
+Evidence from U.S. GDP, Inflation, and Labour Markets**
+
+Cenk Ufuk Yildiran, 2026
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22042549.svg)](https://doi.org/10.5281/zenodo.22042549)
+
+**DOI:** https://doi.org/10.5281/zenodo.22042549
+
+**Frozen manuscript release:** `manuscript-v1.0`
+
+**Canonical manuscript commit:**  
+`8905ea96193624501032074032a6af278d26575a`
+
 # Real-Time Macroeconomic Nowcasting with Stage-Dependent Model Policies
 
 This repository contains the manuscript, frozen research-design artifacts,
